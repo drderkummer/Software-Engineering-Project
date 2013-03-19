@@ -9,7 +9,7 @@
 <th>Topic</th>
 </tr>
 <tr>
-<tdalign="center">21/3</td>
+<td align="center">21/3</td>
 <td align="center">10:00-??</td>
 <td align="center">??</td>
 <td>Choosing 3 app ideas, deciding groupname, email to superviser, ..</td>
