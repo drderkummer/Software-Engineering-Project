@@ -1,6 +1,6 @@
-==Software Engineering Project 2013==
+#Software Engineering Project 2013#
 
-===Group-Meetings===
+##Group-Meetings##
 {| class="wikitable"
 ! Date
 ! Time
