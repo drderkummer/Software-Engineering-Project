@@ -1,5 +1,12 @@
 #Software Engineering Project 2013#
 
+##App-Ideas##
+<ol>
+<li> Bliss-to-Word-Translater</li>
+<li> "Weekend"-Analyzer</li>
+<li> Chalmers-Campus-Map</li>
+<ol>
+
 ##Group-Meetings##
 <table>
 <tr>
@@ -18,43 +25,43 @@
 <td align="center">8/4</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> Project Management/Scrum</td>
+<td><i>Lecture:Project Management/Scrum</i></td>
 </tr>
 <tr>
 <td align="center">15/4</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> eXtreme Programming</td>
+<td><i>Lecture: eXtreme Programming:</i></td>
 </tr>
 <tr>
 <td align="center">22/4</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> ...</td>
+<td><i>Lecture: ...</i></td>
 </tr>
 <tr>
 <td align="center">29/4</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> ...</td>
+<td><i>Lecture: ...</i></td>
 </tr>
 <tr>
 <td align="center">6/5</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> ...</td>
+<td><i>Lecture: ...</i></td>
 </tr>
 <tr>
 <td align="center">13/5</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> ...</td>
+<td><i>Lecture: ...</i></td>
 </tr>
 <tr>
 <td align="center">20/5</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
-<td><i>Lecture:</i> ...</td>
+<td><i>Lecture: ...</i></td>
 </tr>
 <tr>
 <td align="center">27/5</td>
