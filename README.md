@@ -1,13 +1,15 @@
-#Software Engineering Project 2013#
+Software Engineering Project 2013
+==================================
 
-##App-Ideas##
-<ol>
-<li> Bliss-to-Word-Translater</li>
-<li> "Weekend"-Analyzer</li>
-<li> Chalmers-Campus-Map</li>
-<ol>
+App-Ideas
+---------
 
-##Group-Meetings##
+* Bliss-to-Word-Translater
+* "Weekend"-Analyzer
+* Chalmers-Campus-Map
+
+Group-Meetings
+--------------
 <table>
 <tr>
 <th align="center">Date</th>
