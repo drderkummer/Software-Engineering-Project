@@ -18,16 +18,16 @@ Group-Meetings &amp Lectures
 <th>Topic</th>
 </tr>
 <tr>
-<td align="center">22/3</td>
-<td align="center">13:15-16:00</td>
-<td align="center">HC3</td>
-<td><i>Laboration: Git</i></td>
-</tr>
-<tr>
 <td align="center">21/3</td>
 <td align="center">10:00-??</td>
 <td align="center">??</td>
 <td>Choosing 3 app ideas, deciding groupname, email to superviser, ...</td>
+</tr>
+<tr>
+<td align="center">22/3</td>
+<td align="center">13:15-16:00</td>
+<td align="center">HC3</td>
+<td><i>Laboration: Git</i></td>
 </tr>
 <tr>
 <td align="center">8/4</td>
