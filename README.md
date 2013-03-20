@@ -7,6 +7,11 @@ App-Ideas
 * Bliss-to-Word-Translater
 * "Weekend"-Analyzer
 * Chalmers-Campus-Map
+  * Step tracking using accelerometer, maby calories (or beers) burnt walking.
+  * Import i-Cal schedule and get information about where to go
+  * Shortest path algorithm using djikstra?
+  * Possibility to book grouprooms
+  * building interior maps addition to the campus map, maby based on data from altimeter etc in the phone?
 
 Group-Meetings &amp Lectures
 ---------------------------
@@ -20,7 +25,7 @@ Group-Meetings &amp Lectures
 <tr>
 <td align="center">21/3</td>
 <td align="center">10:00-??</td>
-<td align="center">??</td>
+<td align="center">Glass Box outside HA1</td>
 <td>Choosing 3 app ideas, deciding groupname, email to superviser, ...</td>
 </tr>
 <tr>
