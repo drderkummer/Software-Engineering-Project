@@ -8,14 +8,20 @@ App-Ideas
 * "Weekend"-Analyzer
 * Chalmers-Campus-Map
 
-Group-Meetings
---------------
+Group-Meetings &amp Lectures
+---------------------------
 <table>
 <tr>
 <th align="center">Date</th>
 <th align="center">Time</th>
 <th align="center">Room(s)</th>
 <th>Topic</th>
+</tr>
+<tr>
+<td align="center">22/3</td>
+<td align="center">13:15-16:00</td>
+<td align="center">HC3</td>
+<td><i>Laboration: Git</i></td>
 </tr>
 <tr>
 <td align="center">21/3</td>
