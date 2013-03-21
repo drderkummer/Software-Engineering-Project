@@ -5,6 +5,12 @@ App-Ideas
 ---------
 
 * Bliss-to-Word-Translater
+  * Speaking aid for peoiple with communicating difficulties
+  * Based on the blissymbols language
+  * User picks symbols and the app ties to create sentences.
+  * The app reads the sentence out loud with text-to-speech
+  * Function to add and remove symbols
+
 * "Weekend"-Analyzer
   * graphical Analysis of Alcohol-consumption
   * graph is displaying Alcohol level of body at a certain time
@@ -14,12 +20,16 @@ App-Ideas
       * average over all drinking nights
       * average over special week days
       * max/min function
+
 * Chalmers-Campus-Map
   * Step tracking using accelerometer, maby calories (or beers) burnt walking.
   * Import i-Cal schedule and get information about where to go
   * Shortest path algorithm using djikstra?
   * Possibility to book grouprooms
   * building interior maps addition to the campus map, maby based on data from altimeter etc in the phone?
+  * Possibility to add pubs for use on pubcrawl.
+  * Using the GPS to track your position. 
+  * Smart app, tells you when you be there etc.
 
 Group-Meetings &amp Lectures
 ---------------------------
