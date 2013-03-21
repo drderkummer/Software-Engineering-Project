@@ -10,7 +10,6 @@ App-Ideas
   * User picks symbols and the app ties to create sentences.
   * The app reads the sentence out loud with text-to-speech
   * Function to add and remove symbols
-
 * "Weekend"-Analyzer
   * graphical Analysis of Alcohol-consumption
   * graph is displaying Alcohol level of body at a certain time
@@ -20,7 +19,6 @@ App-Ideas
       * average over all drinking nights
       * average over special week days
       * max/min function
-
 * Chalmers-Campus-Map
   * Step tracking using accelerometer, maby calories (or beers) burnt walking.
   * Import i-Cal schedule and get information about where to go
@@ -31,8 +29,8 @@ App-Ideas
   * Using the GPS to track your position. 
   * Smart app, tells you when you be there etc.
 
-Group-Meetings &amp Lectures
----------------------------
+Group-Meetings & Lectures
+-------------------------
 <table>
 <tr>
 <th align="center">Date</th>
@@ -41,10 +39,10 @@ Group-Meetings &amp Lectures
 <th>Topic</th>
 </tr>
 <tr>
-<td align="center">21/3</td>
-<td align="center">10:00-??</td>
-<td align="center">Glass Box outside HA1</td>
-<td>Choosing 3 app ideas, deciding groupname, email to superviser, ...</td>
+<td align="center"><del>21/3</del></td>
+<td align="center"><del>10:00-??</del></td>
+<td align="center"><del>Glass Box outside HA1</del></td>
+<td><del>Choosing 3 app ideas, deciding groupname, email to superviser, ...</del></td>
 </tr>
 <tr>
 <td align="center">22/3</td>
@@ -57,6 +55,12 @@ Group-Meetings &amp Lectures
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
 <td><i>Lecture:Project Management/Scrum</i></td>
+</tr>
+<tr>
+<td align="center">8/4</td>
+<td align="center">15:15-??</td>
+<td align="center">Glass Box HA4/1</td>
+<td>planning of project</td>
 </tr>
 <tr>
 <td align="center">15/4</td>
