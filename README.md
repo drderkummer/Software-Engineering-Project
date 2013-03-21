@@ -11,9 +11,9 @@ App-Ideas
   * drink addable at everytime
   * possibility to add photos to a graph
   * diffrent filter applyable:
-    * average over all drinking nights
+      * average over all drinking nights
       * average over special week days
-       	* max/min function
+      * max/min function
 * Chalmers-Campus-Map
   * Step tracking using accelerometer, maby calories (or beers) burnt walking.
   * Import i-Cal schedule and get information about where to go
