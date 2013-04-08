@@ -24,16 +24,16 @@ Group-Meetings & Lectures
 <td><del><i>Laboration: Git</i></del></td>
 </tr>
 <tr>
-<td align="center">8/4</td>
-<td align="center">13:15-15:00</td>
-<td align="center">HA4</td>
-<td><i>Lecture: Project Management/Scrum</i></td>
+<td align="center"><del>8/4</del></td>
+<td align="center"><del>13:15-15:00</del></td>
+<td align="center"><del>HA4</del></td>
+<td><del><i>Lecture: Project Management/Scrum</i></del></td>
 </tr>
 <tr>
-<td align="center">8/4</td>
-<td align="center">15:15-??</td>
-<td align="center">Glass Box HA4/1</td>
-<td>planning of project</td>
+<td align="center">10/4</td>
+<td align="center">13:55-14:05</td>
+<td align="center">Grupprum10 (Idéläran)</td>
+<td>Supervisor meeting: planning of project start afterwards?</td>
 </tr>
 <tr>
 <td align="center">15/4</td>
