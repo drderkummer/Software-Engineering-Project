@@ -36,10 +36,16 @@ Group-Meetings & Lectures
 <td>Supervisor meeting: planning of project start afterwards?</td>
 </tr>
 <tr>
+<td align="center"><del>15/4</del></td>
+<td align="center"><del>13:15-15:00</del></td>
+<td align="center"><del>HA4</del></td>
+<td><del><i>Lecture: eXtreme Programming</i></del></td>
+</tr>
+<tr>
 <td align="center">15/4</td>
-<td align="center">13:15-15:00</td>
-<td align="center">HA4</td>
-<td><i>Lecture: eXtreme Programming</i></td>
+<td align="center">15:00-??</td>
+<td align="center">Glass Box outside HA1</td>
+<td>analyze User stories, ...</td>
 </tr>
 <tr>
 <td align="center">22/4</td>
