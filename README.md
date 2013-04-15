@@ -24,16 +24,22 @@ Group-Meetings & Lectures
 <td><del><i>Laboration: Git</i></del></td>
 </tr>
 <tr>
-<td align="center">8/4</td>
-<td align="center">13:15-15:00</td>
-<td align="center">HA4</td>
-<td><i>Lecture: Project Management/Scrum</i></td>
+<td align="center"><del>8/4</del></td>
+<td align="center"><del>13:15-15:00</del></td>
+<td align="center"><del>HA4</del></td>
+<td><del><i>Lecture: Project Management/Scrum</i></del></td>
 </tr>
 <tr>
-<td align="center">8/4</td>
-<td align="center">15:15-??</td>
-<td align="center">Glass Box HA4/1</td>
-<td>planning of project</td>
+<td align="center"><del>10/4</del></td>
+<td align="center"><del>13:55-14:05</del></td>
+<td align="center"><del>Grupprum10 (Idéläran)</del></td>
+<td><del>Supervisor meeting: planning of project start afterwards?<del></td>
+</tr>
+<tr>
+<td align="center">15/4</td>
+<td align="center">12:30-13:15</td>
+<td align="center">Glass Box outside HA1</td>
+<td>Team Meeting ...</td>
 </tr>
 <tr>
 <td align="center">15/4</td>
@@ -91,24 +97,8 @@ Group-Meetings & Lectures
 </tr>
 </table>
 
-App-Ideas
+Chalmers On The Go
 ---------
-
-* Bliss-to-Word-Translater
-  * Speaking aid for peoiple with communicating difficulties
-  * Based on the blissymbols language
-  * User picks symbols and the app ties to create sentences.
-  * The app reads the sentence out loud with text-to-speech
-  * Function to add and remove symbols
-* "Weekend"-Analyzer
-  * graphical Analysis of Alcohol-consumption
-  * graph is displaying Alcohol level of body at a certain time
-  * drink addable at everytime
-  * possibility to add photos to a graph
-  * diffrent filter applyable:
-      * average over all drinking nights
-      * average over special week days
-      * max/min function
 * Chalmers-Campus-Map
   * Step tracking using accelerometer, maby calories (or beers) burnt walking.
   * Import i-Cal schedule and get information about where to go
@@ -118,3 +108,6 @@ App-Ideas
   * Possibility to add pubs for use on pubcrawl.
   * Using the GPS to track your position. 
   * Smart app, tells you when you be there etc.
+
+Link to pivotal tracker for this project
+https://www.pivotaltracker.com/projects/798915

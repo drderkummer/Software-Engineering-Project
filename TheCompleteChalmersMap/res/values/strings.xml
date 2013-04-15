@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<<<<<<< HEAD
-    <string name="app_name">ChalmersOnTheGo</string>
-=======
     <string name="app_name">The complete Chalmers map</string>
->>>>>>> 10fbaff97fa515d5c23091b12fcdc58a90aba986
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
