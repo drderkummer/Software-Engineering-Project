@@ -1,0 +1,6 @@
+What is needed?
+https://developers.google.com/maps/documentation/android/start#specify_settings_in_the_application_manifest
+
+1. You need to install Google Play Service from the SDK and import it as a new project.
+2. Check that the ChalmersOnTheGo is a Google Play project in properties
+3. Add google-play-services_lib as library to get things working
