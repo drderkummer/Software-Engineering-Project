@@ -7,4 +7,4 @@ https://developers.google.com/maps/documentation/android/start#specify_settings_
 
 tutorial on that: https://developers.google.com/maps/documentation/android/start#specify_settings_in_the_application_manifest
 
-4. Kopiera filen debug.keystore till  C:\Users\<user>\.android
+4. Copy file debug.keystore to  C:\Users\<user>\.android , don't forget to take a backup of the old file.
