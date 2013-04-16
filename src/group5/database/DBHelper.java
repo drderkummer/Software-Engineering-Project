@@ -45,8 +45,8 @@ public class DBHelper extends SQLiteOpenHelper {
     			TABLE_3_COLUMN_2 + " REAL, " +
     			TABLE_3_COLUMN_3 + " REAL, " +
     			TABLE_3_COLUMN_4 + " REFERENCES TABLE_2_NAME," +
-    			TABLE_3_COLUMN_5 + " REFERENCES " + TABLE_1_NAME + "." + TABLE_1_COLUMN_1 + ", " +
-    			TABLE_3_COLUMN_6 + " REFERENCES " + TABLE_1_NAME + "." + TABLE_1_COLUMN_2 + ")";
+    			TABLE_3_COLUMN_5 + " REFERENCES " + TABLE_1_NAME + "(" + TABLE_1_COLUMN_1 + ") , " +
+    			TABLE_3_COLUMN_6 + " REFERENCES " + TABLE_1_NAME + "(" + TABLE_1_COLUMN_2 + ") )";
     
     /**
      * 
