@@ -5,4 +5,6 @@ https://developers.google.com/maps/documentation/android/start#specify_settings_
 2. Check that the ChalmersOnTheGo is a Google Play project in properties
 3. Add google-play-services_lib as library to get things working
 
-4. Kopiera filen debug.keystore till  C:\Users\<user>\.android
+tutorial on that: https://developers.google.com/maps/documentation/android/start#specify_settings_in_the_application_manifest
+
+4. Copy file debug.keystore to  C:\Users\<user>\.android , don't forget to take a backup of the old file.
