@@ -6,14 +6,18 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-
 import group5.database.DAO;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
+
+@SuppressLint("NewApi")
 public class MainActivity extends Activity {
 
 	private DAO dao;
@@ -34,8 +38,9 @@ public class MainActivity extends Activity {
 		dao.open();
 		
 		//Getting the icon clickable
-	    getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	    getActionBar().setHomeButtonEnabled(true);
+	    
 	}
 
 	@Override
@@ -50,9 +55,26 @@ public class MainActivity extends Activity {
 	//Following method is called when launcher icon clicked
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
-		Toast.makeText(this, "CLICK", Toast.LENGTH_LONG).show();
-		return true;
+		switch(item.getItemId()){
+			case R.id.action_setting:
+				Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+			    PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_setting));
+			    MenuInflater inflater = popup.getMenuInflater();
+			    inflater.inflate(R.menu.settings_menu, popup.getMenu());
+			    popup.show();
+				return true;
+			default:
+				Toast.makeText(this, "Icon", Toast.LENGTH_SHORT).show();
+				return true;
+		}
     }
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    return true;
+	}
 	
 
 	private void setUpMapIfNeeded() {
