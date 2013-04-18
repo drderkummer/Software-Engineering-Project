@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    	  xmlns:map="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+	<fragment
           android:id="@+id/map"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:name="com.google.android.gms.maps.MapFragment"
           map:cameraTargetLat="57.689094"
-          map:cameraTargetLng="11.976619"
-          map:cameraZoom="15"
-          />
+	      map:cameraTargetLng="11.976619"
+	      map:cameraZoom="15"/>
+</LinearLayout>
+
+	      

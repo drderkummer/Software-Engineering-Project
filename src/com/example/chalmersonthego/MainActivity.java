@@ -8,8 +8,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import group5.database.DAO;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -17,6 +20,7 @@ public class MainActivity extends Activity {
 	private GoogleMap map;
 	private LatLngBounds strictBounds;
 	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,6 +32,10 @@ public class MainActivity extends Activity {
 		//Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
+		
+		//Getting the icon clickable
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
+	    getActionBar().setHomeButtonEnabled(true);
 	}
 
 	@Override
@@ -38,6 +46,13 @@ public class MainActivity extends Activity {
 
 		super.onDestroy();
 	}
+	
+	//Following method is called when launcher icon clicked
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+		Toast.makeText(this, "CLICK", Toast.LENGTH_LONG).show();
+		return true;
+    }
 	
 
 	private void setUpMapIfNeeded() {
