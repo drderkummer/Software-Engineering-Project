@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import group5.database.DAO;
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 
 public class MainActivity extends Activity {
 
@@ -56,9 +55,9 @@ public class MainActivity extends Activity {
 		            @Override
 		            public void onCameraChange(CameraPosition position) {	            	
 		            	
-		            	if(position.zoom < 15){
-							map.animateCamera(CameraUpdateFactory.zoomTo(15));	
-		            	}
+		            	// Set minimum zoom level
+		            	if(position.zoom < 15)
+							map.animateCamera(CameraUpdateFactory.zoomTo(15));	         	
 		            	
 		            	
 						// Limits on the map
