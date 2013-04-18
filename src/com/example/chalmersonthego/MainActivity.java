@@ -10,13 +10,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import group5.database.DAO;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 
 public class MainActivity extends Activity {
 
 	private DAO dao;
 	private GoogleMap map;
 	private LatLngBounds strictBounds;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,6 +39,7 @@ public class MainActivity extends Activity {
 
 		super.onDestroy();
 	}
+	
 
 	private void setUpMapIfNeeded() {
 		// Do a null check to confirm that we have not already instantiated the map.
@@ -46,10 +48,18 @@ public class MainActivity extends Activity {
 			// Check if we were successful in obtaining the map.
 			if (map != null) {// The Map is verified. It is now safe to manipulate the map.
 				
+				
+				
+				
 				// When user drag map
 				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 		            @Override
-		            public void onCameraChange(CameraPosition position) {
+		            public void onCameraChange(CameraPosition position) {	            	
+		            	
+		            	if(position.zoom < 15){
+							map.animateCamera(CameraUpdateFactory.zoomTo(15));	
+		            	}
+		            	
 		            	
 						// Limits on the map
 						LatLng northWest = new LatLng(57.697497,11.985397);
@@ -76,10 +86,11 @@ public class MainActivity extends Activity {
 						LatLng center = new LatLng(x,y);						
 						
 						// Set new center
-						map.moveCamera(CameraUpdateFactory.newLatLng(center));
+						map.moveCamera(CameraUpdateFactory.newLatLng(center));						
 		            }
 		        });
 			}
 		}
 	}
+
 }
