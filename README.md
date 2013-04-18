@@ -49,8 +49,8 @@ Group-Meetings & Lectures
 </tr>
 <td align="center">18/4</td>
 <td align="center">13:15-15:15</td>
-<td align="center">Glass Box outside HA1</td>
-<td>Team Meeting ...</td>
+<td align="center">Linnsen</td>
+<td>Team Meeting with Tutor</td>
 </tr>
 <tr>
 <td align="center">22/4</td>
