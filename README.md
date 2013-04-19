@@ -47,16 +47,23 @@ Group-Meetings & Lectures
 <td align="center"><del>HA4</del></td>
 <td><del><i>Lecture: eXtreme Programming</i></del></td>
 </tr>
-<td align="center">18/4</td>
-<td align="center">13:15-15:15</td>
-<td align="center">Linnsen</td>
-<td>Team Meeting with Tutor</td>
+<tr>
+<td align="center"><del>19/4</del></td>
+<td align="center"><del>13:15-15:15</del></td>
+<td align="center"><del>Linnsen</del></td>
+<td><del>Team Meeting with Tutor</del</td>
 </tr>
 <tr>
 <td align="center">22/4</td>
 <td align="center">13:15-15:00</td>
 <td align="center">HA4</td>
 <td><i>Lecture: ...</i></td>
+</tr>
+<tr>
+<td align="center">22/4</td>
+<td align="center">15:00-16:10</td>
+<td align="center">Linnsen</td>
+<td>Scrum-Meeting, Team-Meeting: Discussion, define Sprint #2</td>
 </tr>
 <tr>
 <td align="center">29/4</td>
