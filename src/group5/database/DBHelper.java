@@ -14,9 +14,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "ChalmersOnTheGo";
     
+    public static final String TABLE_4_NAME = "Buildings";
+    public static final String TABLE_4_COLUMN_1 = "name";
+    
     public static final String TABLE_1_NAME = "Entries";
     public static final String TABLE_1_COLUMN_1 = "x";
     public static final String TABLE_1_COLUMN_2 = "y";
+    public static final String TABLE_1_COLUMN_3 = "building";
     
     public static final String TABLE_2_NAME = "Types";
     public static final String TABLE_2_COLUMN_1 = "name";
@@ -30,10 +34,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_3_COLUMN_6 = "yClosestEntry";
     
 
+    private static final String DATABASE_TABLE_4_CREATE =
+    			"CREATE TABLE " + TABLE_4_NAME + " (" +
+    			TABLE_4_COLUMN_1 + " TEXT PRIMARY KEY)";
     private static final String DATABASE_TABLE_1_CREATE =
                 "CREATE TABLE " + TABLE_1_NAME + " (" +
                 TABLE_1_COLUMN_1 + " REAL, " +
                 TABLE_1_COLUMN_2 + " REAL, " +
+                TABLE_1_COLUMN_3 + " REFERENCES " + TABLE_4_NAME + "(" + TABLE_4_COLUMN_1 + ") , " +
                 "PRIMARY KEY(" + TABLE_1_COLUMN_1 + "," + TABLE_1_COLUMN_2 + ")" +
                 ")";
     private  static final String DATABASE_TABLE_2_CREATE = 
@@ -62,6 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+    	db.execSQL(DATABASE_TABLE_4_CREATE);
         db.execSQL(DATABASE_TABLE_1_CREATE);
         db.execSQL(DATABASE_TABLE_2_CREATE);
         db.execSQL(DATABASE_TABLE_3_CREATE);
