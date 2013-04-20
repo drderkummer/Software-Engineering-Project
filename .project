@@ -3,6 +3,7 @@
 	<name>ChalmersOnTheGo</name>
 	<comment></comment>
 	<projects>
+		<project>google-play-services_lib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -30,4 +31,4 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-</projectDescription>
+</projectDescription> 

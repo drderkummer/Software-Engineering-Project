@@ -3,6 +3,6 @@
         android:id="@+id/action_setting"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings_back"/>
 
 </menu>
