@@ -44,11 +44,7 @@ public class MainActivity extends Activity {
 
 		//Getting the icon clickable
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-<<<<<<< HEAD
-	    getActionBar().setHomeButtonEnabled(true);
-	    
-	    
-=======
+
 		getActionBar().setHomeButtonEnabled(true);
 		
 		// Listener for exit event
@@ -63,7 +59,6 @@ public class MainActivity extends Activity {
 			}
 		};	
 
->>>>>>> 593467ea76b5dd2a8d3bfddf0e1416cccc165511
 	}
 
 	@Override
