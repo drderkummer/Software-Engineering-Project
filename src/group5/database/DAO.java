@@ -1,9 +1,10 @@
 package group5.database;
 
+import java.util.ArrayList;
 import com.google.android.gms.maps.model.LatLng;
-
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 /**
@@ -46,6 +47,7 @@ public class DAO {
 		values.put(DBHelper.TABLE_1_COLUMN_3, building);
 		database.insert(DBHelper.TABLE_1_NAME, null, values);
 	}
+
 	
 	public void insertIntoTable2(String name){
 		ContentValues values = new ContentValues();
@@ -69,20 +71,45 @@ public class DAO {
 		values.put(DBHelper.TABLE_4_COLUMN_1,name);
 		database.insert(DBHelper.TABLE_4_NAME, null, values);
 	}
+	
+	public ArrayList<String> getAllFromTable4(){
+		
+		 String select = "SELECT * FROM " + DBHelper.TABLE_4_NAME;
+		 Cursor c = database.rawQuery(select, null);
+		 ArrayList<String> result = new ArrayList<String>(c.getCount());
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
 	/**
-3 Vilka ingångar finns angivna för byggnaden
-4 Beräkna vilken ingång som ligger närmast din nuvarande position
 	 * 
 	 * @param building
 	 * @return
 	 */
-	public LatLng getClosestEntryForBuilding(String building){
-		String query = "SELECT " + DBHelper.TABLE_1_COLUMN_1 + ", " + DBHelper.TABLE_1_COLUMN_2 +
-				" FROM " + DBHelper.TABLE_1_NAME +
-				" WHERE " + DBHelper.TABLE_1_COLUMN_3 + " = " + building + " AND " + "(" +
-				"POW(" + DBHelper.TABLE_1_COLUMN_1 + ",2) + POW(" + DBHelper.TABLE_1_COLUMN_2 + ",2)) = (SELECT MIN(POW(" +
-				DBHelper.TABLE_1_COLUMN_1 + ",2) + POW(" + DBHelper.TABLE_1_COLUMN_2 + ",2)) FROM " + DBHelper.TABLE_1_NAME +  "WHERE " +
-				DBHelper.TABLE_1_COLUMN_3 + " = " + building + ")";
+	public LatLng getClosestEntry(String building, LatLng cordinates){
+		Double x = cordinates.latitude;
+		Double y = cordinates.longitude;
+		String math = " ((" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") * (" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") + " +
+				" (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ") * (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ")) ";
+		String select = "SELECT " + DBHelper.TABLE_1_COLUMN_1 + ", " + DBHelper.TABLE_1_COLUMN_2 +
+				" FROM " + DBHelper.TABLE_1_NAME + " WHERE " + DBHelper.TABLE_1_COLUMN_3 + " = '" +
+				building + "' AND " + math + " = (SELECT MIN("+ math + ") FROM " + DBHelper.TABLE_1_NAME +  " WHERE " +
+				DBHelper.TABLE_1_COLUMN_3 + " = '" + building + "')";
+		Cursor c = database.rawQuery(select, null);
+		 if(c.getCount() == 0){
+			 return null;
+		 }else if (c.moveToFirst()){
+				 LatLng latLng = new LatLng(c.getDouble(0),c.getDouble(1));
+				 c.close();
+				 return latLng;
+		}
+
 		return null;
 	}
 }
