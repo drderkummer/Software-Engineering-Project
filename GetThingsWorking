@@ -9,3 +9,10 @@ tutorial on that:
 http://developer.android.com/google/play-services/setup.html
 
 4. Copy file debug.keystore to  C:\Users\<user>\.android , don't forget to take a backup of the old file.
+
+
+To get ChalmersOnTheGoTest project working:
+1: Use import -> New android project browse to the chalmers on the go lib and place yourself on the test folder, click ok.
+2: Click properties on your new ChalmersOnTheGoTest project
+3: Click on build path-> projects and add ChalmersOnTheGo
+4: You are good to go =)!
