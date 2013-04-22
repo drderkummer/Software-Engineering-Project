@@ -11,9 +11,10 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:name="com.google.android.gms.maps.MapFragment"
-          map:cameraTargetLat="57.689094"
+         />
+	 <!--map:cameraTargetLat="57.689094"
 	      map:cameraTargetLng="11.976619"
-	      map:cameraZoom="15"/>
+	      map:cameraZoom="15"   -->
 </LinearLayout>
 
 	      

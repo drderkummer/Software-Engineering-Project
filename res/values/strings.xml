@@ -6,5 +6,7 @@
     <string name="startMap">Start Map</string>
     <string name="title_activity_cmap">CMapActivity</string>
 	<string name="exit_app">Exit</string>
+	<string name="action_search">Search</string>
+	<string name="action_back">Back</string>
     
 </resources>

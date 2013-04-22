@@ -75,19 +75,25 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch(item.getItemId()){
-		case R.id.action_setting: case R.id.exit: case android.R.id.home:
+		case R.id.exit: case android.R.id.home:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Are you sure you want to exit?").setPositiveButton("Yes", dialogClickListener)
 			.setNegativeButton("No", dialogClickListener).show();
 			return true;
 
-		/*case R.id.setting1:
+		/*case R.id.action_setting:
 			Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
 			PopupMenu popup = new PopupMenu(this, findViewById(R.id.action_setting));
 			MenuInflater inflater = popup.getMenuInflater();
 			inflater.inflate(R.menu.settings_menu, popup.getMenu());
 			popup.show();
 			return true;*/
+			
+		case R.id.action_search:
+			
+			return true;
+			
+			
 
 		default:				
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT).show();
