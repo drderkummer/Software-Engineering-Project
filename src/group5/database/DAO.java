@@ -90,7 +90,7 @@ public class DAO {
 	
 	public LatLng getRoomCoordinates(String room){
 		String[] columns ={DBHelper.TABLE_3_COLUMN_2, DBHelper.TABLE_3_COLUMN_3};
-		String selection = DBHelper.TABLE_3_COLUMN_5 + " = ?s";
+		String selection = DBHelper.TABLE_3_COLUMN_1 + " = ?s";
 		String[] selectionArgs = {room};
 		
 		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
@@ -101,13 +101,14 @@ public class DAO {
 		}
 	}
 	/**
-	 * 
+	 * Calculates the closest entry for for the given building when the users
+	 * current position is also given.
 	 * @param building
 	 * @return
 	 */
-	public LatLng getClosestEntry(String building, LatLng cordinates){
-		Double x = cordinates.latitude;
-		Double y = cordinates.longitude;
+	public LatLng getClosestEntry(String building, LatLng currentCordinates){
+		Double x = currentCordinates.latitude;
+		Double y = currentCordinates.longitude;
 		String math = " ((" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") * (" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") + " +
 				" (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ") * (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ")) ";
 		String select = "SELECT " + DBHelper.TABLE_1_COLUMN_1 + ", " + DBHelper.TABLE_1_COLUMN_2 +
@@ -125,4 +126,38 @@ public class DAO {
 
 		return null;
 	}
+	ArrayList<String>getAllRooms(String building){
+		ArrayList<String> result = new ArrayList<String>();
+		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
+		String selection = DBHelper.TABLE_3_COLUMN_5 + " = ?s";
+		String[] selectionArgs = {building};
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
+	
+	ArrayList<String>getAllRoomsWithType(String type){
+		ArrayList<String> result = new ArrayList<String>();
+		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
+		String selection = DBHelper.TABLE_3_COLUMN_4 + " = ?s";
+		String[] selectionArgs = {type};
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
+	
 }
