@@ -55,14 +55,14 @@ public class DAO {
 		database.insert(DBHelper.TABLE_1_NAME, null, values);
 	}
 	
-	public void insertIntoTable3(String name, double xCord, double yCord, String type, double xClosestEntry, double yClosestEntry){
+	public void insertIntoTable3(String name, double xCord, double yCord, String type, String building, String floor){
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_3_COLUMN_1,name);
 		values.put(DBHelper.TABLE_3_COLUMN_2,xCord);
 		values.put(DBHelper.TABLE_3_COLUMN_3,yCord);
 		values.put(DBHelper.TABLE_3_COLUMN_4,type);
-		values.put(DBHelper.TABLE_3_COLUMN_5,xClosestEntry);
-		values.put(DBHelper.TABLE_3_COLUMN_6,yClosestEntry);
+		values.put(DBHelper.TABLE_3_COLUMN_5,building);
+		values.put(DBHelper.TABLE_3_COLUMN_6,floor);
 		database.insert(DBHelper.TABLE_3_NAME, null, values);
 	}
 	
@@ -86,6 +86,19 @@ public class DAO {
 			 c.close();
 			 return result;
 		 }
+	}
+	
+	public LatLng getRoomCoordinates(String room){
+		String[] columns ={DBHelper.TABLE_3_COLUMN_2, DBHelper.TABLE_3_COLUMN_3};
+		String selection = DBHelper.TABLE_3_COLUMN_5 + " = ?s";
+		String[] selectionArgs = {room};
+		
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		if(c.moveToFirst()){
+			return new LatLng(c.getDouble(0),c.getDouble(2));
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 

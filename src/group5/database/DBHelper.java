@@ -30,8 +30,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_3_COLUMN_2 = "xCord";
     public static final String TABLE_3_COLUMN_3 = "yCord";
     public static final String TABLE_3_COLUMN_4 = "type";
-    public static final String TABLE_3_COLUMN_5 = "xClosestEntry";
-    public static final String TABLE_3_COLUMN_6 = "yClosestEntry";
+    public static final String TABLE_3_COLUMN_5 = "building";
+    public static final String TABLE_3_COLUMN_6 = "floor";
+    
+   
+    
     
 
     private static final String DATABASE_TABLE_4_CREATE =
@@ -53,8 +56,8 @@ public class DBHelper extends SQLiteOpenHelper {
     			TABLE_3_COLUMN_2 + " REAL, " +
     			TABLE_3_COLUMN_3 + " REAL, " +
     			TABLE_3_COLUMN_4 + " REFERENCES TABLE_2_NAME," +
-    			TABLE_3_COLUMN_5 + " REFERENCES " + TABLE_1_NAME + "(" + TABLE_1_COLUMN_1 + ") , " +
-    			TABLE_3_COLUMN_6 + " REFERENCES " + TABLE_1_NAME + "(" + TABLE_1_COLUMN_2 + ") )";
+    			TABLE_3_COLUMN_5 + " REFERENCES " + TABLE_1_NAME + "(" + TABLE_1_COLUMN_3 + ") , " +
+    			TABLE_3_COLUMN_6 + " TEXT)";
     
     /**
      * 
