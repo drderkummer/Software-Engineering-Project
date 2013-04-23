@@ -126,7 +126,7 @@ public class DAO {
 
 		return null;
 	}
-	ArrayList<String>getAllRooms(String building){
+	ArrayList<String> getAllRooms(String building){
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
 		String selection = DBHelper.TABLE_3_COLUMN_5 + " = ?s";
@@ -143,7 +143,7 @@ public class DAO {
 		 }
 	}
 	
-	ArrayList<String>getAllRoomsWithType(String type){
+	ArrayList<String> getAllRoomsWithType(String type){
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
 		String selection = DBHelper.TABLE_3_COLUMN_4 + " = ?s";
@@ -159,5 +159,28 @@ public class DAO {
 			 return result;
 		 }
 	}
-	
+	/**
+	 * I think this function can be called while typing to get suggestions
+	 * @return
+	 */
+	public ArrayList<String> suggestions(String searchString){ 
+		ArrayList<String> result = new ArrayList<String>();
+		String query1 = "(SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " = '%" + searchString + "%')";
+		String query2 = "(SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " = '%" + searchString + "%')";
+		String query3 = "(SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " = '%" + searchString + "%')";
+
+		String select = query1 + " UNION " + query2 + " UNION " + query3;
+
+		Cursor c = database.rawQuery(select, null);
+		
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
 }
