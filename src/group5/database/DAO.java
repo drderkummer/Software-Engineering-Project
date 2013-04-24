@@ -55,14 +55,14 @@ public class DAO {
 		database.insert(DBHelper.TABLE_1_NAME, null, values);
 	}
 	
-	public void insertIntoTable3(String name, double xCord, double yCord, String type, double xClosestEntry, double yClosestEntry){
+	public void insertIntoTable3(String name, double xCord, double yCord, String type, String building, String floor){
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_3_COLUMN_1,name);
 		values.put(DBHelper.TABLE_3_COLUMN_2,xCord);
 		values.put(DBHelper.TABLE_3_COLUMN_3,yCord);
 		values.put(DBHelper.TABLE_3_COLUMN_4,type);
-		values.put(DBHelper.TABLE_3_COLUMN_5,xClosestEntry);
-		values.put(DBHelper.TABLE_3_COLUMN_6,yClosestEntry);
+		values.put(DBHelper.TABLE_3_COLUMN_5,building);
+		values.put(DBHelper.TABLE_3_COLUMN_6,floor);
 		database.insert(DBHelper.TABLE_3_NAME, null, values);
 	}
 	
@@ -87,14 +87,28 @@ public class DAO {
 			 return result;
 		 }
 	}
+	
+	public LatLng getRoomCoordinates(String room){
+		String[] columns ={DBHelper.TABLE_3_COLUMN_2, DBHelper.TABLE_3_COLUMN_3};
+		String selection = DBHelper.TABLE_3_COLUMN_1 + " = ?s";
+		String[] selectionArgs = {room};
+		
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		if(c.moveToFirst()){
+			return new LatLng(c.getDouble(0),c.getDouble(2));
+		}else{
+			return null;
+		}
+	}
 	/**
-	 * 
+	 * Calculates the closest entry for for the given building when the users
+	 * current position is also given.
 	 * @param building
 	 * @return
 	 */
-	public LatLng getClosestEntry(String building, LatLng cordinates){
-		Double x = cordinates.latitude;
-		Double y = cordinates.longitude;
+	public LatLng getClosestEntry(String building, LatLng currentCordinates){
+		Double x = currentCordinates.latitude;
+		Double y = currentCordinates.longitude;
 		String math = " ((" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") * (" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") + " +
 				" (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ") * (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ")) ";
 		String select = "SELECT " + DBHelper.TABLE_1_COLUMN_1 + ", " + DBHelper.TABLE_1_COLUMN_2 +
@@ -111,5 +125,62 @@ public class DAO {
 		}
 
 		return null;
+	}
+	ArrayList<String> getAllRooms(String building){
+		ArrayList<String> result = new ArrayList<String>();
+		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
+		String selection = DBHelper.TABLE_3_COLUMN_5 + " = ?s";
+		String[] selectionArgs = {building};
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
+	
+	ArrayList<String> getAllRoomsWithType(String type){
+		ArrayList<String> result = new ArrayList<String>();
+		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
+		String selection = DBHelper.TABLE_3_COLUMN_4 + " = ?s";
+		String[] selectionArgs = {type};
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
+	/**
+	 * I think this function can be called while typing to get suggestions
+	 * @return
+	 */
+	public ArrayList<String> suggestions(String searchString){ 
+		ArrayList<String> result = new ArrayList<String>();
+		String query1 = "(SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " = '%" + searchString + "%')";
+		String query2 = "(SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " = '%" + searchString + "%')";
+		String query3 = "(SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " = '%" + searchString + "%')";
+
+		String select = query1 + " UNION " + query2 + " UNION " + query3;
+
+		Cursor c = database.rawQuery(select, null);
+		
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
 	}
 }
