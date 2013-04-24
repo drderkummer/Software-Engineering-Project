@@ -8,5 +8,7 @@
 	<string name="exit_app">Exit</string>
 	<string name="action_search">Search</string>
 	<string name="action_back">Back</string>
-    
+	<string name="action_layers">Layers</string>
+	<string name="layers_lectureHalls">Show lecture halls</string>
+	<string name="layers_computerRooms">Show computer rooms</string>
 </resources>

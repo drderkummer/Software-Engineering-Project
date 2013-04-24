@@ -3,16 +3,30 @@
     <item
         android:id="@+id/action_search"
         android:actionViewClass="android.widget.SearchView"
-        android:orderInCategory="100"
+        android:orderInCategory="99"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_search"/>
-
     <item
-        android:id="@+id/item1"
-        android:enabled="true"
-        android:orderInCategory="99"
-        android:title="@string/action_search"
-        android:titleCondensed="Search">
+        android:id="@+id/action_layers"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_layers">
+        <menu>
+            <item
+                android:id="@+id/showLectureHalls"
+                android:checkable="true"
+                android:checked="false"
+                android:enabled="true"
+                android:title="@string/layers_lectureHalls"
+                android:visible="true"/>
+            <item
+                android:id="@+id/showComputerRooms"
+                android:checkable="true"
+                android:checked="false"
+                android:enabled="true"
+                android:title="@string/layers_computerRooms"
+                android:visible="true"/>
+        </menu>
     </item>
 
 </menu>
