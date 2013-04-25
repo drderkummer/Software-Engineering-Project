@@ -14,12 +14,14 @@ import android.database.sqlite.SQLiteDatabase;
  *
  */
 public class DAO {
-	
+	//Instance of the SQLite database
 	private SQLiteDatabase database;
+	//Object of the database handler class
 	private DBHelper dbHelper;
 	
 	/**
 	 * Empty Constructor
+	 * Gets an instance of the Helper
 	 * @param context for example this
 	 */
 	public DAO(Context context){
@@ -28,6 +30,7 @@ public class DAO {
 	
 	/**
 	 * Needs to be called before any other operation on the database is performed.
+	 * Get a writable database
 	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
@@ -35,11 +38,17 @@ public class DAO {
 	
 	/**
 	 * Call this when you are done modifying the database.
+	 * Closes connection to database. Sameobject can be used again by calling open()
 	 */
 	public void close() {
 		dbHelper.close();
 	}
-	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param building
+	 */
 	public void insertIntoTable1(double x, double y, String building){
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_1_COLUMN_1, x);
@@ -168,7 +177,6 @@ public class DAO {
 		String query1 = "(SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " = '%" + searchString + "%')";
 		String query2 = "(SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " = '%" + searchString + "%')";
 		String query3 = "(SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " = '%" + searchString + "%')";
-
 		String select = query1 + " UNION " + query2 + " UNION " + query3;
 
 		Cursor c = database.rawQuery(select, null);
