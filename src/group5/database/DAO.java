@@ -44,10 +44,11 @@ public class DAO {
 		dbHelper.close();
 	}
 	/**
-	 * 
+	 * Insert into Table 1. Provide all columns
 	 * @param x
 	 * @param y
 	 * @param building
+	 * Tested by testInsertAndGetFromTable1,testGetRoomCoordinatesAndInsertIntoTable1
 	 */
 	public void insertIntoTable1(double x, double y, String building){
 		ContentValues values = new ContentValues();
@@ -57,13 +58,26 @@ public class DAO {
 		database.insert(DBHelper.TABLE_1_NAME, null, values);
 	}
 
-	
+	/**
+	 * Insert into Table 2. Provide all columns
+	 * @param name
+	 * Tested in testInsertIntoTable2AndGetAllFromTable2,testGetRoomCoordinatesAndInsertIntoTable1
+	 */
 	public void insertIntoTable2(String name){
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_2_COLUMN_1, name);
-		database.insert(DBHelper.TABLE_1_NAME, null, values);
+		database.insert(DBHelper.TABLE_2_NAME, null, values);
 	}
-	
+	/**
+	 * Insert into Table 3. Provide all columns
+	 * @param name 
+	 * @param xCord 
+	 * @param yCord 
+	 * @param type 
+	 * @param building 
+	 * @param floor
+	 * Tested testGetRoomCoordinatesAndInsertIntoTable3
+	 */
 	public void insertIntoTable3(String name, double xCord, double yCord, String type, String building, String floor){
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_3_COLUMN_1,name);
@@ -74,13 +88,21 @@ public class DAO {
 		values.put(DBHelper.TABLE_3_COLUMN_6,floor);
 		database.insert(DBHelper.TABLE_3_NAME, null, values);
 	}
-	
+	/**
+	 * Insert into Table 4. Provide all columns.
+	 * @param name
+	 * Tested in testInsertAndGetFromTable4
+	 */
 	public void insertIntoTable4(String name){
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_4_COLUMN_1,name);
 		database.insert(DBHelper.TABLE_4_NAME, null, values);
 	}
-	
+	/**
+	 * Get all columns from Table 4
+	 * @return ArrayList<String> of columns.
+	 * Tested in testInsertAndGetFromTable4
+	 */
 	public ArrayList<String> getAllFromTable4(){
 		
 		 String select = "SELECT * FROM " + DBHelper.TABLE_4_NAME;
@@ -96,15 +118,39 @@ public class DAO {
 			 return result;
 		 }
 	}
-	
+	/**
+	 * Gets all from table 2 as ArrayList of String
+	 * @return
+	 * Tested in testInsertIntoTable2AndGetAllFromTable2
+	 */
+	public ArrayList<String> getAllFromTable2(){
+		
+		 String select = "SELECT * FROM " + DBHelper.TABLE_2_NAME;
+		 Cursor c = database.rawQuery(select, null);
+		 ArrayList<String> result = new ArrayList<String>(c.getCount());
+		 if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
+	/**
+	 * 
+	 * @param room
+	 * @return
+	 * Tested by testGetRoomCoordinatesAndInsertIntoTable1
+	 */
 	public LatLng getRoomCoordinates(String room){
 		String[] columns ={DBHelper.TABLE_3_COLUMN_2, DBHelper.TABLE_3_COLUMN_3};
-		String selection = DBHelper.TABLE_3_COLUMN_1 + " = ?s";
-		String[] selectionArgs = {room};
+		String selection = DBHelper.TABLE_3_COLUMN_1 + " = '" + room + "'";
 		
-		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
 		if(c.moveToFirst()){
-			return new LatLng(c.getDouble(0),c.getDouble(2));
+			return new LatLng(c.getDouble(0),c.getDouble(1));
 		}else{
 			return null;
 		}
@@ -114,6 +160,7 @@ public class DAO {
 	 * current position is also given.
 	 * @param building
 	 * @return
+	 * Tested by testCalculationOfClosestEntry
 	 */
 	public LatLng getClosestEntry(String building, LatLng currentCordinates){
 		Double x = currentCordinates.latitude;
@@ -135,29 +182,38 @@ public class DAO {
 
 		return null;
 	}
-	ArrayList<String> getAllRooms(String building){
+	/**
+	 * 
+	 * @param building
+	 * @return
+	 * Tested by testGetAllRoomsInBuilding
+	 */
+	public ArrayList<String> getAllRoomsInBuilding(String building){
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
-		String selection = DBHelper.TABLE_3_COLUMN_5 + " = ?s";
-		String[] selectionArgs = {building};
-		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
-		 if(c.getCount() == 0){
+		String selection = DBHelper.TABLE_3_COLUMN_5 +" = '"+ building + "'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
+		if(c.getCount() == 0){
 			 return null;
-		 }else{
+		}else{
 			 while(c.moveToNext()){
 				 result.add(c.getString(0));
 			 }
-			 c.close();
-			 return result;
-		 }
+		c.close();
+		return result;
+		}
 	}
-	
-	ArrayList<String> getAllRoomsWithType(String type){
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 * Tested by testGetAllRoomsWithType
+	 */
+	public ArrayList<String> getAllRoomsWithType(String type){
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
-		String selection = DBHelper.TABLE_3_COLUMN_4 + " = ?s";
-		String[] selectionArgs = {type};
-		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, selectionArgs, null, null, null);
+		String selection = DBHelper.TABLE_3_COLUMN_4 + " = '" + type +"'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
 		 if(c.getCount() == 0){
 			 return null;
 		 }else{
@@ -171,12 +227,13 @@ public class DAO {
 	/**
 	 * I think this function can be called while typing to get suggestions
 	 * @return
+	 * Tested by testSuggestions
 	 */
 	public ArrayList<String> suggestions(String searchString){ 
 		ArrayList<String> result = new ArrayList<String>();
-		String query1 = "(SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " = '%" + searchString + "%')";
-		String query2 = "(SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " = '%" + searchString + "%')";
-		String query3 = "(SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " = '%" + searchString + "%')";
+		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " LIKE '%" + searchString + "%' ";
 		String select = query1 + " UNION " + query2 + " UNION " + query3;
 
 		Cursor c = database.rawQuery(select, null);
