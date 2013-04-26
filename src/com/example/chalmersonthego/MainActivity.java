@@ -6,12 +6,17 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
+
 import group5.database.DAO;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -75,28 +80,31 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-		case R.id.exit:
+
 		case android.R.id.home:
+
+		case R.id.action_exit:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Are you sure you want to exit?")
 					.setPositiveButton("Yes", dialogClickListener)
 					.setNegativeButton("No", dialogClickListener).show();
 			return true;
 
-		case R.id.showLectureHalls: case R.id.showComputerRooms:
+		case R.id.showLectureHalls:
+		case R.id.showComputerRooms:
 			if (item.isChecked()) {
 				item.setChecked(false);
-				//Call remove dots function
+				// Call remove dots function
 			} else {
 				item.setChecked(true);
-				//Call add dots function
+				// Call add dots function
 			}
 			return true;
 
-		case R.id.action_search: case R.id.action_layers:
-			
+		case R.id.action_search:
+		case R.id.action_layers:
+
 			return true;
-			
 
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
@@ -108,7 +116,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+		inflater.inflate(R.menu.bottom_bar, menu);
 		return true;
 	}
 
@@ -170,6 +178,30 @@ public class MainActivity extends Activity {
 				});
 			}
 		}
+	}
+
+	// Making an dot on the map
+	private void showDotOnMap(double lat, double lon, String label) {
+		GoogleMap mMap;
+		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+				.getMap();
+		mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
+				.title(label));
+	}
+
+	// Drawing an building on the map
+	private void drawBuilding(double[] edges, int color) {
+		// Instantiates a new Polygon object and adds points to define a
+		// rectangle
+		PolygonOptions rectOptions = new PolygonOptions();
+
+		for (int x = 0; x < edges.length; x++)
+			rectOptions.add(new LatLng(edges[x], edges[x + 1]));
+		rectOptions.strokeColor(color);
+		rectOptions.fillColor(color);
+
+		// Get back the mutable Polygon
+		Polygon polygon = map.addPolygon(rectOptions);
 	}
 
 }
