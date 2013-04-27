@@ -83,12 +83,13 @@ public class MainActivity extends Activity {
 
 		case android.R.id.home:
 
-		case R.id.action_exit:
+		//There is no ID of this type
+		/*case R.id.action_exit:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Are you sure you want to exit?")
 					.setPositiveButton("Yes", dialogClickListener)
 					.setNegativeButton("No", dialogClickListener).show();
-			return true;
+			return true;*/
 
 		case R.id.showLectureHalls:
 		case R.id.showComputerRooms:
