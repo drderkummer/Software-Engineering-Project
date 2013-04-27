@@ -18,6 +18,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -74,10 +76,33 @@ public class MainActivity extends Activity {
 	    }
 	    
 	    //TODO Create a proper test when to insert data
-	    if(true){
-	    	InsertionsOfData.insert(dao);
+	    if (databaseExists()){
+	    	//do nothing!
+	    }else{
+	    	InsertionsOfData.basicDataInsert(dao);
 	    }
+	    
+	    
 	}
+	
+	/*
+	 * this method checks whether the database is setup or not
+	 */
+	public static boolean databaseExists(){
+		SQLiteDatabase dbFile = null;
+		try{
+			dbFile = SQLiteDatabase.openDatabase("/file/file/com.example.chalmersonthego/databases/ChalmersOnTheGo", null, SQLiteDatabase.OPEN_READONLY);
+			dbFile.close();
+		}catch (SQLiteException e){
+			// DB does not exist!
+		}
+		if (dbFile != null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	private void doMySearch(String searchString){
 		Toast.makeText(this, "Searching", Toast.LENGTH_LONG).show();
 	}
@@ -129,6 +154,8 @@ public class MainActivity extends Activity {
 			return true;
 		}
 	}
+	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
