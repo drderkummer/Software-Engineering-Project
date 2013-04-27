@@ -2,6 +2,8 @@ package group5.database;
 
 import java.util.ArrayList;
 import com.google.android.gms.maps.model.LatLng;
+
+import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Fredrik
  *
  */
-public class DAO {
+public class DAO{
 	//Instance of the SQLite database
 	private SQLiteDatabase database;
 	//Object of the database handler class
@@ -224,25 +226,29 @@ public class DAO {
 			 return result;
 		 }
 	}
+	public Cursor suggestionsCursor(String searchString){
+		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String select = "SELECT _ROWID_ AS _id, name AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + " FROM ("+ query1 + " UNION " + query2 + " UNION " + query3 + ")";
+
+		Cursor c = database.rawQuery(select, null);
+		return c;
+	}
+
 	/**
 	 * I think this function can be called while typing to get suggestions
 	 * @return
 	 * Tested by testSuggestions
 	 */
 	public ArrayList<String> suggestions(String searchString){ 
+		Cursor c = suggestionsCursor(searchString);
 		ArrayList<String> result = new ArrayList<String>();
-		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " LIKE '%" + searchString + "%' ";
-		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " LIKE '%" + searchString + "%' ";
-		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " LIKE '%" + searchString + "%' ";
-		String select = query1 + " UNION " + query2 + " UNION " + query3;
-
-		Cursor c = database.rawQuery(select, null);
-		
 		 if(c.getCount() == 0){
 			 return null;
 		 }else{
 			 while(c.moveToNext()){
-				 result.add(c.getString(0));
+				 result.add(c.getString(1));
 			 }
 			 c.close();
 			 return result;

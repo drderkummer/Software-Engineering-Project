@@ -14,6 +14,8 @@ import group5.database.DAO;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -63,7 +65,21 @@ public class MainActivity extends Activity {
 				}
 			}
 		};
-
+		
+	    // Get the intent, verify the action and get the query
+	    Intent intent = getIntent();
+	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+	      String query = intent.getStringExtra(SearchManager.QUERY);
+	      doMySearch(query);
+	    }
+	    
+	    //TODO Create a proper test when to insert data
+	    if(true){
+	    	InsertionsOfData.insert(dao);
+	    }
+	}
+	private void doMySearch(String searchString){
+		Toast.makeText(this, "Searching", Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -116,14 +132,25 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the options menu from XML
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.bottom_bar, menu);
+		
+		// Get the SearchView and set the searchable configuration
+	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+	    searchView.setQueryRefinementEnabled(true);
+	    // Assumes current activity is the searchable activity
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+	    //Do not iconify the widget; expand it by default
+	    searchView.setIconifiedByDefault(false); 
+		
 		return true;
 	}
 
 	@Override
 	public void onBackPressed() {
-
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to exit?")
 				.setPositiveButton("Yes", dialogClickListener)
