@@ -1,7 +1,9 @@
 package group5.database;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
@@ -87,5 +89,23 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
+	}
+	/*
+	 * this method checks whether the database is setup or not
+	 */
+	public static boolean databaseExists(){
+		
+		SQLiteDatabase dbFile = null;
+		try{
+			dbFile = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
+			dbFile.close();
+		}catch (SQLiteException e){
+			// DB does not exist!
+		}
+		if (dbFile != null){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

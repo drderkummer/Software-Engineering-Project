@@ -9,8 +9,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-
 import group5.database.DAO;
+import group5.database.DBHelper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,6 +18,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
@@ -74,34 +75,19 @@ public class MainActivity extends Activity {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
 	      doMySearch(query);
 	    }
-	    
-	    //TODO Create a proper test when to insert data
-	    if (databaseExists()){
-	    	//do nothing!
-	    }else{
+	    getSharedPreferences(null, 0);
+	    insertDataForTheFirstTime();
+	}
+	public void insertDataForTheFirstTime(){
+		String firstTime = "firstTime";
+		boolean isFirstTime = true;
+	    SharedPreferences  prefs = getSharedPreferences("com.example.android", 0);
+	    if(prefs.getBoolean(firstTime, isFirstTime)){
 	    	InsertionsOfData.basicDataInsert(dao);
+	    	prefs.edit().putBoolean(firstTime, !isFirstTime).commit(); 
 	    }
-	    
-	    
 	}
 	
-	/*
-	 * this method checks whether the database is setup or not
-	 */
-	public static boolean databaseExists(){
-		SQLiteDatabase dbFile = null;
-		try{
-			dbFile = SQLiteDatabase.openDatabase("/file/file/com.example.chalmersonthego/databases/ChalmersOnTheGo", null, SQLiteDatabase.OPEN_READONLY);
-			dbFile.close();
-		}catch (SQLiteException e){
-			// DB does not exist!
-		}
-		if (dbFile != null){
-			return true;
-		}else{
-			return false;
-		}
-	}
 	
 	private void doMySearch(String searchString){
 		Toast.makeText(this, "Searching", Toast.LENGTH_LONG).show();
