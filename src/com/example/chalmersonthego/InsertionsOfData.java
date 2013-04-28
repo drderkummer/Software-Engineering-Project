@@ -14,6 +14,13 @@ public class InsertionsOfData {
 		
 			try{
 				dao.open();
+				//insert into 'types' table:
+				dao.insertIntoTable2("lecture hall");
+				dao.insertIntoTable2("group room");
+				dao.insertIntoTable2("computer room");
+				
+				//insert into 'buildings' table:
+				dao.insertIntoTable4("EDIT");
 				
 				/******************************************************************************
 				*********************INSERTION OF "EDIT" BUILDING:*****************************
@@ -80,16 +87,8 @@ public class InsertionsOfData {
 				/********************************************************************************
 				*******************END OF EDIT BUILDING INSERTIONS*******************************
 				********************************************************************************/
-				
-				
-				//insert into 'types' table:
-				dao.insertIntoTable2("lecture hall");
-				dao.insertIntoTable2("group room");
-				dao.insertIntoTable2("computer room");
-				
-				//insert into 'buildings' table:
-				dao.insertIntoTable4("EDIT");
 
+				
 				dao.close();
 				}catch (SQLiteException e){
 			
