@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import group5.database.DAO;
-import group5.database.DBHelper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,15 +18,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -37,7 +32,6 @@ public class MainActivity extends Activity {
 	private DAO dao;
 	private GoogleMap map;
 	private LatLngBounds strictBounds;
-	private DialogInterface.OnClickListener dialogClickListener;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -57,17 +51,6 @@ public class MainActivity extends Activity {
 
 		getActionBar().setHomeButtonEnabled(true);
 
-		// Listener for exit event
-		dialogClickListener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				switch (which) {
-				case DialogInterface.BUTTON_POSITIVE:
-					finish();
-					break;
-				}
-			}
-		};
 		
 	    // Get the intent, verify the action and get the query
 	    Intent intent = getIntent();
@@ -162,7 +145,17 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed() {	
+		DialogInterface.OnClickListener dialogClickListener  = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case DialogInterface.BUTTON_POSITIVE:
+					finish();
+					break;
+				}
+			}
+		};		
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to exit?")
@@ -179,6 +172,11 @@ public class MainActivity extends Activity {
 			// Check if we were successful in obtaining the map.
 			if (map != null) {// The Map is verified. It is now safe to
 								// manipulate the map.
+				
+				// Initialize map
+				map.animateCamera(CameraUpdateFactory.zoomTo(15));
+				map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));
+				
 
 				// When user drag map
 				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -223,11 +221,7 @@ public class MainActivity extends Activity {
 
 	// Making an dot on the map
 	private void showDotOnMap(double lat, double lon, String label) {
-		GoogleMap mMap;
-		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-				.getMap();
-		mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
-				.title(label));
+		map.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title(label));
 	}
 
 	// Drawing an building on the map
