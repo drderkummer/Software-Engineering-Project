@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:orderInCategory="99"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_search"/>
+    <item
+        android:id="@+id/action_layers"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_layers">
+        <menu>
+            <item
+                android:id="@+id/showLectureHalls"
+                android:checkable="true"
+                android:checked="false"
+                android:enabled="true"
+                android:title="@string/layers_lectureHalls"
+                android:visible="true"/>
+            <item
+                android:id="@+id/showComputerRooms"
+                android:checkable="true"
+                android:checked="false"
+                android:enabled="true"
+                android:title="@string/layers_computerRooms"
+                android:visible="true"/>
+        </menu>
+    </item>
+
+</menu>
