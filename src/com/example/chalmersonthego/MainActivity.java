@@ -48,9 +48,7 @@ public class MainActivity extends Activity {
 
 		// Getting the icon clickable
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 		getActionBar().setHomeButtonEnabled(true);
-
 		
 	    // Get the intent, verify the action and get the query
 	    Intent intent = getIntent();
@@ -61,6 +59,7 @@ public class MainActivity extends Activity {
 	    getSharedPreferences(null, 0);
 	    insertDataForTheFirstTime();
 	}
+	// Only executed when installing the app for the first time
 	public void insertDataForTheFirstTime(){
 		String firstTime = "firstTime";
 		boolean isFirstTime = true;
@@ -124,8 +123,6 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the options menu from XML
@@ -169,14 +166,13 @@ public class MainActivity extends Activity {
 		if (map == null) {
 			map = ((MapFragment) getFragmentManager()
 					.findFragmentById(R.id.map)).getMap();
+			
 			// Check if we were successful in obtaining the map.
-			if (map != null) {// The Map is verified. It is now safe to
-								// manipulate the map.
+			if (map != null) {
 				
 				// Initialize map
 				map.animateCamera(CameraUpdateFactory.zoomTo(15));
-				map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));
-				
+				map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));				
 
 				// When user drag map
 				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -207,11 +203,10 @@ public class MainActivity extends Activity {
 						if (y < southEast.longitude)
 							y = southEast.longitude;
 						if (y > northWest.longitude)
-							y = northWest.longitude;
-
-						LatLng center = new LatLng(x, y);
+							y = northWest.longitude;				
 
 						// Set new center
+						LatLng center = new LatLng(x, y);
 						map.moveCamera(CameraUpdateFactory.newLatLng(center));
 					}
 				});
@@ -238,5 +233,4 @@ public class MainActivity extends Activity {
 		// Get back the mutable Polygon
 		Polygon polygon = map.addPolygon(rectOptions);
 	}
-
 }
