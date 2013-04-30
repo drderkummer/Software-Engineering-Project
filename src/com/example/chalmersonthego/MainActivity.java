@@ -169,6 +169,26 @@ public class MainActivity extends Activity {
 				}
 			}
 			return true;
+		case R.id.showGroupRooms:
+			if (item.isChecked()) {
+				item.setChecked(false);
+				// Call remove dots function
+				removeAllMarkerFromMap();
+			} else {
+				item.setChecked(true);
+				// Call add dots function
+				ArrayList<String> result = dao.getAllRoomsWithType("group room");
+				for(int i=0; i < result.size(); i++){
+					//TODO String "computer room" just a placeholder right know. --> getName
+					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
+					//mapMarker(m);
+					
+					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					//String name = dao.getName(coords.latitude, coords.longitude);
+					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+				}
+			}
+			return true;
 		case R.id.action_search:
 		case R.id.action_layers:
 
