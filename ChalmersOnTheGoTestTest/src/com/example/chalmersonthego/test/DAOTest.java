@@ -201,4 +201,15 @@ public class DAOTest extends AndroidTestCase {
 		list = dao.suggestions("ir");
 		Assert.assertNull(list);
 	}
+	/**
+	*Tests method getRoomName
+	*/
+	public void testGetName(){
+		Double x6 = 1.0;
+		Double y6 = 2.0;
+		String name = "ED222";
+		dao.insertIntoTable3(name, x6, y6, "computer room", "EDIT","3");
+		String result = dao.getName(x6, y6);
+		Assert.assertEquals(name, result);
+	}
 }
