@@ -1,7 +1,8 @@
 package com.example.chalmersonthego;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.List;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -11,6 +12,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.LatLng;
 import group5.database.DAO;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,6 +36,8 @@ public class MainActivity extends Activity {
 	private DAO dao;
 	private GoogleMap map;
 	private LatLngBounds strictBounds;
+	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
+
 
 	@SuppressLint("NewApi")
 	@Override
@@ -125,16 +130,45 @@ public class MainActivity extends Activity {
 			return true;*/
 
 		case R.id.showLectureHalls:
+			if (item.isChecked()) {
+				item.setChecked(false);
+				// Call remove dots function
+				removeAllMarkerFromMap();
+			} else {
+				item.setChecked(true);
+				// Call add dots function
+				ArrayList<String> result = dao.getAllRoomsWithType("lecture hall");
+				for(int i=0; i < result.size(); i++){
+					//TODO String "computer room" just a placeholder right know. --> getName
+					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
+					//mapMarker(m);
+					
+					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					//String name = dao.getName(coords.latitude, coords.longitude);
+					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+				}
+			}
+			return true;
 		case R.id.showComputerRooms:
 			if (item.isChecked()) {
 				item.setChecked(false);
 				// Call remove dots function
+				removeAllMarkerFromMap();
 			} else {
 				item.setChecked(true);
 				// Call add dots function
+				ArrayList<String> result = dao.getAllRoomsWithType("computer room");
+				for(int i=0; i < result.size(); i++){
+					//TODO String "computer room" just a placeholder right know. --> getName
+					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
+					//mapMarker(m);
+					
+					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					//String name = dao.getName(coords.latitude, coords.longitude);
+					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+				}
 			}
 			return true;
-
 		case R.id.action_search:
 		case R.id.action_layers:
 
@@ -238,10 +272,26 @@ public class MainActivity extends Activity {
 		}
 	}
 
+
 	// Making an dot on the map
 	private void showDotOnMap(LatLng latLng, String description) {
 		map.addMarker(new MarkerOptions().position(latLng).title(description));
 	}
+	//probably needed to map markers on the map and
+	//just delete for ex. "computer room" markers
+	private void mapMarker(Marker m){
+		int mapPosition = markers.size()-1;
+		markers.put(mapPosition, m);
+		
+	};
+
+	
+	//not final method!
+	//delete all markers from map
+	private void removeAllMarkerFromMap(){
+		map.clear();
+		}
+	
 
 	// Drawing an building on the map
 	private void drawBuilding(double[] edges, int color) {
