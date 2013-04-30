@@ -1,5 +1,7 @@
 package com.example.chalmersonthego;
 
+import java.util.ArrayList;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -19,7 +21,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,9 +71,32 @@ public class MainActivity extends Activity {
 	    }
 	}
 	
-	
+	/**
+	 * Searches for rooms, types and buildings. Priority by order.
+	 * Room: plot that room
+	 * Type: plot all rooms with that type
+	 * Building: plot the closest entry
+	 * @param searchString
+	 */
 	private void doMySearch(String searchString){
-		Toast.makeText(this, "Searching", Toast.LENGTH_LONG).show();
+		LatLng latLng = dao.getRoomCoordinates(searchString);
+		ArrayList<String> list = dao.getAllRoomsWithType(searchString);
+		//Your current coordinates should be put in the following line
+		LatLng currentCoordinates = new LatLng(0.0,0.0);
+		LatLng closestEntry = dao.getClosestEntry(searchString, currentCoordinates);
+		if(latLng != null){
+			showDotOnMap(latLng,"Put description here");
+		}else if(list != null){
+			for(String name : list){
+				latLng = dao.getRoomCoordinates(name);
+				showDotOnMap(latLng,"Put description here");
+			}
+		}else if(closestEntry != null){
+			showDotOnMap(closestEntry,"Put description here");
+		}else if(true){
+			Toast.makeText(this, "What you searched for is not in the database", Toast.LENGTH_LONG).show();
+		}
+	
 	}
 
 	@Override
@@ -215,8 +239,8 @@ public class MainActivity extends Activity {
 	}
 
 	// Making an dot on the map
-	private void showDotOnMap(double lat, double lon, String label) {
-		map.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title(label));
+	private void showDotOnMap(LatLng latLng, String description) {
+		map.addMarker(new MarkerOptions().position(latLng).title(description));
 	}
 
 	// Drawing an building on the map

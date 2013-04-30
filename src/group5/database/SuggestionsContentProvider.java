@@ -1,34 +1,14 @@
 package group5.database;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class SuggestionsContentProvider extends ContentProvider{
 	
 	private DAO dao;
-	
-	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getType(Uri arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Uri insert(Uri arg0, ContentValues arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean onCreate() {
@@ -53,9 +33,23 @@ public class SuggestionsContentProvider extends ContentProvider{
 	}
 
 	@Override
-	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		return 0;
+	}
+
+	@Override
+	public String getType(Uri uri) {
+		return null;
+	}
+
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		return null;
+	}
+
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
 		return 0;
 	}
 

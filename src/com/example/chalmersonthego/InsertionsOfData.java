@@ -1,8 +1,6 @@
 package com.example.chalmersonthego;
 
 
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import group5.database.DAO;
 
 public class InsertionsOfData {
@@ -11,8 +9,6 @@ public class InsertionsOfData {
 	 * @param dao
 	 */
 	public static void basicDataInsert(DAO dao){
-		
-			try{
 				dao.open();
 				//insert into 'types' table:
 				dao.insertIntoTable2("lecture hall");
@@ -87,14 +83,7 @@ public class InsertionsOfData {
 				/********************************************************************************
 				*******************END OF EDIT BUILDING INSERTIONS*******************************
 				********************************************************************************/
-
-				
-				dao.close();
-				}catch (SQLiteException e){
 			
 		}
-		
-		//The following is only crap but I needed it for testing
-		//dao.insertIntoTable2("EDIT");
-	}
 }
+

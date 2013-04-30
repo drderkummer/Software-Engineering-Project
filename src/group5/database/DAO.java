@@ -20,7 +20,6 @@ public class DAO{
 	private SQLiteDatabase database;
 	//Object of the database handler class
 	private DBHelper dbHelper;
-	
 	/**
 	 * Empty Constructor
 	 * Gets an instance of the Helper
@@ -28,16 +27,14 @@ public class DAO{
 	 */
 	public DAO(Context context){
 		dbHelper = new DBHelper(context);
-	}
-	
+	}	
 	/**
 	 * Needs to be called before any other operation on the database is performed.
 	 * Get a writable database
 	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
-	}
-	
+	}	
 	/**
 	 * Call this when you are done modifying the database.
 	 * Closes connection to database. Sameobject can be used again by calling open()
@@ -59,7 +56,6 @@ public class DAO{
 		values.put(DBHelper.TABLE_1_COLUMN_3, building);
 		database.insert(DBHelper.TABLE_1_NAME, null, values);
 	}
-
 	/**
 	 * Insert into Table 2. Provide all columns
 	 * @param name
@@ -148,7 +144,7 @@ public class DAO{
 	 */
 	public LatLng getRoomCoordinates(String room){
 		String[] columns ={DBHelper.TABLE_3_COLUMN_2, DBHelper.TABLE_3_COLUMN_3};
-		String selection = DBHelper.TABLE_3_COLUMN_1 + " = '" + room + "'";
+		String selection = DBHelper.TABLE_3_COLUMN_1 + " LIKE '" + room + "'";
 		
 		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
 		if(c.moveToFirst()){
@@ -170,9 +166,9 @@ public class DAO{
 		String math = " ((" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") * (" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") + " +
 				" (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ") * (" + y + " - " + DBHelper.TABLE_1_COLUMN_2 + ")) ";
 		String select = "SELECT " + DBHelper.TABLE_1_COLUMN_1 + ", " + DBHelper.TABLE_1_COLUMN_2 +
-				" FROM " + DBHelper.TABLE_1_NAME + " WHERE " + DBHelper.TABLE_1_COLUMN_3 + " = '" +
+				" FROM " + DBHelper.TABLE_1_NAME + " WHERE " + DBHelper.TABLE_1_COLUMN_3 + " LIKE '" +
 				building + "' AND " + math + " = (SELECT MIN("+ math + ") FROM " + DBHelper.TABLE_1_NAME +  " WHERE " +
-				DBHelper.TABLE_1_COLUMN_3 + " = '" + building + "')";
+				DBHelper.TABLE_1_COLUMN_3 + " LIKE '" + building + "')";
 		Cursor c = database.rawQuery(select, null);
 		 if(c.getCount() == 0){
 			 return null;
@@ -214,7 +210,7 @@ public class DAO{
 	public ArrayList<String> getAllRoomsWithType(String type){
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
-		String selection = DBHelper.TABLE_3_COLUMN_4 + " = '" + type +"'";
+		String selection = DBHelper.TABLE_3_COLUMN_4 + " LIKE '" + type +"'";
 		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
 		 if(c.getCount() == 0){
 			 return null;
@@ -235,7 +231,6 @@ public class DAO{
 		Cursor c = database.rawQuery(select, null);
 		return c;
 	}
-
 	/**
 	 * I think this function can be called while typing to get suggestions
 	 * @return
