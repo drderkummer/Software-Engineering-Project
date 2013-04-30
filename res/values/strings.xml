@@ -17,5 +17,6 @@
     <string name="action_settings">Settings</string>
     <string name="layers_lectureHalls">Show lecture halls</string>
     <string name="layers_computerRooms">Show computer rooms</string>
+    <string name="layers_groupRooms">Show group rooms</string>
     <string name="title_activity_searchable">SearchableActivity</string>
 </resources>
