@@ -19,4 +19,5 @@
     <string name="layers_computerRooms">Show computer rooms</string>
     <string name="layers_groupRooms">Show group rooms</string>
     <string name="title_activity_searchable">SearchableActivity</string>
+    <string name="action_my_location">My Location</string>
 </resources>

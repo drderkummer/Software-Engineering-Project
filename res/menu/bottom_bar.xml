@@ -34,5 +34,10 @@
                 android:title="@string/layers_groupRooms"/>
         </menu>
     </item>
+        <item
+        android:id="@+id/action_my_location"
+        android:orderInCategory="101"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_my_location"/>
 
 </menu>

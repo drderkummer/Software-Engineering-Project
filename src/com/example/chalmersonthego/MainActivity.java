@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -23,6 +24,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,8 +38,13 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	private DAO dao;
-	private GoogleMap map;
-	private LatLngBounds strictBounds;
+	private GoogleMap map;		
+	
+	// Bound the map accessed from multiple places
+	private LatLng northWest = new LatLng(57.697497, 11.985397);
+	private LatLng southEast = new LatLng(57.678687, 11.969347);
+	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
+	
 	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
 
 
@@ -55,19 +64,19 @@ public class MainActivity extends Activity {
 		// Getting the icon clickable
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		
+
 		getSharedPreferences(null, 0);
-	    insertDataForTheFirstTime();
+		insertDataForTheFirstTime();
 	}
 	// Only executed when installing the app for the first time
 	public void insertDataForTheFirstTime(){
 		String firstTime = "firstTime";
 		boolean isFirstTime = true;
-	    SharedPreferences  prefs = getSharedPreferences("com.example.android", 0);
-	    if(prefs.getBoolean(firstTime, isFirstTime)){
-	    	InsertionsOfData.basicDataInsert(dao);
-	    	prefs.edit().putBoolean(firstTime, !isFirstTime).commit(); 
-	    }
+		SharedPreferences  prefs = getSharedPreferences("com.example.android", 0);
+		if(prefs.getBoolean(firstTime, isFirstTime)){
+			InsertionsOfData.basicDataInsert(dao);
+			prefs.edit().putBoolean(firstTime, !isFirstTime).commit(); 
+		}
 	}
 	@Override
 	/**
@@ -75,14 +84,14 @@ public class MainActivity extends Activity {
 	 * Especially when a search is performed
 	 */
 	protected void onNewIntent(Intent intent) {
-	    setIntent(intent);
-	    // Get the intent, verify the action and get the query
-	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-		      String query = intent.getStringExtra(SearchManager.QUERY);
-		      doMySearch(query);
-		 }
+		setIntent(intent);
+		// Get the intent, verify the action and get the query
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			doMySearch(query);
+		}
 	}
-	
+
 	/**
 	 * Searches for rooms, types and buildings. Priority by order.
 	 * Room: plot that room
@@ -128,8 +137,8 @@ public class MainActivity extends Activity {
 
 		case android.R.id.home:
 
-		//There is no ID of this type
-		/*case R.id.action_exit:
+			//There is no ID of this type
+			/*case R.id.action_exit:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Are you sure you want to exit?")
 					.setPositiveButton("Yes", dialogClickListener)
@@ -149,7 +158,7 @@ public class MainActivity extends Activity {
 					//TODO String "computer room" just a placeholder right know. --> getName
 					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
 					//mapMarker(m);
-					
+
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					//String name = dao.getName(coords.latitude, coords.longitude);
 					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
@@ -169,7 +178,7 @@ public class MainActivity extends Activity {
 					//TODO String "computer room" just a placeholder right know. --> getName
 					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
 					//mapMarker(m);
-					
+
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					//String name = dao.getName(coords.latitude, coords.longitude);
 					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
@@ -189,7 +198,7 @@ public class MainActivity extends Activity {
 					//TODO String "computer room" just a placeholder right know. --> getName
 					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
 					//mapMarker(m);
-					
+
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					//String name = dao.getName(coords.latitude, coords.longitude);
 					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
@@ -198,31 +207,32 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.action_search:
 		case R.id.action_layers:
-
+		case R.id.action_my_location:
+			setMyPosition();				
 			return true;
 
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
-					.show();
+			.show();
 			return true;
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the options menu from XML
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.bottom_bar, menu);
-		
+
 		// Get the SearchView and set the searchable configuration
-	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	    SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-	    searchView.setQueryRefinementEnabled(true);
-	    // Assumes current activity is the searchable activity
-	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    //Do not iconify the widget; expand it by default
-	    searchView.setIconifiedByDefault(false); 
-		
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setQueryRefinementEnabled(true);
+		// Assumes current activity is the searchable activity
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		//Do not iconify the widget; expand it by default
+		searchView.setIconifiedByDefault(false); 
+
 		return true;
 	}
 
@@ -238,11 +248,11 @@ public class MainActivity extends Activity {
 				}
 			}
 		};		
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to exit?")
-				.setPositiveButton("Yes", dialogClickListener)
-				.setNegativeButton("No", dialogClickListener).show();
+		.setPositiveButton("Yes", dialogClickListener)
+		.setNegativeButton("No", dialogClickListener).show();
 	}
 
 	private void setUpMapIfNeeded() {
@@ -251,14 +261,16 @@ public class MainActivity extends Activity {
 		if (map == null) {
 			map = ((MapFragment) getFragmentManager()
 					.findFragmentById(R.id.map)).getMap();
-			
+
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
 				
-				// Initialize map
-				map.animateCamera(CameraUpdateFactory.zoomTo(15));
-				map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));				
-
+				if(!setMyPosition()){
+					// Initialize map
+					map.animateCamera(CameraUpdateFactory.zoomTo(15));
+					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
+				}				
+				
 				// When user drag map
 				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 					@Override
@@ -268,13 +280,8 @@ public class MainActivity extends Activity {
 						if (position.zoom < 15)
 							map.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-						// Limits on the map
-						LatLng northWest = new LatLng(57.697497, 11.985397);
-						LatLng southEast = new LatLng(57.678687, 11.969347);
-						strictBounds = new LatLngBounds(southEast, northWest);
-
 						// If position is within, do nothing.
-						if (strictBounds.contains(map.getCameraPosition().target))
+						if (strictBounds.contains((map.getCameraPosition().target)))
 							return;
 
 						// Seems that we are out of bound
@@ -299,26 +306,28 @@ public class MainActivity extends Activity {
 		}
 	}
 
-
 	// Making an dot on the map
-	private void showDotOnMap(LatLng latLng, String description) {
+	private void showDotOnMap(LatLng latLng, String description) {	// Do we really need a method for a one-liner? // Anders
 		map.addMarker(new MarkerOptions().position(latLng).title(description));
 	}
+	
+	
+	
 	//probably needed to map markers on the map and
 	//just delete for ex. "computer room" markers
 	private void mapMarker(Marker m){
 		int mapPosition = markers.size()-1;
 		markers.put(mapPosition, m);
-		
+
 	};
 
-	
+
 	//not final method!
 	//delete all markers from map
 	private void removeAllMarkerFromMap(){
 		map.clear();
-		}
-	
+	}
+
 
 	// Drawing an building on the map
 	private void drawBuilding(double[] edges, int color) {
@@ -333,5 +342,49 @@ public class MainActivity extends Activity {
 
 		// Get back the mutable Polygon
 		Polygon polygon = map.addPolygon(rectOptions);
+	}
+
+	/**
+	 * Puts a marker on map where the user's current position is
+	 * @return true if position was set, false if otherwise
+	 */
+	private boolean setMyPosition(){
+		Location location = getCurrentPosition();
+
+		if(location!=null){
+			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());			
+			
+			if(strictBounds.contains(myPosition)){
+				Marker hereAmI = map.addMarker(new MarkerOptions()
+				.position(myPosition)
+				.title("My Location")
+				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+				.snippet("I am here"));
+				hereAmI.showInfoWindow();			
+
+				map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+				map.moveCamera(CameraUpdateFactory.zoomTo(15));
+				
+				return true;
+			}			
+		}
+		return false;
+	}
+
+	/**
+	 * Returns current position
+	 * @return Current position as Location
+	 */
+	private Location getCurrentPosition(){
+		// Getting LocationManager object from System Service LOCATION_SERVICE
+		LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		// Creating a criteria object to retrieve provider
+		Criteria criteria = new Criteria();
+		// Getting the name of the best provider
+		String provider = locationManager.getBestProvider(criteria, true);
+		// Getting Current Location
+		Location location = locationManager.getLastKnownLocation(provider);
+
+		return location;
 	}
 }
