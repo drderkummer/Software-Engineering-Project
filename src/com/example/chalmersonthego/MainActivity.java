@@ -2,10 +2,10 @@ package com.example.chalmersonthego;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -13,9 +13,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.LatLng;
 import group5.database.DAO;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -38,7 +38,12 @@ public class MainActivity extends Activity {
 
 	private DAO dao;
 	private GoogleMap map;
-	private LatLngBounds strictBounds;
+	
+	// Bound the map accessed from multiple places
+	private LatLng northWest = new LatLng(57.697497, 11.985397);
+	private LatLng southEast = new LatLng(57.678687, 11.969347);
+	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
+	
 	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
 
 
@@ -216,6 +221,12 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the options menu from XML
 		MenuInflater inflater = getMenuInflater();
+		
+		inflater.inflate(R.menu.main_menu, menu);
+
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
 
 		// Get the SearchView and set the searchable configuration
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -258,13 +269,15 @@ public class MainActivity extends Activity {
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
 
-				// Initialize map
-				map.animateCamera(CameraUpdateFactory.zoomTo(15));
-				map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));				
+				if(!setMyPosition()){
+					// Initialize map
+					map.animateCamera(CameraUpdateFactory.zoomTo(15));
+					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
+				}					
 
 				
 				// When user drag map
-				/* map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 					@Override
 					public void onCameraChange(CameraPosition position) {
 
@@ -298,8 +311,7 @@ public class MainActivity extends Activity {
 						LatLng center = new LatLng(x, y);
 						map.moveCamera(CameraUpdateFactory.newLatLng(center));
 					}
-				});*/
-				
+				});				
 			}
 		}
 	}
@@ -340,14 +352,31 @@ public class MainActivity extends Activity {
 		Polygon polygon = map.addPolygon(rectOptions);
 	}
 	
-	private void setMyPosition(){
+	/**
+	 * Puts a marker on map where the user's current position is
+	 * @return true if position was set, false if otherwise
+	 */
+	private boolean setMyPosition(){
 		Location location = getCurrentPosition();
-		
+
 		if(location!=null){
-			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());
-			map.addMarker(new MarkerOptions().position(myPosition).title("Start"));	
-			map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));			
+			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());			
+			
+			if(strictBounds.contains(myPosition)){
+				Marker hereAmI = map.addMarker(new MarkerOptions()
+				.position(myPosition)
+				.title("My Location")
+				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+				.snippet("I am here"));
+				hereAmI.showInfoWindow();			
+
+				map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+				map.moveCamera(CameraUpdateFactory.zoomTo(15));
+				
+				return true;
+			}			
 		}
+		return false;
 	}
 	
 	private Location getCurrentPosition(){
