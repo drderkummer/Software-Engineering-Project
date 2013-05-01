@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.BaseColumns;
 /**
  * Data Access object. Like a layer on top of the Database
  * 
@@ -239,12 +240,25 @@ public class DAO{
 		 }
 	}
 	public Cursor suggestionsCursor(String searchString){
-		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + " FROM " + DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1 + " LIKE '%" + searchString + "%' ";
-		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + " FROM " + DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1 + " LIKE '%" + searchString + "%' ";
-		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM " + DBHelper.TABLE_3_NAME + " WHERE " + DBHelper.TABLE_3_COLUMN_1 + " LIKE '%" + searchString + "%' ";
-		String select = "SELECT _ROWID_ AS _id, name AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + " FROM ("+ query1 + " UNION " + query2 + " UNION " + query3 + ")";
+		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + 
+				", '" + DBHelper.TABLE_4_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 +
+				" FROM " + DBHelper.TABLE_4_NAME + 
+				" WHERE " + DBHelper.TABLE_4_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + 
+				", '" + DBHelper.TABLE_2_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 + 
+				" FROM " + DBHelper.TABLE_2_NAME + 
+				" WHERE " + DBHelper.TABLE_2_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + 
+				", '" + DBHelper.TABLE_3_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 + 
+				" FROM " + DBHelper.TABLE_3_NAME + 
+				" WHERE " + DBHelper.TABLE_3_COLUMN_1 + " LIKE '%" + searchString + "%' ";
+		String fromUnion = " FROM ("+ query1 + " UNION " + query2 + " UNION " + query3 + ")";
+		String select = "SELECT _ROWID_ " + BaseColumns._ID + ", name " +
+				SearchManager.SUGGEST_COLUMN_QUERY + ", name " + SearchManager.SUGGEST_COLUMN_TEXT_1 +
+				", " + SearchManager.SUGGEST_COLUMN_TEXT_2;
+		String query = select + fromUnion;
 
-		Cursor c = database.rawQuery(select, null);
+		Cursor c = database.rawQuery(query, null);
 		return c;
 	}
 	/**

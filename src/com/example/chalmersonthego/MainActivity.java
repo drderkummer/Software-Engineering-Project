@@ -56,13 +56,7 @@ public class MainActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		
-	    // Get the intent, verify the action and get the query
-	    Intent intent = getIntent();
-	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-	      String query = intent.getStringExtra(SearchManager.QUERY);
-	      doMySearch(query);
-	    }
-	    getSharedPreferences(null, 0);
+		getSharedPreferences(null, 0);
 	    insertDataForTheFirstTime();
 	}
 	// Only executed when installing the app for the first time
@@ -74,6 +68,19 @@ public class MainActivity extends Activity {
 	    	InsertionsOfData.basicDataInsert(dao);
 	    	prefs.edit().putBoolean(firstTime, !isFirstTime).commit(); 
 	    }
+	}
+	@Override
+	/**
+	 * Function is called when a new intent comes.
+	 * Especially when a search is performed
+	 */
+	protected void onNewIntent(Intent intent) {
+	    setIntent(intent);
+	    // Get the intent, verify the action and get the query
+	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+		      String query = intent.getStringExtra(SearchManager.QUERY);
+		      doMySearch(query);
+		 }
 	}
 	
 	/**
@@ -98,10 +105,10 @@ public class MainActivity extends Activity {
 			}
 		}else if(closestEntry != null){
 			showDotOnMap(closestEntry,"Put description here");
-		}else if(true){
-			Toast.makeText(this, "What you searched for is not in the database", Toast.LENGTH_LONG).show();
+		}else{
+			Toast.makeText(this,searchString + " is not in the database" , Toast.LENGTH_LONG).show();
 		}
-	
+
 	}
 
 	@Override
