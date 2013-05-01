@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -38,13 +37,8 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	private DAO dao;
-	private GoogleMap map;		
-	
-	// Bound the map accessed from multiple places
-	private LatLng northWest = new LatLng(57.697497, 11.985397);
-	private LatLng southEast = new LatLng(57.678687, 11.969347);
-	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
-	
+	private GoogleMap map;
+	private LatLngBounds strictBounds;
 	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
 
 
@@ -208,7 +202,7 @@ public class MainActivity extends Activity {
 		case R.id.action_search:
 		case R.id.action_layers:
 		case R.id.action_my_location:
-			setMyPosition();				
+			setMyPosition();
 			return true;
 
 		default:
@@ -264,15 +258,14 @@ public class MainActivity extends Activity {
 
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
-				
-				if(!setMyPosition()){
-					// Initialize map
-					map.animateCamera(CameraUpdateFactory.zoomTo(15));
-					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
-				}				
+
+				// Initialize map
+				map.animateCamera(CameraUpdateFactory.zoomTo(15));
+				map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));				
+
 				
 				// When user drag map
-				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				/* map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 					@Override
 					public void onCameraChange(CameraPosition position) {
 
@@ -280,8 +273,13 @@ public class MainActivity extends Activity {
 						if (position.zoom < 15)
 							map.animateCamera(CameraUpdateFactory.zoomTo(15));
 
+						// Limits on the map
+						LatLng northWest = new LatLng(57.697497, 11.985397);
+						LatLng southEast = new LatLng(57.678687, 11.969347);
+						strictBounds = new LatLngBounds(southEast, northWest);
+
 						// If position is within, do nothing.
-						if (strictBounds.contains((map.getCameraPosition().target)))
+						if (strictBounds.contains(map.getCameraPosition().target))
 							return;
 
 						// Seems that we are out of bound
@@ -301,18 +299,17 @@ public class MainActivity extends Activity {
 						LatLng center = new LatLng(x, y);
 						map.moveCamera(CameraUpdateFactory.newLatLng(center));
 					}
-				});
+				});*/
+				
 			}
 		}
 	}
 
+
 	// Making an dot on the map
-	private void showDotOnMap(LatLng latLng, String description) {	// Do we really need a method for a one-liner? // Anders
+	private void showDotOnMap(LatLng latLng, String description) {
 		map.addMarker(new MarkerOptions().position(latLng).title(description));
 	}
-	
-	
-	
 	//probably needed to map markers on the map and
 	//just delete for ex. "computer room" markers
 	private void mapMarker(Marker m){
@@ -343,38 +340,17 @@ public class MainActivity extends Activity {
 		// Get back the mutable Polygon
 		Polygon polygon = map.addPolygon(rectOptions);
 	}
-
-	/**
-	 * Puts a marker on map where the user's current position is
-	 * @return true if position was set, false if otherwise
-	 */
-	private boolean setMyPosition(){
+	
+	private void setMyPosition(){
 		Location location = getCurrentPosition();
-
+		
 		if(location!=null){
-			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());			
-			
-			if(strictBounds.contains(myPosition)){
-				Marker hereAmI = map.addMarker(new MarkerOptions()
-				.position(myPosition)
-				.title("My Location")
-				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-				.snippet("I am here"));
-				hereAmI.showInfoWindow();			
-
-				map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-				map.moveCamera(CameraUpdateFactory.zoomTo(15));
-				
-				return true;
-			}			
+			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());
+			map.addMarker(new MarkerOptions().position(myPosition).title("Start"));	
+			map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));			
 		}
-		return false;
 	}
-
-	/**
-	 * Returns current position
-	 * @return Current position as Location
-	 */
+	
 	private Location getCurrentPosition(){
 		// Getting LocationManager object from System Service LOCATION_SERVICE
 		LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -384,7 +360,7 @@ public class MainActivity extends Activity {
 		String provider = locationManager.getBestProvider(criteria, true);
 		// Getting Current Location
 		Location location = locationManager.getLastKnownLocation(provider);
-
+		
 		return location;
 	}
 }
