@@ -63,6 +63,7 @@ public class MainActivity extends Activity {
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
+		
 
 		// Getting the icon clickable
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,6 +71,8 @@ public class MainActivity extends Activity {
 
 		getSharedPreferences(null, 0);
 		insertDataForTheFirstTime();
+		dao.suggestionsCursor("EDIT");
+
 	}
 	/**
 	 * This functions checks if the gps is enabled.

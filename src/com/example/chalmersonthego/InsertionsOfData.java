@@ -9,11 +9,11 @@ public class InsertionsOfData {
 	 * @param dao
 	 */
 	public static void basicDataInsert(DAO dao){
-				dao.open();
 				//insert into 'types' table:
 				dao.insertIntoTable2("lecture hall");
 				dao.insertIntoTable2("group room");
 				dao.insertIntoTable2("computer room");
+				dao.insertIntoTable4("pub");
 				
 				//insert into 'buildings' table:
 				dao.insertIntoTable4("EDIT");
@@ -38,12 +38,12 @@ public class InsertionsOfData {
 				dao.insertIntoTable3("ES61", 57.687798, 11.978876, "lecture hall", "EDIT", "6");
 				dao.insertIntoTable3("EL62", 57.687917, 11.978761, "lecture hall", "EDIT", "6");
 				dao.insertIntoTable3("EL63", 57.688036, 11.978657, "lecture hall", "EDIT", "6");
-				dao.insertIntoTable3("EA", 57.687758, 11.979188, "lecture hall", "EDIT", "3");
-				dao.insertIntoTable3("EB", 57.687809, 11.979367, "lecture hall", "EDIT", "3");
-				dao.insertIntoTable3("EC", 57.687758, 11.979188, "lecture hall", "EDIT", "4");
-				dao.insertIntoTable3("ED", 57.687809, 11.979367, "lecture hall", "EDIT", "4");
-				dao.insertIntoTable3("EE", 57.687758, 11.979188, "lecture hall", "EDIT", "4");
-				dao.insertIntoTable3("EF", 57.687809, 11.979367, "lecture hall", "EDIT", "4");
+				dao.insertIntoTable3("EA", 57.687758, 11.979188, "lecture hall", "EDIT", "4");
+				dao.insertIntoTable3("EB", 57.687809, 11.979367, "lecture hall", "EDIT", "4");
+				dao.insertIntoTable3("EC", 57.687758, 11.979188, "lecture hall", "EDIT", "5");
+				dao.insertIntoTable3("ED", 57.687809, 11.979367, "lecture hall", "EDIT", "5");
+				dao.insertIntoTable3("EE", 57.687758, 11.979188, "lecture hall", "EDIT", "6");
+				dao.insertIntoTable3("EF", 57.687809, 11.979367, "lecture hall", "EDIT", "6");
 				//computer rooms
 				dao.insertIntoTable3("ED2480", 57.688125, 11.978326, "computer room", "EDIT", "2");
 				dao.insertIntoTable3("ED3354", 57.687788, 11.979501, "computer room", "EDIT", "3");
@@ -80,6 +80,9 @@ public class InsertionsOfData {
 				dao.insertIntoTable3("ED?6215", 57.687553, 11.978630, "group room", "EDIT", "6");
 				dao.insertIntoTable3("ED?6217", 57.687524, 11.978560, "group room", "EDIT", "6");
 				dao.insertIntoTable3("ED?6358", 57.687779, 11.979464, "group room", "EDIT", "6");
+				//Pubs. Coordinates currently unknown.
+				dao.insertIntoTable3("Datasektionen - Basen", 0.0, 0.0, "pub", "EDIT", "0");
+				dao.insertIntoTable5("Datasektionen - Basen", R.drawable.d);
 				/********************************************************************************
 				*******************END OF EDIT BUILDING INSERTIONS*******************************
 				********************************************************************************/
