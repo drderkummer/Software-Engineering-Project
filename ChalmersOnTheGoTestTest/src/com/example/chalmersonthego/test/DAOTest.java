@@ -212,4 +212,20 @@ public class DAOTest extends AndroidTestCase {
 		String result = dao.getName(x6, y6);
 		Assert.assertEquals(name, result);
 	}
+	/**
+	 * Tests method getType
+	 */
+	public void testGetType(){
+		dao.insertIntoTable3("ED2234", 1, 2, "computer room", "EDIT", "3");
+		String result = dao.getType("ED2234");
+		Assert.assertEquals("computer room", result);		
+	}
+	/**
+	 * Tests method getFloor
+	 */
+	public void testGetFloor(){
+		dao.insertIntoTable3("ED3232", 2, 2, "computer room", "EDIT", "54");
+		String result = dao.getFloor("ED3232");
+		Assert.assertEquals("54", result);
+	}
 }
