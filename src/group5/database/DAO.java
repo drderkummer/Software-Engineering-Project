@@ -209,12 +209,37 @@ public class DAO{
 	 * tested by  testGetName
 	 */
 	public String getName(double xCoord, double yCoord){
-		//String name = null;
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
 		String selection =DBHelper.TABLE_3_COLUMN_2 + " = '" + xCoord + "' AND " + DBHelper.TABLE_3_COLUMN_3 + " = '" + yCoord + "'";
 		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
 		if(c.moveToFirst()){
 			return new String(c.getString(0));			
+		}
+		return null;
+	}
+	/**
+	 * @param name
+	 * @return floor
+	 */
+	public String getFloor(String name){
+		String[] columns ={DBHelper.TABLE_3_COLUMN_6};
+		String selection =DBHelper.TABLE_3_COLUMN_1 + " = '" + name + "'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
+		if(c.moveToFirst()){
+			return new String(c.getString(0));
+		}
+		return null;
+	}
+	/**
+	 * @param name
+	 * @return type
+	 */
+	public String getType(String name){
+		String[] columns ={DBHelper.TABLE_3_COLUMN_4};
+		String selection = DBHelper.TABLE_3_COLUMN_1 + " = '" + name + "'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
+		if(c.moveToFirst()){
+			return new String(c.getString(0));
 		}
 		return null;
 	}
