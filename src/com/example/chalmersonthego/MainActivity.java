@@ -105,14 +105,15 @@ public class MainActivity extends Activity {
 		LatLng currentCoordinates = new LatLng(0.0,0.0);
 		LatLng closestEntry = dao.getClosestEntry(searchString, currentCoordinates);
 		if(latLng != null){
-			showDotOnMap(latLng,"Put description here");
+			String name = dao.getName(latLng.latitude, latLng.longitude);
+			showDotOnMap(latLng,name, dao.getFloor(name), dao.getType(name));
 		}else if(list != null){
 			for(String name : list){
 				latLng = dao.getRoomCoordinates(name);
-				showDotOnMap(latLng,"Put description here");
+				showDotOnMap(latLng,name,dao.getFloor(name),dao.getType(name));
 			}
 		}else if(closestEntry != null){
-			showDotOnMap(closestEntry,"Put description here");
+			showDotOnMap(closestEntry,"Put description here", null, null);
 		}else{
 			Toast.makeText(this,searchString + " is not in the database" , Toast.LENGTH_LONG).show();
 		}
@@ -159,8 +160,9 @@ public class MainActivity extends Activity {
 					//mapMarker(m);
 
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+					showDotOnMap(coords, name, dao.getFloor(name),"lecture hall");
 				}
 			}
 			return true;
@@ -179,8 +181,9 @@ public class MainActivity extends Activity {
 					//mapMarker(m);
 
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+					showDotOnMap(coords, name, dao.getFloor(name),"computer room");
 				}
 			}
 			return true;
@@ -199,8 +202,9 @@ public class MainActivity extends Activity {
 					//mapMarker(m);
 
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+					showDotOnMap(coords, name, dao.getFloor(name),"group room");
 				}
 			}
 			return true;
@@ -318,8 +322,31 @@ public class MainActivity extends Activity {
 
 
 	// Making an dot on the map
-	private void showDotOnMap(LatLng latLng, String description) {
-		map.addMarker(new MarkerOptions().position(latLng).title(description));
+	private void showDotOnMap(LatLng latLng, String description, String floor, String type) {
+		if(type=="computer room"){
+			map.addMarker(new MarkerOptions()
+				.position(latLng)
+				.title(description)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory.fromAsset("computerroom.png")));
+		}else if (type =="lecture hall"){
+			map.addMarker(new MarkerOptions()
+			.position(latLng)
+			.title(description)
+			.snippet("floor: " + floor)
+			.icon(BitmapDescriptorFactory.fromAsset("lecturehall.png")));
+		}else if (type =="group room"){
+			map.addMarker(new MarkerOptions()
+			.position(latLng)
+			.title(description)
+			.snippet("floor: " + floor)
+			.icon(BitmapDescriptorFactory.fromAsset("grouproom.png")));
+		}else{
+			map.addMarker(new MarkerOptions()
+			.position(latLng)
+			.title(description)
+			.snippet("floor: " + floor));
+		}
 	}
 	//probably needed to map markers on the map and
 	//just delete for ex. "computer room" markers
