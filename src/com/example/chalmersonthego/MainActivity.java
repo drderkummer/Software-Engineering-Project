@@ -105,12 +105,12 @@ public class MainActivity extends Activity {
 		LatLng currentCoordinates = new LatLng(0.0,0.0);
 		LatLng closestEntry = dao.getClosestEntry(searchString, currentCoordinates);
 		if(latLng != null){
-			String name = dao.getName(latLng.latitude, latLng.longitude);
-			showDotOnMap(latLng,name, dao.getFloor(name), dao.getType(name));
+			String rname = dao.getName(latLng.latitude, latLng.longitude);
+			showDotOnMap(latLng, rname, dao.getFloor(rname), dao.getType(rname));
 		}else if(list != null){
 			for(String name : list){
 				latLng = dao.getRoomCoordinates(name);
-				showDotOnMap(latLng,name,dao.getFloor(name),dao.getType(name));
+				showDotOnMap(latLng, name, dao.getFloor(name), dao.getType(name));
 			}
 		}else if(closestEntry != null){
 			showDotOnMap(closestEntry,"Put description here", null, null);
@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, name, dao.getFloor(name),"group room");
+					showDotOnMap(coords, name, dao.getFloor(name), "group room");
 				}
 			}
 			return true;
@@ -323,19 +323,19 @@ public class MainActivity extends Activity {
 
 	// Making an dot on the map
 	private void showDotOnMap(LatLng latLng, String description, String floor, String type) {
-		if(type=="computer room"){
+		if(type.equalsIgnoreCase("computer room")){
 			map.addMarker(new MarkerOptions()
 				.position(latLng)
 				.title(description)
 				.snippet("floor: " + floor)
 				.icon(BitmapDescriptorFactory.fromAsset("computerroom.png")));
-		}else if (type =="lecture hall"){
+		}else if(type.equalsIgnoreCase("lecture hall")){
 			map.addMarker(new MarkerOptions()
 			.position(latLng)
 			.title(description)
 			.snippet("floor: " + floor)
 			.icon(BitmapDescriptorFactory.fromAsset("lecturehall.png")));
-		}else if (type =="group room"){
+		}else if(type.equalsIgnoreCase("group room")){
 			map.addMarker(new MarkerOptions()
 			.position(latLng)
 			.title(description)
@@ -345,7 +345,7 @@ public class MainActivity extends Activity {
 			map.addMarker(new MarkerOptions()
 			.position(latLng)
 			.title(description)
-			.snippet("floor: " + floor));
+			.snippet("floor: " + floor + type));
 		}
 	}
 	//probably needed to map markers on the map and
