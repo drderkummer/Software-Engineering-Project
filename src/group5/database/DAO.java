@@ -220,6 +220,7 @@ public class DAO{
 	/**
 	 * @param name
 	 * @return floor
+	 * tested by testGetFloor
 	 */
 	public String getFloor(String name){
 		String[] columns ={DBHelper.TABLE_3_COLUMN_6};
@@ -233,6 +234,7 @@ public class DAO{
 	/**
 	 * @param name
 	 * @return type
+	 * tested by testGetType
 	 */
 	public String getType(String name){
 		String[] columns ={DBHelper.TABLE_3_COLUMN_4};
