@@ -27,6 +27,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,7 +53,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		//Prompt the user to turn on gps and other location handlers.
+		turnOnLocationsIfNeeded();
+		
 		// Get the instance of GoogleMap
 		setUpMapIfNeeded();
 
@@ -67,6 +71,34 @@ public class MainActivity extends Activity {
 		getSharedPreferences(null, 0);
 		insertDataForTheFirstTime();
 	}
+	/**
+	 * This functions checks if the gps is enabled.
+	 * If it's not the user is prompted and redirected to turn it on.
+	 */
+	private void turnOnLocationsIfNeeded(){
+		LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+	    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		        String message = "Enable either GPS or any other location"
+		            + " service to find current location.";
+		        builder.setMessage(message)
+		            .setPositiveButton("Yes",
+		                new DialogInterface.OnClickListener() {
+		                    public void onClick(DialogInterface d, int id) {
+		                    	startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+		                        d.dismiss();
+		                    }
+		            })
+		            .setNegativeButton("No",
+		                new DialogInterface.OnClickListener() {
+		                    public void onClick(DialogInterface d, int id) {
+		                        d.cancel();
+		                    }
+		            });
+		        builder.create().show();
+	    }
+	}
+	
 	// Only executed when installing the app for the first time
 	public void insertDataForTheFirstTime(){
 		String firstTime = "firstTime";
