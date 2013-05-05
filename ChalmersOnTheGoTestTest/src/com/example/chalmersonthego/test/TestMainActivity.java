@@ -1,10 +1,7 @@
 package com.example.chalmersonthego.test;
 
 import com.example.chalmersonthego.MainActivity;
-import com.example.chalmersonthego.R;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.TouchUtils;
-import android.widget.SearchView;
 
 public class TestMainActivity extends
 		ActivityInstrumentationTestCase2<MainActivity> {

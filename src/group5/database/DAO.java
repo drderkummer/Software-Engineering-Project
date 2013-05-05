@@ -1,10 +1,7 @@
 package group5.database;
 
 import java.util.ArrayList;
-
-import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.model.LatLng;
-
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,9 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 /**
  * Data Access object. Like a layer on top of the Database
- * 
  * @author Fredrik
- *
  */
 public class DAO{
 	//Instance of the SQLite database

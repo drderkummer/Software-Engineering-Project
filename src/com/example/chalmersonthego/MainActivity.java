@@ -1,9 +1,7 @@
 package com.example.chalmersonthego;
 
 import group5.database.DAO;
-
 import java.util.ArrayList;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,13 +19,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity {
@@ -242,7 +236,7 @@ public class MainActivity extends Activity {
 		case R.id.action_search:
 		case R.id.action_layers:
 		case R.id.action_my_location:
-			customMaps.setMyPosition(customMaps.getCurrentPosition());
+			customMaps.setMyPosition();
 			return true;
 
 		default:

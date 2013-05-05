@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:text="@string/tv_distance_time_init" />
+        android:visibility="gone"/>
 
     <fragment
         android:id="@+id/map"
