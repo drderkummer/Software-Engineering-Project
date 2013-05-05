@@ -1,29 +1,20 @@
 package com.example.chalmersonthego;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,6 +34,12 @@ public class CustomGoogleMaps {
 	//The Activity owning the map
 	Activity owningActivity;
 	
+	// TEMP
+	ArrayList<LatLng> markerPoints;
+    TextView tvDistanceDuration;
+    private NavigationManager navManager;
+	
+	
 	// Bounds the map to two points
 	private LatLng northWest = new LatLng(57.697497, 11.985397);
 	private LatLng southEast = new LatLng(57.678687, 11.969347);
@@ -56,6 +53,13 @@ public class CustomGoogleMaps {
 	public CustomGoogleMaps(Activity owningActivity, GoogleMap googleMap){
 		this.owningActivity = owningActivity;
 		this.googleMap = googleMap;
+		navManager = new NavigationManager(googleMap);
+		
+		tvDistanceDuration = (TextView) owningActivity.findViewById(R.id.tv_distance_time);
+		 
+        // Initializing
+        markerPoints = new ArrayList<LatLng>();
+		
 		//Set up the map
 		setUpMapIfNeeded();
 
@@ -144,7 +148,8 @@ public class CustomGoogleMaps {
 				googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 				
 				return true;
-			}			
+			}
+			Toast.makeText(owningActivity, "Can't display location outside campus", Toast.LENGTH_LONG).show();
 		}
 		return false;
 	}
@@ -170,7 +175,32 @@ public class CustomGoogleMaps {
 					// Initialize map
 					googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 					googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
-				}					
+				}	
+				
+				// Setting OnClick event listener for the Google Map
+		        googleMap.setOnMapClickListener(new OnMapClickListener() {
+		 
+		            @Override
+		            public void onMapClick(LatLng point) {
+		 
+		               
+		 
+		            }
+		        });
+		        
+
+		        
+		        googleMap.setOnMapLongClickListener(new OnMapLongClickListener() {		        	 
+		            @Override
+		            public void onMapLongClick(LatLng point) {
+		                // Clearing the markers and polylines in the google map
+		                googleMap.clear();
+		 
+		                // Empty the array list
+		                markerPoints.clear();
+		            }
+		        });
+		    
 
 				// When user drag map
 				googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {

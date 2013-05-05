@@ -9,27 +9,55 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.json.JSONObject;
-
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class NavigationManager {
 	private GoogleMap map;
+	private GoogleMap unofficalMap;
+	
+	String duration;
+	String distance;
+	
+	final int LINE_COLOR = Color.RED;
+	final int LINE_WIDTH = 4;		
 
 	public NavigationManager(GoogleMap googleMap){
 		this.map = googleMap;
+	}
+	
+	
+//	public int getDistance(){
+//		
+//	}
+//	
+//	public int getDuration(){
+//		
+//	}
+	
+	/**
+	 * Draw a straight line between given points
+	 * @param markerPoints, list with all points
+	 * @param start, starting point
+	 */
+	public void drawLinesOnMap(ArrayList<LatLng> markerPoints){		
+        MarkerOptions markerOptions = new MarkerOptions();
+        PolylineOptions lineOptions = new PolylineOptions();
+        
+        markerOptions.position(markerPoints.get(0));   
+        
+        lineOptions.addAll(markerPoints);
+		lineOptions.color(LINE_COLOR);
+		lineOptions.width(LINE_WIDTH);
+		
+        map.addPolyline(lineOptions);
+        map.addMarker(markerOptions);		
 	}
 
 	/**
@@ -38,39 +66,53 @@ public class NavigationManager {
 	 * @param destination, destination marker
 	 * @return true if successful, otherwise false
 	 */
-	public boolean drawPath(Marker start, Marker destination){
+	public boolean drawPathOnMap(LatLng start, LatLng destination){
 		// Checks, whether start and end locations are captured
 		if(start != null && destination != null){
-			
-			// Getting URL to the Google Directions API
-			String url = createDirectionURL(start.getPosition(), destination.getPosition());
-			
-			DownloadTask downloadTask = new DownloadTask();
 
-			// Start downloading json data from Google Directions API
-			downloadTask.execute(url);
+			// Getting URL to the Google Directions API
+			String url = createDirectionURL(start, destination);
 			
+			// Drawing polyline in the Google Map for the i:th route
+			new DownloadTask().execute(url);			
+
 			return true;
 		}
 		return false;
 
 	}
 
+	public String getDurationDistanceStr(){
+		if(distance != null && duration != null)
+			return "Distance:"+distance + ", Duration:"+duration;
+		else
+			return "Not set";
+	}
+
+	/**
+	 * create URL string for google API
+	 * @param start, starting point
+	 * @param dest, destination point
+	 * @return return URL string
+	 */
 	private String createDirectionURL(LatLng start,LatLng dest){
 
 		// Create strings
 		String startStr = "origin="+start.latitude+","+start.longitude;
 		String destStr = "destination="+dest.latitude+","+dest.longitude;
 		String sensor = "sensor=false";
-		
+		String units_metric = "units=metric";
+		String mode_walking = "mode=walking";
+
 		// Return full URL
-		return "https://maps.googleapis.com/maps/api/directions/json?"+startStr+"&"+destStr+"&"+sensor;
+		return "https://maps.googleapis.com/maps/api/directions/json?"+
+				startStr+"&"+destStr+"&"+sensor+"&"+units_metric+"&"+mode_walking;
 	}
 
 	/**
 	 * A method to download json data from url
 	 * @param strUrl
-	 * @return
+	 * @return 
 	 * @throws IOException
 	 */
 	private String downloadUrl(String strUrl) throws IOException{
@@ -139,17 +181,22 @@ public class NavigationManager {
 			ParserTask parserTask = new ParserTask();
 
 			// Invokes the thread for parsing the JSON data
+			
 			parserTask.execute(result);
 		}
 	}
 
-	/** A class to parse the Google Places in JSON format */
+	/**
+	 * Parcing Google Locations to JSON
+	 * @author Anders Nordin	 
+	 */
 	private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>> >{
 
-		// Parsing the data in non-ui thread
 		@Override
+		/**
+		 *  data in non-UI thread
+		 */
 		protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
-
 			JSONObject jObject;
 			List<List<HashMap<String, String>>> routes = null;
 
@@ -157,7 +204,7 @@ public class NavigationManager {
 				jObject = new JSONObject(jsonData[0]);
 				DirectionJSONParser parser = new DirectionJSONParser();
 
-				// Starts parsing data
+				// Starts to parse 
 				routes = parser.parse(jObject);
 			}catch(Exception e){
 				e.printStackTrace();
@@ -165,24 +212,34 @@ public class NavigationManager {
 			return routes;
 		}
 
-		// Executes in UI thread, after the parsing process
 		@Override
+		/**
+		 * Executes in UI thread, after the parsing process
+		 */
 		protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 			ArrayList<LatLng> points = null;
-			PolylineOptions lineOptions = null;
-			MarkerOptions markerOptions = new MarkerOptions();
+			PolylineOptions lineOptions = null;	
+
 
 			// Traversing through all the routes
 			for(int i=0;i<result.size();i++){
 				points = new ArrayList<LatLng>();
 				lineOptions = new PolylineOptions();
 
-				// Fetching i-th route
+				// Fetching i:th route
 				List<HashMap<String, String>> path = result.get(i);
 
-				// Fetching all the points in i-th route
+				// Fetching all the points in i:th route
 				for(int j=0;j<path.size();j++){
 					HashMap<String,String> point = path.get(j);
+
+					if(j==0){    // Get distance from the list
+						distance = (String)point.get("distance");
+						continue;
+					}else if(j==1){ // Get duration from the list
+						duration = (String)point.get("duration");
+						continue;
+					}
 
 					double lat = Double.parseDouble(point.get("lat"));
 					double lng = Double.parseDouble(point.get("lng"));
@@ -192,12 +249,10 @@ public class NavigationManager {
 				}
 
 				// Adding all the points in the route to LineOptions
-				lineOptions.addAll(points);
-				lineOptions.width(2);
-				lineOptions.color(Color.RED);
-			}
-
-			// Drawing polyline in the Google Map for the i-th route
+				lineOptions.addAll(points);	
+				lineOptions.color(LINE_COLOR);
+				lineOptions.width(LINE_WIDTH);
+			}			
 			map.addPolyline(lineOptions);
 		}
 	}
