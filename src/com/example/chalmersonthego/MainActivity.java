@@ -49,11 +49,13 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		turnOnLocationsIfNeeded();
-		
+
 		// Get the instance of GoogleMap
 		GoogleMap googleMap = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
-		customMaps = new CustomGoogleMaps(googleMap);
+		customMaps = new CustomGoogleMaps(this,googleMap);
+		
+		
 		configureUI();
 
 		// Open connection to the Database
@@ -72,18 +74,7 @@ public class MainActivity extends Activity {
 		getActionBar().setHomeButtonEnabled(true);
 	}
 	
-	private Location getCurrentPosition(){
-		// Getting LocationManager object from System Service LOCATION_SERVICE
-		LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		// Creating a criteria object to retrieve provider
-		Criteria criteria = new Criteria();
-		// Getting the name of the best provider
-		String provider = locationManager.getBestProvider(criteria, true);
-		// Getting Current Location
-		Location location = locationManager.getLastKnownLocation(provider);
-		
-		return location;
-	}
+
 	
 	/**
 	 * This functions checks if the gps is enabled.
@@ -258,7 +249,7 @@ public class MainActivity extends Activity {
 		case R.id.action_search:
 		case R.id.action_layers:
 		case R.id.action_my_location:
-			customMaps.setMyPosition(getCurrentPosition());
+			customMaps.setMyPosition(customMaps.getCurrentPosition());
 			return true;
 
 		default:
