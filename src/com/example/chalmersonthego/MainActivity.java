@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,47 +39,58 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	private DAO dao;
-	private GoogleMap map;
-	
-	// Bound the map accessed from multiple places
-	private LatLng northWest = new LatLng(57.697497, 11.985397);
-	private LatLng southEast = new LatLng(57.678687, 11.969347);
-	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
-	
-	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
+	private CustomGoogleMaps customMaps;
 
-
+	
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		//Prompt the user to turn on gps and other location handlers.
 		turnOnLocationsIfNeeded();
 		
 		// Get the instance of GoogleMap
-		setUpMapIfNeeded();
+		GoogleMap googleMap = ((MapFragment) getFragmentManager()
+				.findFragmentById(R.id.map)).getMap();
+		customMaps = new CustomGoogleMaps(googleMap);
+		configureUI();
 
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
 		
-
+		insertDataForTheFirstTime();
+	}
+	/**
+	 * This method is used for all configuration of the UI which
+	 * can't be done in the xml except the configuration of the map.
+	 */
+	private void configureUI(){
 		// Getting the icon clickable
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-
-		getSharedPreferences(null, 0);
-		insertDataForTheFirstTime();
-		dao.suggestionsCursor("EDIT");
-
 	}
+	
+	private Location getCurrentPosition(){
+		// Getting LocationManager object from System Service LOCATION_SERVICE
+		LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		// Creating a criteria object to retrieve provider
+		Criteria criteria = new Criteria();
+		// Getting the name of the best provider
+		String provider = locationManager.getBestProvider(criteria, true);
+		// Getting Current Location
+		Location location = locationManager.getLastKnownLocation(provider);
+		
+		return location;
+	}
+	
 	/**
 	 * This functions checks if the gps is enabled.
 	 * If it's not the user is prompted and redirected to turn it on.
 	 */
 	private void turnOnLocationsIfNeeded(){
+		//Prompt the user to turn on gps and other location handlers.
 		LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 	    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -141,14 +153,14 @@ public class MainActivity extends Activity {
 		LatLng closestEntry = dao.getClosestEntry(searchString, currentCoordinates);
 		if(latLng != null){
 			String rname = dao.getName(latLng.latitude, latLng.longitude);
-			showDotOnMap(latLng, rname, dao.getFloor(rname), dao.getType(rname));
+			customMaps.showDotOnMap(latLng, rname, dao.getFloor(rname), dao.getType(rname));
 		}else if(list != null){
 			for(String name : list){
 				latLng = dao.getRoomCoordinates(name);
-				showDotOnMap(latLng, name, dao.getFloor(name), dao.getType(name));
+				customMaps.showDotOnMap(latLng, name, dao.getFloor(name), dao.getType(name));
 			}
 		}else if(closestEntry != null){
-			showDotOnMap(closestEntry,"Put description here", null, null);
+			customMaps.showDotOnMap(closestEntry,"Put description here", null, null);
 		}else{
 			Toast.makeText(this,searchString + " is not in the database" , Toast.LENGTH_LONG).show();
 		}
@@ -184,7 +196,7 @@ public class MainActivity extends Activity {
 			if (item.isChecked()) {
 				item.setChecked(false);
 				// Call remove dots function
-				removeAllMarkerFromMap();
+				customMaps.removeAllMarkerFromMap();
 			} else {
 				item.setChecked(true);
 				// Call add dots function
@@ -197,7 +209,7 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, name, dao.getFloor(name),"lecture hall");
+					customMaps.showDotOnMap(coords, name, dao.getFloor(name),"lecture hall");
 				}
 			}
 			return true;
@@ -205,7 +217,7 @@ public class MainActivity extends Activity {
 			if (item.isChecked()) {
 				item.setChecked(false);
 				// Call remove dots function
-				removeAllMarkerFromMap();
+				customMaps.removeAllMarkerFromMap();
 			} else {
 				item.setChecked(true);
 				// Call add dots function
@@ -218,7 +230,7 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, name, dao.getFloor(name),"computer room");
+					customMaps.showDotOnMap(coords, name, dao.getFloor(name),"computer room");
 				}
 			}
 			return true;
@@ -226,7 +238,7 @@ public class MainActivity extends Activity {
 			if (item.isChecked()) {
 				item.setChecked(false);
 				// Call remove dots function
-				removeAllMarkerFromMap();
+				customMaps.removeAllMarkerFromMap();
 			} else {
 				item.setChecked(true);
 				// Call add dots function
@@ -239,14 +251,14 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, name, dao.getFloor(name), "group room");
+					customMaps.showDotOnMap(coords, name, dao.getFloor(name), "group room");
 				}
 			}
 			return true;
 		case R.id.action_search:
 		case R.id.action_layers:
 		case R.id.action_my_location:
-			setMyPosition();
+			customMaps.setMyPosition(getCurrentPosition());
 			return true;
 
 		default:
@@ -296,161 +308,5 @@ public class MainActivity extends Activity {
 		builder.setMessage("Are you sure you want to exit?")
 		.setPositiveButton("Yes", dialogClickListener)
 		.setNegativeButton("No", dialogClickListener).show();
-	}
-
-	private void setUpMapIfNeeded() {
-		// Do a null check to confirm that we have not already instantiated the
-		// map.
-		if (map == null) {
-			map = ((MapFragment) getFragmentManager()
-					.findFragmentById(R.id.map)).getMap();
-
-			// Check if we were successful in obtaining the map.
-			if (map != null) {
-
-				if(!setMyPosition()){
-					// Initialize map
-					map.animateCamera(CameraUpdateFactory.zoomTo(15));
-					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
-				}					
-
-				
-				// When user drag map
-				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-					@Override
-					public void onCameraChange(CameraPosition position) {
-
-						// Set minimum zoom level
-						if (position.zoom < 15)
-							map.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-						// Limits on the map
-						LatLng northWest = new LatLng(57.697497, 11.985397);
-						LatLng southEast = new LatLng(57.678687, 11.969347);
-						strictBounds = new LatLngBounds(southEast, northWest);
-
-						// If position is within, do nothing.
-						if (strictBounds.contains(map.getCameraPosition().target))
-							return;
-
-						// Seems that we are out of bound
-						double x = map.getCameraPosition().target.latitude;
-						double y = map.getCameraPosition().target.longitude;
-
-						if (x < southEast.latitude)
-							x = southEast.latitude;
-						if (x > northWest.latitude)
-							x = northWest.latitude;
-						if (y < southEast.longitude)
-							y = southEast.longitude;
-						if (y > northWest.longitude)
-							y = northWest.longitude;				
-
-						// Set new center
-						LatLng center = new LatLng(x, y);
-						map.moveCamera(CameraUpdateFactory.newLatLng(center));
-					}
-				});				
-			}
-		}
-	}
-
-
-	// Making an dot on the map
-	private void showDotOnMap(LatLng latLng, String description, String floor, String type) {
-		if(type.equalsIgnoreCase("computer room")){
-			map.addMarker(new MarkerOptions()
-				.position(latLng)
-				.title(description)
-				.snippet("floor: " + floor)
-				.icon(BitmapDescriptorFactory.fromAsset("computerroom.png")));
-		}else if(type.equalsIgnoreCase("lecture hall")){
-			map.addMarker(new MarkerOptions()
-			.position(latLng)
-			.title(description)
-			.snippet("floor: " + floor)
-			.icon(BitmapDescriptorFactory.fromAsset("lecturehall.png")));
-		}else if(type.equalsIgnoreCase("group room")){
-			map.addMarker(new MarkerOptions()
-			.position(latLng)
-			.title(description)
-			.snippet("floor: " + floor)
-			.icon(BitmapDescriptorFactory.fromAsset("grouproom.png")));
-		}else{
-			map.addMarker(new MarkerOptions()
-			.position(latLng)
-			.title(description)
-			.snippet("floor: " + floor + type));
-		}
-	}
-	//probably needed to map markers on the map and
-	//just delete for ex. "computer room" markers
-	private void mapMarker(Marker m){
-		int mapPosition = markers.size()-1;
-		markers.put(mapPosition, m);
-
-	};
-
-
-	//not final method!
-	//delete all markers from map
-	private void removeAllMarkerFromMap(){
-		map.clear();
-	}
-
-
-	// Drawing an building on the map
-	private void drawBuilding(double[] edges, int color) {
-		// Instantiates a new Polygon object and adds points to define a
-		// rectangle
-		PolygonOptions rectOptions = new PolygonOptions();
-
-		for (int x = 0; x < edges.length; x++)
-			rectOptions.add(new LatLng(edges[x], edges[x + 1]));
-		rectOptions.strokeColor(color);
-		rectOptions.fillColor(color);
-
-		// Get back the mutable Polygon
-		Polygon polygon = map.addPolygon(rectOptions);
-	}
-	
-	/**
-	 * Puts a marker on map where the user's current position is
-	 * @return true if position was set, false if otherwise
-	 */
-	private boolean setMyPosition(){
-		Location location = getCurrentPosition();
-
-		if(location!=null){
-			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());			
-			
-			if(strictBounds.contains(myPosition)){
-				Marker hereAmI = map.addMarker(new MarkerOptions()
-				.position(myPosition)
-				.title("My Location")
-				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-				.snippet("I am here"));
-				hereAmI.showInfoWindow();			
-
-				map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-				map.moveCamera(CameraUpdateFactory.zoomTo(15));
-				
-				return true;
-			}			
-		}
-		return false;
-	}
-	
-	private Location getCurrentPosition(){
-		// Getting LocationManager object from System Service LOCATION_SERVICE
-		LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		// Creating a criteria object to retrieve provider
-		Criteria criteria = new Criteria();
-		// Getting the name of the best provider
-		String provider = locationManager.getBestProvider(criteria, true);
-		// Getting Current Location
-		Location location = locationManager.getLastKnownLocation(provider);
-		
-		return location;
 	}
 }
