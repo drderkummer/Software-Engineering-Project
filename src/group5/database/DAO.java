@@ -1,6 +1,8 @@
 package group5.database;
 
 import java.util.ArrayList;
+
+import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.app.SearchManager;
@@ -97,6 +99,14 @@ public class DAO{
 		values.put(DBHelper.TABLE_4_COLUMN_1,name);
 		database.insert(DBHelper.TABLE_4_NAME, null, values);
 	}
+	
+	public void insertIntoTable5(String name, int drawablePicture){
+		ContentValues values = new ContentValues();
+		values.put(DBHelper.TABLE_5_COLUMN_1,name);
+		values.put(DBHelper.TABLE_5_COLUMN_2,drawablePicture);
+		database.insert(DBHelper.TABLE_5_NAME, null, values);
+	}
+	
 	/**
 	 * Get all columns from Table 4
 	 * @return ArrayList<String> of columns.
@@ -209,12 +219,39 @@ public class DAO{
 	 * tested by  testGetName
 	 */
 	public String getName(double xCoord, double yCoord){
-		//String name = null;
 		String[] columns ={DBHelper.TABLE_3_COLUMN_1};
 		String selection =DBHelper.TABLE_3_COLUMN_2 + " = '" + xCoord + "' AND " + DBHelper.TABLE_3_COLUMN_3 + " = '" + yCoord + "'";
 		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
 		if(c.moveToFirst()){
 			return new String(c.getString(0));			
+		}
+		return null;
+	}
+	/**
+	 * @param name
+	 * @return floor
+	 * tested by testGetFloor
+	 */
+	public String getFloor(String name){
+		String[] columns ={DBHelper.TABLE_3_COLUMN_6};
+		String selection =DBHelper.TABLE_3_COLUMN_1 + " = '" + name + "'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
+		if(c.moveToFirst()){
+			return new String(c.getString(0));
+		}
+		return null;
+	}
+	/**
+	 * @param name
+	 * @return type
+	 * tested by testGetType
+	 */
+	public String getType(String name){
+		String[] columns ={DBHelper.TABLE_3_COLUMN_4};
+		String selection = DBHelper.TABLE_3_COLUMN_1 + " = '" + name + "'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
+		if(c.moveToFirst()){
+			return new String(c.getString(0));
 		}
 		return null;
 	}
@@ -242,22 +279,24 @@ public class DAO{
 	public Cursor suggestionsCursor(String searchString){
 		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + 
 				", '" + DBHelper.TABLE_4_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 +
+				","+ "NULL " + SearchManager.SUGGEST_COLUMN_ICON_1 +
 				" FROM " + DBHelper.TABLE_4_NAME + 
 				" WHERE " + DBHelper.TABLE_4_COLUMN_1 + " LIKE '%" + searchString + "%' ";
 		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + 
 				", '" + DBHelper.TABLE_2_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 + 
+				","+ "NULL " + SearchManager.SUGGEST_COLUMN_ICON_1 +
 				" FROM " + DBHelper.TABLE_2_NAME + 
 				" WHERE " + DBHelper.TABLE_2_COLUMN_1 + " LIKE '%" + searchString + "%' ";
 		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + 
 				", '" + DBHelper.TABLE_3_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 + 
-				" FROM " + DBHelper.TABLE_3_NAME + 
+				","+ DBHelper.TABLE_5_COLUMN_2 + " " + SearchManager.SUGGEST_COLUMN_ICON_1 +
+				" FROM " + DBHelper.TABLE_3_NAME + " NATURAL LEFT JOIN " + DBHelper.TABLE_5_NAME +
 				" WHERE " + DBHelper.TABLE_3_COLUMN_1 + " LIKE '%" + searchString + "%' ";
 		String fromUnion = " FROM ("+ query1 + " UNION " + query2 + " UNION " + query3 + ")";
 		String select = "SELECT _ROWID_ " + BaseColumns._ID + ", name " +
 				SearchManager.SUGGEST_COLUMN_QUERY + ", name " + SearchManager.SUGGEST_COLUMN_TEXT_1 +
-				", " + SearchManager.SUGGEST_COLUMN_TEXT_2;
+				", " + SearchManager.SUGGEST_COLUMN_TEXT_2 + ", " + SearchManager.SUGGEST_COLUMN_ICON_1 ;
 		String query = select + fromUnion;
-
 		Cursor c = database.rawQuery(query, null);
 		return c;
 	}

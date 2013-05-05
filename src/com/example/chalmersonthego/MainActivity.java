@@ -27,6 +27,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,13 +53,17 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		//Prompt the user to turn on gps and other location handlers.
+		turnOnLocationsIfNeeded();
+		
 		// Get the instance of GoogleMap
 		setUpMapIfNeeded();
 
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
+		
 
 		// Getting the icon clickable
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -66,7 +71,37 @@ public class MainActivity extends Activity {
 
 		getSharedPreferences(null, 0);
 		insertDataForTheFirstTime();
+		dao.suggestionsCursor("EDIT");
+
 	}
+	/**
+	 * This functions checks if the gps is enabled.
+	 * If it's not the user is prompted and redirected to turn it on.
+	 */
+	private void turnOnLocationsIfNeeded(){
+		LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+	    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		        String message = "Enable either GPS or any other location"
+		            + " service to find current location.";
+		        builder.setMessage(message)
+		            .setPositiveButton("Yes",
+		                new DialogInterface.OnClickListener() {
+		                    public void onClick(DialogInterface d, int id) {
+		                    	startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+		                        d.dismiss();
+		                    }
+		            })
+		            .setNegativeButton("No",
+		                new DialogInterface.OnClickListener() {
+		                    public void onClick(DialogInterface d, int id) {
+		                        d.cancel();
+		                    }
+		            });
+		        builder.create().show();
+	    }
+	}
+	
 	// Only executed when installing the app for the first time
 	public void insertDataForTheFirstTime(){
 		String firstTime = "firstTime";
@@ -105,14 +140,15 @@ public class MainActivity extends Activity {
 		LatLng currentCoordinates = new LatLng(0.0,0.0);
 		LatLng closestEntry = dao.getClosestEntry(searchString, currentCoordinates);
 		if(latLng != null){
-			showDotOnMap(latLng,"Put description here");
+			String rname = dao.getName(latLng.latitude, latLng.longitude);
+			showDotOnMap(latLng, rname, dao.getFloor(rname), dao.getType(rname));
 		}else if(list != null){
 			for(String name : list){
 				latLng = dao.getRoomCoordinates(name);
-				showDotOnMap(latLng,"Put description here");
+				showDotOnMap(latLng, name, dao.getFloor(name), dao.getType(name));
 			}
 		}else if(closestEntry != null){
-			showDotOnMap(closestEntry,"Put description here");
+			showDotOnMap(closestEntry,"Put description here", null, null);
 		}else{
 			Toast.makeText(this,searchString + " is not in the database" , Toast.LENGTH_LONG).show();
 		}
@@ -159,8 +195,9 @@ public class MainActivity extends Activity {
 					//mapMarker(m);
 
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+					showDotOnMap(coords, name, dao.getFloor(name),"lecture hall");
 				}
 			}
 			return true;
@@ -179,8 +216,9 @@ public class MainActivity extends Activity {
 					//mapMarker(m);
 
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+					showDotOnMap(coords, name, dao.getFloor(name),"computer room");
 				}
 			}
 			return true;
@@ -199,8 +237,9 @@ public class MainActivity extends Activity {
 					//mapMarker(m);
 
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					showDotOnMap(coords, dao.getName(coords.latitude, coords.longitude));
+					showDotOnMap(coords, name, dao.getFloor(name), "group room");
 				}
 			}
 			return true;
@@ -318,8 +357,31 @@ public class MainActivity extends Activity {
 
 
 	// Making an dot on the map
-	private void showDotOnMap(LatLng latLng, String description) {
-		map.addMarker(new MarkerOptions().position(latLng).title(description));
+	private void showDotOnMap(LatLng latLng, String description, String floor, String type) {
+		if(type.equalsIgnoreCase("computer room")){
+			map.addMarker(new MarkerOptions()
+				.position(latLng)
+				.title(description)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory.fromAsset("computerroom.png")));
+		}else if(type.equalsIgnoreCase("lecture hall")){
+			map.addMarker(new MarkerOptions()
+			.position(latLng)
+			.title(description)
+			.snippet("floor: " + floor)
+			.icon(BitmapDescriptorFactory.fromAsset("lecturehall.png")));
+		}else if(type.equalsIgnoreCase("group room")){
+			map.addMarker(new MarkerOptions()
+			.position(latLng)
+			.title(description)
+			.snippet("floor: " + floor)
+			.icon(BitmapDescriptorFactory.fromAsset("grouproom.png")));
+		}else{
+			map.addMarker(new MarkerOptions()
+			.position(latLng)
+			.title(description)
+			.snippet("floor: " + floor + type));
+		}
 	}
 	//probably needed to map markers on the map and
 	//just delete for ex. "computer room" markers
