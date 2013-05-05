@@ -1,16 +1,29 @@
 package com.example.chalmersonthego;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -19,13 +32,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class CustomGoogleMaps {
 	
 	private GoogleMap map;
 	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
 	Activity activity;
-	
+
 	// Bound the map accessed from multiple places
 	private LatLng northWest = new LatLng(57.697497, 11.985397);
 	private LatLng southEast = new LatLng(57.678687, 11.969347);
@@ -36,6 +50,7 @@ public class CustomGoogleMaps {
 		this.activity = activity;
 		this.map = googleMap;
 		setUpMapIfNeeded();
+		
 	}
 	
 	void showDotOnMap(LatLng latLng, String description, String floor, String type) {
@@ -123,7 +138,7 @@ public class CustomGoogleMaps {
 
 	Location getCurrentPosition(){
 		// Getting LocationManager object from System Service LOCATION_SERVICE
-		LocationManager locationManager = (LocationManager) activity.getSystemService(activity.LOCATION_SERVICE);
+		LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 		// Creating a criteria object to retrieve provider
 		Criteria criteria = new Criteria();
 		// Getting the name of the best provider
@@ -143,7 +158,9 @@ public class CustomGoogleMaps {
 					// Initialize map
 					map.animateCamera(CameraUpdateFactory.zoomTo(15));
 					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
-				}					
+				}	
+				
+				
 
 				
 				// When user drag map
@@ -184,4 +201,6 @@ public class CustomGoogleMaps {
 				});				
 			}
 	}
+	
+
 }
