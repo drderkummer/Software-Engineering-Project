@@ -22,45 +22,59 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 public class CustomGoogleMaps {
 	
-	private GoogleMap map;
+	private GoogleMap googleMap;
+	//Markers currently on the map
 	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
-	Activity activity;
+	//The Activity owning the map
+	Activity owningActivity;
 	
-	// Bound the map accessed from multiple places
+	// Bounds the map to two points
 	private LatLng northWest = new LatLng(57.697497, 11.985397);
 	private LatLng southEast = new LatLng(57.678687, 11.969347);
 	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
 
-	
-	public CustomGoogleMaps(Activity activity, GoogleMap googleMap){
-		this.activity = activity;
-		this.map = googleMap;
+	/**
+	 * 
+	 * @param owningActivity the calling Activity
+	 * @param googleMap in instance of GoogleMap
+	 */
+	public CustomGoogleMaps(Activity owningActivity, GoogleMap googleMap){
+		this.owningActivity = owningActivity;
+		this.googleMap = googleMap;
+		//Set up the map
 		setUpMapIfNeeded();
+
 	}
-	
-	void showDotOnMap(LatLng latLng, String description, String floor, String type) {
+	/**
+	 * Show the specified marker with specified information on the map
+	 * @param latLng the coordinates of the marker
+	 * @param title the title of the marker
+	 * @param floor the floor the room is on
+	 * @param type the types of the room
+	 */
+	void showMarkerOnMap(LatLng latLng, String title, String floor, String type) {
 		if(type.equalsIgnoreCase("computer room")){
-			map.addMarker(new MarkerOptions()
+			googleMap.addMarker(new MarkerOptions()
 				.position(latLng)
-				.title(description)
+				.title(title)
 				.snippet("floor: " + floor)
 				.icon(BitmapDescriptorFactory.fromAsset("computerroom.png")));
 		}else if(type.equalsIgnoreCase("lecture hall")){
-			map.addMarker(new MarkerOptions()
+			googleMap.addMarker(new MarkerOptions()
 			.position(latLng)
-			.title(description)
+			.title(title)
 			.snippet("floor: " + floor)
 			.icon(BitmapDescriptorFactory.fromAsset("lecturehall.png")));
 		}else if(type.equalsIgnoreCase("group room")){
-			map.addMarker(new MarkerOptions()
+			googleMap.addMarker(new MarkerOptions()
 			.position(latLng)
-			.title(description)
+			.title(title)
 			.snippet("floor: " + floor)
 			.icon(BitmapDescriptorFactory.fromAsset("grouproom.png")));
 		}else{
-			map.addMarker(new MarkerOptions()
+			googleMap.addMarker(new MarkerOptions()
 			.position(latLng)
-			.title(description)
+			.title(title)
 			.snippet("floor: " + floor + type));
 		}
 	}
@@ -75,7 +89,7 @@ public class CustomGoogleMaps {
 	//not final method!
 	//delete all markers from map
 	void removeAllMarkerFromMap(){
-		map.clear();
+		googleMap.clear();
 	}
 
 
@@ -91,7 +105,7 @@ public class CustomGoogleMaps {
 		rectOptions.fillColor(color);
 
 		// Get back the mutable Polygon
-		Polygon polygon = map.addPolygon(rectOptions);
+		Polygon polygon = googleMap.addPolygon(rectOptions);
 	}
 	
 	/**
@@ -104,15 +118,15 @@ public class CustomGoogleMaps {
 			LatLng myPosition = new LatLng(location.getLatitude(), location.getLongitude());			
 			
 			if(strictBounds.contains(myPosition)){
-				Marker hereAmI = map.addMarker(new MarkerOptions()
+				Marker hereAmI = googleMap.addMarker(new MarkerOptions()
 				.position(myPosition)
 				.title("My Location")
 				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 				.snippet("I am here"));
 				hereAmI.showInfoWindow();			
 
-				map.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-				map.moveCamera(CameraUpdateFactory.zoomTo(15));
+				googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+				googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 				
 				return true;
 			}			
@@ -123,7 +137,7 @@ public class CustomGoogleMaps {
 
 	Location getCurrentPosition(){
 		// Getting LocationManager object from System Service LOCATION_SERVICE
-		LocationManager locationManager = (LocationManager) activity.getSystemService(activity.LOCATION_SERVICE);
+		LocationManager locationManager = (LocationManager) owningActivity.getSystemService(owningActivity.LOCATION_SERVICE);
 		// Creating a criteria object to retrieve provider
 		Criteria criteria = new Criteria();
 		// Getting the name of the best provider
@@ -135,25 +149,22 @@ public class CustomGoogleMaps {
 	}
 	
 	private void setUpMapIfNeeded() {
-		// Do a null check to confirm that we have not already instantiated the
-		// map.
+		if(owningActivity != null && googleMap != null){
 			// Check if we were successful in obtaining the map.
-			if (map != null) {
 				if(!setMyPosition(getCurrentPosition())){
 					// Initialize map
-					map.animateCamera(CameraUpdateFactory.zoomTo(15));
-					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
+					googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+					googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
 				}					
 
-				
 				// When user drag map
-				map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 					@Override
 					public void onCameraChange(CameraPosition position) {
 
 						// Set minimum zoom level
 						if (position.zoom < 15)
-							map.animateCamera(CameraUpdateFactory.zoomTo(15));
+							googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 						// Limits on the map
 						LatLng northWest = new LatLng(57.697497, 11.985397);
@@ -161,12 +172,12 @@ public class CustomGoogleMaps {
 						strictBounds = new LatLngBounds(southEast, northWest);
 
 						// If position is within, do nothing.
-						if (strictBounds.contains(map.getCameraPosition().target))
+						if (strictBounds.contains(googleMap.getCameraPosition().target))
 							return;
 
 						// Seems that we are out of bound
-						double x = map.getCameraPosition().target.latitude;
-						double y = map.getCameraPosition().target.longitude;
+						double x = googleMap.getCameraPosition().target.latitude;
+						double y = googleMap.getCameraPosition().target.longitude;
 
 						if (x < southEast.latitude)
 							x = southEast.latitude;
@@ -179,9 +190,9 @@ public class CustomGoogleMaps {
 
 						// Set new center
 						LatLng center = new LatLng(x, y);
-						map.moveCamera(CameraUpdateFactory.newLatLng(center));
+						googleMap.moveCamera(CameraUpdateFactory.newLatLng(center));
 					}
-				});				
-			}
+				});
+		}
 	}
 }

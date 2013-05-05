@@ -1,19 +1,20 @@
 package com.example.chalmersonthego.test;
 
 import com.example.chalmersonthego.MainActivity;
-
+import com.example.chalmersonthego.R;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
+import android.widget.SearchView;
 
 public class TestMainActivity extends
 		ActivityInstrumentationTestCase2<MainActivity> {
 	
 	private MainActivity mainActivity;
 
-	public TestMainActivity(Class<MainActivity> activityClass) {
-		super(activityClass);
-		// TODO Auto-generated constructor stub
+	public TestMainActivity() {
+		super(MainActivity.class);
 	}
+
 	
 	@Override
 	protected void setUp() throws Exception{
@@ -25,10 +26,13 @@ public class TestMainActivity extends
 		mainActivity = getActivity();
 	}
 	
-	public void testX(){
-		//Clicks on a button
-		//The '0' should be a id of a button
-		TouchUtils.clickView(this, mainActivity.findViewById(0));
+	public void testSearch(){
+		//here you can create unitTests for the gui and also add more methods
+		/**
+		SearchView searchView = (SearchView) mainActivity.findViewById(R.id.action_search);
+		assertNotNull(searchView);
+		TouchUtils.clickView(this, searchView);
+		**/
 	}
 
 }

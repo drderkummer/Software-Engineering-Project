@@ -61,7 +61,6 @@ public class MainActivity extends Activity {
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
-		
 		insertDataForTheFirstTime();
 	}
 	/**
@@ -144,14 +143,14 @@ public class MainActivity extends Activity {
 		LatLng closestEntry = dao.getClosestEntry(searchString, currentCoordinates);
 		if(latLng != null){
 			String rname = dao.getName(latLng.latitude, latLng.longitude);
-			customMaps.showDotOnMap(latLng, rname, dao.getFloor(rname), dao.getType(rname));
+			customMaps.showMarkerOnMap(latLng, rname, dao.getFloor(rname), dao.getType(rname));
 		}else if(list != null){
 			for(String name : list){
 				latLng = dao.getRoomCoordinates(name);
-				customMaps.showDotOnMap(latLng, name, dao.getFloor(name), dao.getType(name));
+				customMaps.showMarkerOnMap(latLng, name, dao.getFloor(name), dao.getType(name));
 			}
 		}else if(closestEntry != null){
-			customMaps.showDotOnMap(closestEntry,"Put description here", null, null);
+			customMaps.showMarkerOnMap(closestEntry,"Put description here", null, null);
 		}else{
 			Toast.makeText(this,searchString + " is not in the database" , Toast.LENGTH_LONG).show();
 		}
@@ -200,7 +199,7 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showDotOnMap(coords, name, dao.getFloor(name),"lecture hall");
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),"lecture hall");
 				}
 			}
 			return true;
@@ -221,7 +220,7 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showDotOnMap(coords, name, dao.getFloor(name),"computer room");
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),"computer room");
 				}
 			}
 			return true;
@@ -242,7 +241,7 @@ public class MainActivity extends Activity {
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showDotOnMap(coords, name, dao.getFloor(name), "group room");
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name), "group room");
 				}
 			}
 			return true;
@@ -268,7 +267,6 @@ public class MainActivity extends Activity {
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
 
 		// Get the SearchView and set the searchable configuration
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
