@@ -2,6 +2,7 @@ package com.example.chalmersonthego;
 
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -23,6 +24,7 @@ public class CustomGoogleMaps {
 	
 	private GoogleMap map;
 	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
+	Activity activity;
 	
 	// Bound the map accessed from multiple places
 	private LatLng northWest = new LatLng(57.697497, 11.985397);
@@ -30,8 +32,9 @@ public class CustomGoogleMaps {
 	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
 
 	
-	public CustomGoogleMaps(GoogleMap map){
-		this.map = map;
+	public CustomGoogleMaps(Activity activity, GoogleMap googleMap){
+		this.activity = activity;
+		this.map = googleMap;
 		setUpMapIfNeeded();
 	}
 	
@@ -66,7 +69,6 @@ public class CustomGoogleMaps {
 	private void mapMarker(Marker m){
 		int mapPosition = markers.size()-1;
 		markers.put(mapPosition, m);
-
 	};
 
 
@@ -119,19 +121,29 @@ public class CustomGoogleMaps {
 	}
 	
 
-	
+	Location getCurrentPosition(){
+		// Getting LocationManager object from System Service LOCATION_SERVICE
+		LocationManager locationManager = (LocationManager) activity.getSystemService(activity.LOCATION_SERVICE);
+		// Creating a criteria object to retrieve provider
+		Criteria criteria = new Criteria();
+		// Getting the name of the best provider
+		String provider = locationManager.getBestProvider(criteria, true);
+		// Getting Current Location
+		Location location = locationManager.getLastKnownLocation(provider);
+		
+		return location;
+	}
 	
 	private void setUpMapIfNeeded() {
 		// Do a null check to confirm that we have not already instantiated the
 		// map.
-		if (map == null) {
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
-				/**if(!setMyPosition()){
+				if(!setMyPosition(getCurrentPosition())){
 					// Initialize map
 					map.animateCamera(CameraUpdateFactory.zoomTo(15));
 					map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
-				}**/					
+				}					
 
 				
 				// When user drag map
@@ -171,6 +183,5 @@ public class CustomGoogleMaps {
 					}
 				});				
 			}
-		}
 	}
 }
