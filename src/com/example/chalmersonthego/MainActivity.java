@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -34,6 +35,7 @@ public class MainActivity extends Activity {
 
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
+	private NavigationManager navigationManager;
 
 	
 	@SuppressLint("NewApi")
@@ -48,8 +50,8 @@ public class MainActivity extends Activity {
 		GoogleMap googleMap = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 		customMaps = new CustomGoogleMaps(this,googleMap);
-		
-		
+		navigationManager = new NavigationManager(googleMap);
+
 		configureUI();
 
 		// Open connection to the Database
@@ -57,6 +59,38 @@ public class MainActivity extends Activity {
 		dao.open();
 		insertDataForTheFirstTime();
 	}
+	
+	private void customPath(LatLng from, LatLng to){
+		//Get length via standard API.
+		int apiLength = 0;
+		
+		//get current position in LatLng
+		Location currentLocation = customMaps.getCurrentPosition();
+		LatLng currentCordinates = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+		
+		//Get the cloesest Entry from current position to all buildings
+		//get all buildings
+		ArrayList<String> buildings = dao.getAllFromTable4();
+		//Loop over all buildings
+		
+		for(String building : buildings){
+			LatLng cloestEntry = dao.getClosestEntry(building, currentCordinates);
+			
+			//Calculate path length to the closestEntry
+			int length = 0; //Get length via API to this entry
+			if(length < apiLength){
+				LatLng closestOut = dao.getClosestEntry(building, to);
+				length += 0; //= getDistance(cloestEntry,closestOut)
+				if(length <apiLength){
+					length += 0;//getAPILength(closestOut,to);
+				}
+			}
+		}
+				
+	}
+	
+	
+	
 	/**
 	 * This method is used for all configuration of the UI which
 	 * can't be done in the xml except the configuration of the map.

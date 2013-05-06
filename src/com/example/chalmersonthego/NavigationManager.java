@@ -1,5 +1,7 @@
 package com.example.chalmersonthego;
 
+import group5.database.DAO;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
