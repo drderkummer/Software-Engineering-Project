@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
 		dao.open();
 		insertDataForTheFirstTime();
 	}
-	
+	/**
 	private void customPath(LatLng from, LatLng to){
 		//Get length via standard API.
 		int apiLength = 0;
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 			}
 		}
 				
-	}
+	}**/
 	
 	
 	
