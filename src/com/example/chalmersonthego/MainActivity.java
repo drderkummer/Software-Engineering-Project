@@ -18,8 +18,10 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -190,8 +192,25 @@ public class MainActivity extends Activity {
 
 	// Following method is called when launcher icon clicked
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
+	public boolean onOptionsItemSelected(MenuItem item){
+		
+		MenuItem showCompRooms = (MenuItem)findViewById(R.id.showComputerRooms);
+		MenuItem showGrpRooms = (MenuItem)findViewById(R.id.showGroupRooms);
+		MenuItem showLectHalls = (MenuItem)findViewById(R.id.showLectureHalls);
+		
+		if(item.getItemId() == R.id.showLectureHalls ||
+		   item.getItemId() == R.id.showComputerRooms || 
+		   item.getItemId() == R.id.showGroupRooms){
+			customMaps.removeAllMarkerFromMap();
+	
+			if(showCompRooms.isChecked());
+				// add markers
+			if(showGrpRooms.isChecked());
+				// Add markers
+			if(showLectHalls.isChecked());
+				// Add more markers			
+		}
+		
 		switch (item.getItemId()) {
 
 		case android.R.id.home:
@@ -204,11 +223,11 @@ public class MainActivity extends Activity {
 					.setNegativeButton("No", dialogClickListener).show();
 			return true;*/
 
-		case R.id.showLectureHalls:
+		case R.id.showLectureHalls:case R.id.showGroupRooms:case R.id.showComputerRooms:
 			if (item.isChecked()) {
 				item.setChecked(false);
 				// Call remove dots function
-				customMaps.removeAllMarkerFromMap();
+				
 			} else {
 				item.setChecked(true);
 				// Call add dots function
@@ -225,48 +244,9 @@ public class MainActivity extends Activity {
 				}
 			}
 			return true;
-		case R.id.showComputerRooms:
-			if (item.isChecked()) {
-				item.setChecked(false);
-				// Call remove dots function
-				customMaps.removeAllMarkerFromMap();
-			} else {
-				item.setChecked(true);
-				// Call add dots function
-				ArrayList<String> result = dao.getAllRoomsWithType("computer room");
-				for(int i=0; i < result.size(); i++){
-					//TODO String "computer room" just a placeholder right know. --> getName
-					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
-					//mapMarker(m);
+		
+		
 
-					LatLng coords = dao.getRoomCoordinates(result.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					//String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),"computer room");
-				}
-			}
-			return true;
-		case R.id.showGroupRooms:
-			if (item.isChecked()) {
-				item.setChecked(false);
-				// Call remove dots function
-				customMaps.removeAllMarkerFromMap();
-			} else {
-				item.setChecked(true);
-				// Call add dots function
-				ArrayList<String> result = dao.getAllRoomsWithType("group room");
-				for(int i=0; i < result.size(); i++){
-					//TODO String "computer room" just a placeholder right know. --> getName
-					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
-					//mapMarker(m);
-
-					LatLng coords = dao.getRoomCoordinates(result.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					//String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name), "group room");
-				}
-			}
-			return true;
 		case R.id.action_search:
 		case R.id.action_layers:
 		case R.id.action_my_location:

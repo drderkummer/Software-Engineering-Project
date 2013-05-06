@@ -24,7 +24,7 @@ public class CustomGoogleMaps {
 
 	private GoogleMap googleMap;
 	//Markers currently on the map
-	private HashMap<Integer, Marker> markers = new HashMap<Integer, Marker>();
+	private HashMap<String, Marker> markers = new HashMap<String, Marker>();
 
 	//The Activity owning the map
 	Activity owningActivity;
@@ -91,7 +91,7 @@ public class CustomGoogleMaps {
 	//just delete for ex. "computer room" markers
 	private void mapMarker(Marker m){
 		int mapPosition = markers.size()-1;
-		markers.put(mapPosition, m);
+		// markers.put(mapPosition, m);
 	};
 
 
@@ -172,13 +172,12 @@ public class CustomGoogleMaps {
 				googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(57.68806,11.977978)));		
 			}
 
-
-
 			/* POSSIBLE CODE TO TEST FUNCTIONS		
 					navManager.drawPathOnMap(northWest, southEast);
 					tvDistanceDuration.setText(navManager.getDurationDistanceStr());	
 					tvDistanceDuration.setVisibility(View.VISIBLE);
 			 */
+			
 
 			// When user drag map
 			googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
