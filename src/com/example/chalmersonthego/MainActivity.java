@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -54,6 +56,11 @@ public class MainActivity extends Activity {
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
+		
+		//Setting up the actionbar
+		ActionBar ab = getActionBar();
+		ab.setBackgroundDrawable(new ColorDrawable(Color.CYAN));
+		ab.setTitle("Daymode");
 	}
 	/**
 	private void customPath(LatLng from, LatLng to){
@@ -204,7 +211,7 @@ public class MainActivity extends Activity {
 			customMaps.removeAllMarkerFromMap();
 	
 			if(showCompRooms.isChecked());
-				// add markers
+			    //Add markers
 			if(showGrpRooms.isChecked());
 				// Add markers
 			if(showLectHalls.isChecked());
@@ -212,9 +219,6 @@ public class MainActivity extends Activity {
 		}
 		
 		switch (item.getItemId()) {
-
-		case android.R.id.home:
-
 			//There is no ID of this type
 			/*case R.id.action_exit:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -236,7 +240,6 @@ public class MainActivity extends Activity {
 					//TODO String "computer room" just a placeholder right know. --> getName
 					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
 					//mapMarker(m);
-
 					LatLng coords = dao.getRoomCoordinates(result.get(i));
 					String name = dao.getName(coords.latitude, coords.longitude);
 					//String name = dao.getName(coords.latitude, coords.longitude);
@@ -247,12 +250,25 @@ public class MainActivity extends Activity {
 		
 		
 
-		case R.id.action_search:
-		case R.id.action_layers:
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
 			return true;
-
+			
+		case R.id.action_modes:
+			
+			//TODO fix this fugly code
+			ActionBar ab = getActionBar();
+			if(ab.getTitle().charAt(0)=='D'){
+				ab.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+				ab.setTitle("Nightmode");
+			}else{
+				ab.setBackgroundDrawable(new ColorDrawable(Color.CYAN));
+				ab.setTitle("Daymode");
+			}
+			
+			customMaps.drawBuildings();
+			return true;
+		
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 			.show();
