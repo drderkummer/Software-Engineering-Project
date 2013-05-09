@@ -258,6 +258,9 @@ public class MainActivity extends Activity {
 					.setPositiveButton("Yes", dialogClickListener)
 					.setNegativeButton("No", dialogClickListener).show();
 			return true;*/
+		
+		case R.id.action_layers:
+			return true;
 
 		case R.id.showLectureHalls:
 			customMaps.removeAllMarkerFromMap();
