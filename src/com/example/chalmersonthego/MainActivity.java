@@ -34,8 +34,12 @@ public class MainActivity extends Activity {
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
-
 	
+	//helping variables needed to check the state of the checkbox menu
+	Boolean lectureHallsAreChecked = false;
+	Boolean computerRoomsAreChecked = false;
+	Boolean groupRoomsAreChecked = false;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -190,34 +194,62 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-
 		// Close connection to the database
 		dao.close();
-
 		super.onDestroy();
 	}
-
-	// Following method is called when launcher icon clicked
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item){
-		
-		MenuItem showCompRooms = (MenuItem)findViewById(R.id.showComputerRooms);
-		MenuItem showGrpRooms = (MenuItem)findViewById(R.id.showGroupRooms);
-		MenuItem showLectHalls = (MenuItem)findViewById(R.id.showLectureHalls);
-		
-		if(item.getItemId() == R.id.showLectureHalls ||
-		   item.getItemId() == R.id.showComputerRooms || 
-		   item.getItemId() == R.id.showGroupRooms){
-			customMaps.removeAllMarkerFromMap();
 	
-			if(showCompRooms.isChecked());
-			    //Add markers
-			if(showGrpRooms.isChecked());
-				// Add markers
-			if(showLectHalls.isChecked());
-				// Add more markers			
-		}
-		
+	/**
+	 * shows all group rooms on map 
+	 */
+    public void showGroupRooms(){
+               ArrayList<String> r2 = dao.getAllRoomsWithType("group room");
+               for(int i=0; i < r2.size(); i++){
+                       LatLng coords = dao.getRoomCoordinates(r2.get(i));
+                       String name = dao.getName(coords.latitude, coords.longitude);
+                       customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),"group room");
+               }
+    }
+    
+    /**
+     * shows all computer rooms on the map
+     */
+    public void showCompRooms(){
+               ArrayList<String> r1 = dao.getAllRoomsWithType("computer room");
+               for(int i=0; i < r1.size(); i++){
+                       LatLng coords = dao.getRoomCoordinates(r1.get(i));
+                       String name = dao.getName(coords.latitude, coords.longitude);
+                       customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),"computer room");
+               }
+       }
+     
+    /**
+     * shows all lecture halls on the map
+     */
+    public void showLectHalls(){
+               ArrayList<String> r3 = dao.getAllRoomsWithType("lecture hall");
+               for(int i = 0; i < r3.size() ; i++){
+                       LatLng coords = dao.getRoomCoordinates(r3.get(i));
+                       String name = dao.getName(coords.latitude, coords.longitude);
+                       customMaps.showMarkerOnMap(coords, name, dao.getFloor(name), "lecture hall");
+               }
+       }
+
+	
+	/** Following method is called when launcher icon clicked
+	 * @param MenuItem
+	 * 
+	 * IF MenuItem == CheckBoxes we need to do:
+	 * 		1. clear map from markers
+	 * 		2. check if CheckBox is Checked or NotChecked
+	 * 				set new status relation to that
+	 * 				set status of boolean value
+	 * 		3. check status from other CheckBoxes
+	 * 		4. show markers from checked CheckBoxes
+	 */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+    	
 		switch (item.getItemId()) {
 			//There is no ID of this type
 			/*case R.id.action_exit:
@@ -227,29 +259,48 @@ public class MainActivity extends Activity {
 					.setNegativeButton("No", dialogClickListener).show();
 			return true;*/
 
-		case R.id.showLectureHalls:case R.id.showGroupRooms:case R.id.showComputerRooms:
-			if (item.isChecked()) {
+		case R.id.showLectureHalls:
+			customMaps.removeAllMarkerFromMap();
+			if(item.isChecked()){
 				item.setChecked(false);
-				// Call remove dots function
-				
-			} else {
+				lectureHallsAreChecked = false;
+			}else{
 				item.setChecked(true);
-				// Call add dots function
-				ArrayList<String> result = dao.getAllRoomsWithType("lecture hall");
-				for(int i=0; i < result.size(); i++){
-					//TODO String "computer room" just a placeholder right know. --> getName
-					//Marker m = new google.maps.Marker({ position: dao.getRoomCoordinates(result.get(i)), title:"Hello World!" });	
-					//mapMarker(m);
-					LatLng coords = dao.getRoomCoordinates(result.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					//String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),"lecture hall");
-				}
+				lectureHallsAreChecked = true;
+				showLectHalls();
 			}
+			if(computerRoomsAreChecked) showCompRooms();
+			if(groupRoomsAreChecked) showGroupRooms();
+			return true;
+			
+		case R.id.showComputerRooms:
+			customMaps.removeAllMarkerFromMap();
+			if(item.isChecked()){
+				item.setChecked(false);
+				computerRoomsAreChecked = false;
+			}else{
+				item.setChecked(true);
+				showCompRooms();
+				computerRoomsAreChecked = true;
+			}
+			if(lectureHallsAreChecked) showLectHalls();
+			if(groupRoomsAreChecked) showGroupRooms();
+			return true;
+			
+		case R.id.showGroupRooms:
+			customMaps.removeAllMarkerFromMap();
+			if (item.isChecked()){
+				item.setChecked(false);
+				groupRoomsAreChecked = false;
+			}else{
+				item.setChecked(true);
+				showGroupRooms();
+				groupRoomsAreChecked = true;
+			}
+			if(lectureHallsAreChecked) showLectHalls();
+			if(computerRoomsAreChecked) showCompRooms();
 			return true;
 		
-		
-
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
 			return true;

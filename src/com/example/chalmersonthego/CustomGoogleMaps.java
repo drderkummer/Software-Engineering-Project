@@ -1,5 +1,7 @@
 package com.example.chalmersonthego;
 
+import group5.database.DAO;
+import java.util.ArrayList;
 import java.util.HashMap;
 import android.app.Activity;
 import android.content.Context;
@@ -24,8 +26,6 @@ import com.google.android.gms.maps.model.PolygonOptions;
 public class CustomGoogleMaps {
 
 	private GoogleMap googleMap;
-	// Markers currently on the map
-	private HashMap<String, Marker> markers = new HashMap<String, Marker>();
 
 	// The Activity owning the map
 	Activity owningActivity;
@@ -101,18 +101,14 @@ public class CustomGoogleMaps {
 		}
 	}
 
-	// probably needed to map markers on the map and
-	// just delete for ex. "computer room" markers
-	private void mapMarker(Marker m) {
-		int mapPosition = markers.size() - 1;
-		// markers.put(mapPosition, m);
-	};
 
-	// not final method!
-	// delete all markers from map
+	/**
+	 * removes all markers from the map
+	 */
 	void removeAllMarkerFromMap() {
 		googleMap.clear();
 	}
+	
 
 	// Drawing an building on the map
 	public void drawBuildings() {
