@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -257,6 +258,17 @@ public class CustomGoogleMaps {
 						}
 					});
 		}
+		
+		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+			public void onInfoWindowClick(Marker marker){
+				//TODO Navigation to this room is called
+				System.out.println("Normally Navigation starts here ...");
+			}
+		});
 	}
+	
+	
+	
+	
 
 }
