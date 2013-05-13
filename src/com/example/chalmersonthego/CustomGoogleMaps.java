@@ -1,8 +1,5 @@
 package com.example.chalmersonthego;
 
-import group5.database.DAO;
-import java.util.ArrayList;
-import java.util.HashMap;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -20,7 +17,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public class CustomGoogleMaps {
@@ -140,7 +136,6 @@ public class CustomGoogleMaps {
 	/**
 	 * Puts a marker on map where the user's current position is
 	 * 
-	 * @param location2
 	 * @return true if position was set, false if otherwise
 	 */
 	public boolean setMyPosition() {
@@ -232,10 +227,8 @@ public class CustomGoogleMaps {
 							if (strictBounds.contains(googleMap
 									.getCameraPosition().target))
 								return;
-
-							Toast.makeText(owningActivity,
-									"Outside restricted area",
-									Toast.LENGTH_LONG).show();
+							
+							Toast.makeText(owningActivity, "Outside restricted area",Toast.LENGTH_LONG).show();
 
 							// Seems that we are out of bound
 							double x = googleMap.getCameraPosition().target.latitude;
