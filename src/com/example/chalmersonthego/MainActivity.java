@@ -340,7 +340,7 @@ public class MainActivity extends Activity {
 
 	protected Dialog onCreateDialog(int id) {
 		return new AlertDialog.Builder(this)
-				.setTitle("Planets")
+				.setTitle("Show all on map")
 				.setMultiChoiceItems(layerOptions, layerSelections,
 						new DialogSelectionClickHandler())
 				.setPositiveButton("OK", new DialogButtonClickHandler())
