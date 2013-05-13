@@ -12,5 +12,6 @@
 			<accessrule kind="nonaccessible" pattern="com/android/internal/**"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry kind="src" path="/google-play-services_lib"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 	Boolean computerRoomsAreChecked = false;
 	Boolean groupRoomsAreChecked = false;
 
-	@SuppressLint("NewApi")
+	@SuppressLint("NewApi") 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
