@@ -52,7 +52,6 @@ public class CustomGoogleMaps {
 
 		// Set up the map
 		setUpMapIfNeeded();
-
 	}
 
 	/**
