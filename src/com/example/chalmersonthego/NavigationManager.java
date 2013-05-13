@@ -246,8 +246,8 @@ public class NavigationManager {
  
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(2);
-                lineOptions.color(Color.RED);
+                lineOptions.width(LINE_WIDTH);
+                lineOptions.color(LINE_COLOR);
             }
  
             // Drawing polyline in the Google Map for the i-th route

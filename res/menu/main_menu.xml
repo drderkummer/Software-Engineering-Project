@@ -27,5 +27,10 @@
         android:orderInCategory="101"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_my_location"/>
+     <item
+        android:id="@+id/exit"
+        android:orderInCategory="102"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/exit_app"/>
 
 </menu>

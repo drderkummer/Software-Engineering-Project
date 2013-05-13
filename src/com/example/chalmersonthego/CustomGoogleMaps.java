@@ -6,10 +6,12 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -178,8 +180,13 @@ public class CustomGoogleMaps {
 		Criteria criteria = new Criteria();
 		String provider = locationManager.getBestProvider(criteria, true);
 		Location location = locationManager.getLastKnownLocation(provider);
-
-		return location;
+		Location testLoc = new Location("TEST");
+		testLoc.setLatitude(57.687199);
+		testLoc.setLongitude(11.978673);
+		
+		return (testLoc);
+		// return location;
+		
 	}
 
 	/**
@@ -203,8 +210,7 @@ public class CustomGoogleMaps {
 			 */
 
 			// When user drag map
-			googleMap
-					.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+			googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 						@Override
 						public void onCameraChange(CameraPosition position) {
 
@@ -248,18 +254,40 @@ public class CustomGoogleMaps {
 									.newLatLng(center));
 						}
 					});
+			
+		   /* googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+		        @Override
+		        public View getInfoWindow(Marker arg0) {
+		            return null;
+		        }
+
+		        // Defines the contents of the InfoWindow
+		        @Override
+		        public View getInfoContents(Marker arg0) {
+		            View v = null;
+		            // Getting the position from the marker
+		            LatLng latLng = arg0.getPosition();            
+
+		            return v;
+		        }
+		    });*/
+			
+			googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+				public void onInfoWindowClick(Marker marker){
+					Location l = getCurrentPosition();
+					LatLng LatLngMyPos = new LatLng(l.getLatitude(),l.getLongitude());
+					if (!strictBounds.contains(LatLngMyPos))
+						return;
+					
+					navManager.drawPathOnMap(LatLngMyPos, marker.getPosition());
+					
+				}
+			});
+			
 		}
 		
-		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-			public void onInfoWindowClick(Marker marker){
-				//TODO Navigation to this room is called
-				System.out.println("Normally Navigation starts here ...");
-			}
-		});
-	}
-	
-	
-	
-	
 
+		
+
+	}
 }
