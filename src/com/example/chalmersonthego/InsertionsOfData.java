@@ -18,6 +18,7 @@ public class InsertionsOfData {
 				//insert into 'buildings' table:
 				dao.insertIntoTable4("EDIT");
 				dao.insertIntoTable4("Architecture");
+				dao.insertIntoTable4("Vasa");
 				
 				/******************************************************************************
 				*********************INSERTION OF "EDIT" BUILDING:*****************************
@@ -128,6 +129,28 @@ public class InsertionsOfData {
 				dao.insertIntoTable3("VV42", 57.687242, 11.976698, "computer room", "Architecture", "4");
 				/********************************************************************************
 				*****************END OF ARCHITECTURE BUILDING INSERTIONS*************************
+				********************************************************************************/
+
+				/********************************************************************************
+				*************************INSERTIONS OF VASA BUILDING ****************************
+				********************************************************************************/
+				//insert into 'entries' table:
+
+				//insert into "rooms" table:
+				//lecture halls
+				dao.insertIntoTable3("Vasa A", 57.693233, 11.975172, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa B", 57.693138, 11.974909, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa C", 57.693382, 11.975411, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa 1", 57.693079, 11.974974, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa 2", 57.692986, 11.975060, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa 3", 57.693293, 11.975510, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa 4", 57.693215, 11.975567, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa 5", 57.693141, 11.975639, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Vasa 6", 57.693038, 11.975642, "lecture hall", "Vasa", "ground");
+				dao.insertIntoTable3("Datasal A", 57.693038, 11.975642, "computer room", "Vasa", "basement");
+				dao.insertIntoTable3("Datasal B", 57.693115, 11.975601, "computer room", "Vasa", "basement");
+				/********************************************************************************
+				*************************END OF VASA BUILDING INSERTIONS*************************
 				********************************************************************************/
 					
 		}
