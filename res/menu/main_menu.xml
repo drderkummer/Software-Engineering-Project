@@ -21,29 +21,6 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_layers"
         android:icon="@drawable/av_add_to_queue" >
-        <menu>
-            <item
-                android:id="@+id/showLectureHalls"
-                android:checkable="true"
-                android:checked="false"
-                android:enabled="true"
-                android:title="@string/layers_lectureHalls"
-                android:visible="true"/>
-            <item
-                android:id="@+id/showComputerRooms"
-                android:checkable="true"
-                android:checked="false"
-                android:enabled="true"
-                android:title="@string/layers_computerRooms"
-                android:visible="true"/>
-            <item
-                android:id="@+id/showGroupRooms"
-                android:checkable="true"
-                android:checked="false"
-                android:enabled="true"
-                android:title="@string/layers_groupRooms"
-                android:visible="true"/>
-        </menu>
     </item>
     <item
         android:id="@+id/action_my_location"
