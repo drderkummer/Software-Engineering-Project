@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 	Boolean groupRoomsAreChecked = false;
 
 	// Daymode/nightmode variable
-	private Boolean nightModeOn;
+	private Boolean nightModeOn = false;
 
 	protected CharSequence[] layerOptions = { "Computer Rooms",
 			"Lecture Halls", "Group Rooms" };
@@ -105,12 +105,11 @@ public class MainActivity extends Activity {
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setHomeButtonEnabled(true);
 
-		
-		nightModeOn = false;
 		// Changing the apperance
 		ab.setTitle("Daymode");
 		ab.setBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206, 250)));
-		ab.setSplitBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206, 250)));
+		ab.setSplitBackgroundDrawable(new ColorDrawable(Color
+				.rgb(135, 206, 250)));
 	}
 
 	/**
@@ -182,9 +181,6 @@ public class MainActivity extends Activity {
 		LatLng currentCoordinates = new LatLng(0.0, 0.0);
 		LatLng closestEntry = dao.getClosestEntry(searchString,
 				currentCoordinates);
-		
-		customMaps.removeAllMarkerFromMap();
-		
 		if (latLng != null) {
 			String rname = dao.getName(latLng.latitude, latLng.longitude);
 			customMaps.showMarkerOnMap(latLng, rname, dao.getFloor(rname),
@@ -240,13 +236,9 @@ public class MainActivity extends Activity {
 		case R.id.action_modes:
 			switchMode();
 			return true;
-			
-		case R.id.exit:
-			onBackPressed();
-			return true;
-			
+
 		default:
-			Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
 			return true;
 		}
@@ -297,12 +289,12 @@ public class MainActivity extends Activity {
 
 	private void switchMode() {
 		ActionBar ab = getActionBar();
-		
 		if (nightModeOn) {
 			// Changing the apperance
 			ab.setTitle("Daymode");
 			ab.setBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206, 250)));
-			ab.setSplitBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206,	250)));
+			ab.setSplitBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206,
+					250)));
 			customMaps.removeAllMarkerFromMap();
 			nightModeOn = false;
 		} else {
@@ -346,24 +338,6 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-	  super.onSaveInstanceState(savedInstanceState);
-	  savedInstanceState.putBoolean("nightModeOn", !nightModeOn);
-	  
-	  Log.i("SAVING","" + nightModeOn);
-	}
-	
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	  super.onRestoreInstanceState(savedInstanceState);
-
-	  Boolean temp = savedInstanceState.getBoolean("nightModeOn");
-	  Log.i("SAVED","" + temp);
-	  nightModeOn = temp;
-	  switchMode();
-	}
-
 	protected Dialog onCreateDialog(int id) {
 		return new AlertDialog.Builder(this)
 				.setTitle("Planets")
@@ -393,3 +367,4 @@ public class MainActivity extends Activity {
 		}
 	}
 }
+
