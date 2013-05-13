@@ -4,18 +4,23 @@
         android:id="@+id/action_modes"
         android:orderInCategory="98"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/action_selectMode"/>
+        android:title="@string/action_selectMode"
+        android:icon="@drawable/action_settings" 
+        />
     <item
         android:id="@+id/action_search"
         android:actionViewClass="android.widget.SearchView"
         android:orderInCategory="99"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_search"/>
+        android:title="@string/action_search"
+        android:icon="@drawable/action_search" 
+        />
     <item
         android:id="@+id/action_layers"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_layers">
+        android:title="@string/action_layers"
+        android:icon="@drawable/av_add_to_queue" >
         <menu>
             <item
                 android:id="@+id/showLectureHalls"
