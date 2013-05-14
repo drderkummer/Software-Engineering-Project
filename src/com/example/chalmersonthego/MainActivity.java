@@ -4,6 +4,7 @@ import group5.database.DAO;
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,7 +46,7 @@ public class MainActivity extends Activity {
 	// Daymode/nightmode variable
 	private Boolean nightModeOn = false;
 
-	protected CharSequence[] layerOptions = { "Computer Rooms",
+	protected final CharSequence[] layerOptions = { "Computer Rooms",
 			"Lecture Halls", "Group Rooms" };
 	protected boolean[] layerSelections = new boolean[layerOptions.length];
 
@@ -106,10 +107,7 @@ public class MainActivity extends Activity {
 		ab.setHomeButtonEnabled(true);
 
 		// Changing the apperance
-		ab.setTitle("Daymode");
-		ab.setBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206, 250)));
-		ab.setSplitBackgroundDrawable(new ColorDrawable(Color
-				.rgb(135, 206, 250)));
+		switchMode();
 	}
 
 	/**
@@ -233,10 +231,6 @@ public class MainActivity extends Activity {
 			customMaps.setMyPosition();
 			return true;
 
-		case R.id.action_modes:
-			switchMode();
-			return true;
-
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
@@ -295,12 +289,15 @@ public class MainActivity extends Activity {
 			ab.setBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206, 250)));
 			ab.setSplitBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206,
 					250)));
+			ab.setIcon(R.drawable.icon_daymode);
+			ab.show();
 			customMaps.removeAllMarkerFromMap();
 			nightModeOn = false;
 		} else {
 			ab.setTitle("Nightmode");
 			ab.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
 			ab.setSplitBackgroundDrawable(new ColorDrawable(Color.BLACK));
+			ab.setIcon(R.drawable.icon_nightmode);
 			ab.show();
 			customMaps.drawBuildings();
 			nightModeOn = true;
@@ -340,7 +337,7 @@ public class MainActivity extends Activity {
 	
 	protected Dialog onCreateDialog(int id) {
 		return new AlertDialog.Builder(this)
-				.setTitle("Planets")
+				.setTitle("Show all on map")
 				.setMultiChoiceItems(layerOptions, layerSelections,
 						new DialogSelectionClickHandler())
 				.setPositiveButton("OK", new DialogButtonClickHandler())
