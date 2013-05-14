@@ -42,9 +42,8 @@ public class MainActivity extends Activity {
 	Boolean lectureHallsAreChecked = false;
 	Boolean computerRoomsAreChecked = false;
 	Boolean groupRoomsAreChecked = false;
-
-	// Daymode/nightmode variable
-	private Boolean nightModeOn = false;
+	
+	Boolean nightModeOn = false;
 
 	protected final CharSequence[] layerOptions = { "Computer Rooms",
 			"Lecture Halls", "Group Rooms" };
@@ -105,9 +104,6 @@ public class MainActivity extends Activity {
 		// Getting the icon clickable
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setHomeButtonEnabled(true);
-
-		// Changing the apperance
-		switchMode();
 	}
 
 	/**
