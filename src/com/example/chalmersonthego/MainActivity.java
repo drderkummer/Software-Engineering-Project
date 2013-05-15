@@ -273,6 +273,9 @@ public class MainActivity extends Activity {
 				.setNegativeButton("No", dialogClickListener).show();
 	}
 
+	/**
+	 * Switch from nightmode to daymode in the app
+	 */
 	private void switchMode() {
 		ActionBar ab = getActionBar();
 		if (nightModeOn) {
@@ -296,6 +299,9 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Show all rooms function. Builds upon what layers have been selected in the popupmenu, and then stored in layerSelection.
+	 */
 	private void showRooms() {
 
 		if (layerSelections[0]) {
@@ -336,6 +342,13 @@ public class MainActivity extends Activity {
 			customMaps.drawBuildings();
 		}
 	}
+	
+	/**
+	 * @see android.app.Activity#onCreateDialog(int)
+	 * @param id of the popupmenu to be created
+	 * 
+	 * Creates a popup dialog
+	 **/
 	protected Dialog onCreateDialog(int id) {
 		return new AlertDialog.Builder(this)
 				.setTitle("Show all on map")
@@ -351,6 +364,13 @@ public class MainActivity extends Activity {
 			Log.i("ME", layerOptions[clicked] + " selected: " + selected);
 		}
 	}
+	
+	/**
+	 * 
+	 * @author Niklas
+	 *
+	 * Handles buttons on popupmenus
+	 */
 	public class DialogButtonClickHandler implements
 			DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int clicked) {
