@@ -42,11 +42,11 @@ public class MainActivity extends Activity {
 	Boolean lectureHallsAreChecked = false;
 	Boolean computerRoomsAreChecked = false;
 	Boolean groupRoomsAreChecked = false;
-	
+
 	Boolean nightModeOn = false;
 
 	protected final CharSequence[] layerOptions = { "Computer Rooms",
-			"Lecture Halls", "Group Rooms" };
+			"Lecture Halls", "Group Rooms", "Pubs" };
 	protected boolean[] layerSelections = new boolean[layerOptions.length];
 
 	@SuppressLint("NewApi")
@@ -207,11 +207,6 @@ public class MainActivity extends Activity {
 	 * 
 	 * @param MenuItem
 	 * 
-	 *            IF MenuItem == CheckBoxes we need to do: 1. clear map from
-	 *            markers 2. check if CheckBox is Checked or NotChecked set new
-	 *            status relation to that set status of boolean value 3. check
-	 *            status from other CheckBoxes 4. show markers from checked
-	 *            CheckBoxes
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -222,11 +217,15 @@ public class MainActivity extends Activity {
 			Dialog dialog = onCreateDialog(0);
 			dialog.show();
 			return true;
-			
+
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
 			return true;
 
+		case R.id.exit:
+			finish();
+			return true;
+				
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
@@ -238,11 +237,9 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the options menu from XML
 		MenuInflater inflater = getMenuInflater();
-
 		inflater.inflate(R.menu.main_menu, menu);
-
-		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		ActionBar ab = getActionBar();
+		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
 		// Get the SearchView and set the searchable configuration
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -254,7 +251,6 @@ public class MainActivity extends Activity {
 				.getSearchableInfo(getComponentName()));
 		// Do not iconify the widget; expand it by default
 		searchView.setIconifiedByDefault(false);
-
 		return true;
 	}
 
@@ -301,15 +297,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void showRooms() {
-		if (layerSelections[2]) {
-			ArrayList<String> r2 = dao.getAllRoomsWithType("group room");
-			for (int i = 0; i < r2.size(); i++) {
-				LatLng coords = dao.getRoomCoordinates(r2.get(i));
-				String name = dao.getName(coords.latitude, coords.longitude);
-				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"group room");
-			}
-		}
+
 		if (layerSelections[0]) {
 			ArrayList<String> r1 = dao.getAllRoomsWithType("computer room");
 			for (int i = 0; i < r1.size(); i++) {
@@ -319,7 +307,6 @@ public class MainActivity extends Activity {
 						"computer room");
 			}
 		}
-
 		if (layerSelections[1]) {
 			ArrayList<String> r3 = dao.getAllRoomsWithType("lecture hall");
 			for (int i = 0; i < r3.size(); i++) {
@@ -329,8 +316,26 @@ public class MainActivity extends Activity {
 						"lecture hall");
 			}
 		}
+		if (layerSelections[2]) {
+			ArrayList<String> r2 = dao.getAllRoomsWithType("group room");
+			for (int i = 0; i < r2.size(); i++) {
+				LatLng coords = dao.getRoomCoordinates(r2.get(i));
+				String name = dao.getName(coords.latitude, coords.longitude);
+				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+						"group room");
+			}
+		}
+		if (layerSelections[3]) {
+			ArrayList<String> r4 = dao.getAllRoomsWithType("pub");
+			for (int i = 0; i < r4.size(); i++) {
+				LatLng coords = dao.getRoomCoordinates(r4.get(i));
+				String name = dao.getName(coords.latitude, coords.longitude);
+				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+						"pub");
+			}
+			customMaps.drawBuildings();
+		}
 	}
-	
 	protected Dialog onCreateDialog(int id) {
 		return new AlertDialog.Builder(this)
 				.setTitle("Show all on map")
@@ -339,7 +344,6 @@ public class MainActivity extends Activity {
 				.setPositiveButton("OK", new DialogButtonClickHandler())
 				.create();
 	}
-
 	public class DialogSelectionClickHandler implements
 			DialogInterface.OnMultiChoiceClickListener {
 		public void onClick(DialogInterface dialog, int clicked,
@@ -347,7 +351,6 @@ public class MainActivity extends Activity {
 			Log.i("ME", layerOptions[clicked] + " selected: " + selected);
 		}
 	}
-
 	public class DialogButtonClickHandler implements
 			DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int clicked) {
@@ -360,4 +363,3 @@ public class MainActivity extends Activity {
 		}
 	}
 }
-
