@@ -33,5 +33,10 @@
         android:orderInCategory="102"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/exit_app"/>
+    
+    <item android:id="@+id/action_treadmill"
+        android:orderInCategory="103"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_treadmill"/>
 
 </menu>

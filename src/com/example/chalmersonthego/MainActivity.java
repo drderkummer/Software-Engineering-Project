@@ -16,6 +16,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -32,11 +36,17 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 @SuppressLint("NewApi")
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener{
 
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
+	
+	//Treadmill stuff
+	private SensorManager mSensorManager;
+	private Sensor mSensor;
+	private int steps=0;
+	//End of tradmill stuff
 
 	// helping variables needed to check the state of the checkbox menu
 	Boolean lectureHallsAreChecked = false;
@@ -69,6 +79,7 @@ public class MainActivity extends Activity {
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
+		
 	}
 
 	/**
@@ -226,6 +237,10 @@ public class MainActivity extends Activity {
 			finish();
 			return true;
 				
+		case R.id.action_treadmill:
+			startTreadmill();
+			return true;
+			
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
@@ -343,6 +358,26 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	public void startTreadmill(){
+		//Setup the accelerometer
+				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+				mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+				mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
+	}
+	/**
+	 * Treadmill
+	 */
+	public void onSensorChanged(SensorEvent event){
+		
+		if(event.values[1]>10){
+			Toast.makeText(this, "You have taken "+steps+" steps!", Toast.LENGTH_SHORT)
+			.show();
+			steps++;
+			
+		}
+		
+	}
+	
 	/**
 	 * @see android.app.Activity#onCreateDialog(int)
 	 * @param id of the popupmenu to be created
@@ -381,5 +416,11 @@ public class MainActivity extends Activity {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 }

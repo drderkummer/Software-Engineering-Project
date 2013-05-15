@@ -24,5 +24,6 @@
     <string name="layers_groupRooms">Show group rooms</string>
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="action_my_location">My Location</string>
+    <string name="action_treadmill">Activate treadmill</string>
 
 </resources>
