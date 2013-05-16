@@ -98,14 +98,12 @@ public class CustomGoogleMaps {
 		}
 	}
 
-
 	/**
 	 * removes all markers from the map
 	 */
 	void removeAllMarkerFromMap() {
 		googleMap.clear();
 	}
-	
 
 	// Drawing an building on the map
 	public void drawBuildings() {
@@ -183,10 +181,10 @@ public class CustomGoogleMaps {
 		Location testLoc = new Location("TEST");
 		testLoc.setLatitude(57.687199);
 		testLoc.setLongitude(11.978673);
-		
+
 		return (testLoc);
 		// return location;
-		
+
 	}
 
 	/**
@@ -210,7 +208,8 @@ public class CustomGoogleMaps {
 			 */
 
 			// When user drag map
-			googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+			googleMap
+					.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 						@Override
 						public void onCameraChange(CameraPosition position) {
 
@@ -232,8 +231,10 @@ public class CustomGoogleMaps {
 							if (strictBounds.contains(googleMap
 									.getCameraPosition().target))
 								return;
-							
-							Toast.makeText(owningActivity, "Outside restricted area",Toast.LENGTH_LONG).show();
+
+							Toast.makeText(owningActivity,
+									"Outside restricted area",
+									Toast.LENGTH_LONG).show();
 
 							// Seems that we are out of bound
 							double x = googleMap.getCameraPosition().target.latitude;
@@ -254,40 +255,37 @@ public class CustomGoogleMaps {
 									.newLatLng(center));
 						}
 					});
-			
-		   /* googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
-		        @Override
-		        public View getInfoWindow(Marker arg0) {
-		            return null;
-		        }
 
-		        // Defines the contents of the InfoWindow
-		        @Override
-		        public View getInfoContents(Marker arg0) {
-		            View v = null;
-		            // Getting the position from the marker
-		            LatLng latLng = arg0.getPosition();            
+			/*
+			 * googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+			 * 
+			 * @Override public View getInfoWindow(Marker arg0) { return null; }
+			 * 
+			 * // Defines the contents of the InfoWindow
+			 * 
+			 * @Override public View getInfoContents(Marker arg0) { View v =
+			 * null; // Getting the position from the marker LatLng latLng =
+			 * arg0.getPosition();
+			 * 
+			 * return v; } });
+			 */
 
-		            return v;
-		        }
-		    });*/
-			
-			googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-				public void onInfoWindowClick(Marker marker){
-					Location l = getCurrentPosition();
-					LatLng LatLngMyPos = new LatLng(l.getLatitude(),l.getLongitude());
-					if (!strictBounds.contains(LatLngMyPos))
-						return;
-					
-					navManager.drawPathOnMap(LatLngMyPos, marker.getPosition());
-					
-				}
-			});
-			
+			googleMap
+					.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+						public void onInfoWindowClick(Marker marker) {
+							Location l = getCurrentPosition();
+							LatLng LatLngMyPos = new LatLng(l.getLatitude(), l
+									.getLongitude());
+							if (!strictBounds.contains(LatLngMyPos))
+								return;
+
+							navManager.drawPathOnMap(LatLngMyPos,
+									marker.getPosition());
+
+						}
+					});
+
 		}
-		
-
-		
 
 	}
 }

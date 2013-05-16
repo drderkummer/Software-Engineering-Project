@@ -28,35 +28,47 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 @SuppressLint("NewApi")
-public class MainActivity extends Activity implements SensorEventListener{
+public class MainActivity extends Activity implements SensorEventListener {
 
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
-	
-	//Treadmill stuff
+
+	// Used for showing the custom view button in the map
+	private OnInfoWindowElemTouchListener infoButtonListener;
+	private ViewGroup infoWindow;
+	private TextView infoTitle;
+	private TextView infoSnippet;
+	private Button infoButton;
+
+	// Treadmill
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-	private int steps=0;
-	//End of tradmill stuff
+	private int steps = 0;
+	// End of treadmill
 
-	// helping variables needed to check the state of the checkbox menu
-	Boolean lectureHallsAreChecked = false;
-	Boolean computerRoomsAreChecked = false;
-	Boolean groupRoomsAreChecked = false;
-
+	// Keep track of daymode and nightmode
 	Boolean nightModeOn = false;
 
+	// A car array with all the different types of rooms, avaliable to be
+	// selected in the show all menu
 	protected final CharSequence[] layerOptions = { "Computer Rooms",
 			"Lecture Halls", "Group Rooms", "Pubs" };
+	// Used to store what layers the user has choosen to show
 	protected boolean[] layerSelections = new boolean[layerOptions.length];
 
 	@SuppressLint("NewApi")
@@ -72,14 +84,63 @@ public class MainActivity extends Activity implements SensorEventListener{
 				.findFragmentById(R.id.map)).getMap();
 		customMaps = new CustomGoogleMaps(this, googleMap);
 		navigationManager = new NavigationManager(googleMap);
-
 		configureUI();
 
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
-		
+
+		/**
+		 * Code for getting the custom info buttons to work
+		 */
+		// Get fragment to the custom veiws code
+		final MapFragment mapFragment = (MapFragment) getFragmentManager()
+				.findFragmentById(R.id.map);
+		// TODO Fix this so that the parse goes through
+		//final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.LinearLayout1);
+		this.infoWindow = (ViewGroup) getLayoutInflater().inflate(
+				R.layout.info_window, null);
+		this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
+		this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
+		this.infoButton = (Button) infoWindow.findViewById(R.id.button);
+		this.infoButton.setText("Go here");
+		this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
+				getResources().getDrawable(R.drawable.icon_daymode),
+				getResources().getDrawable(R.drawable.icon_nightmode)) {
+			@Override
+			protected void onClickConfirmed(View v, Marker marker) {
+				// Here we can perform some action triggered after clicking the
+				// button
+				Toast.makeText(MainActivity.this,
+						marker.getTitle() + "'s button clicked!",
+						Toast.LENGTH_SHORT).show();
+			}
+		};
+
+		// Further setting up the customizeable infowindows on the map
+		this.infoButton.setOnTouchListener(infoButtonListener);
+		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+			@Override
+			public View getInfoWindow(Marker marker) {
+				return null;
+			}
+
+			@Override
+			public View getInfoContents(Marker marker) {
+				// Setting up the infoWindow with current's marker info
+				infoTitle.setText(marker.getTitle());
+				infoSnippet.setText(marker.getSnippet());
+				infoButtonListener.setMarker(marker);
+
+				// We must call this to set the current marker and infoWindow
+				// references
+				// to the MapWrapperLayout
+				//mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+				return infoWindow;
+			}
+		});
+
 	}
 
 	/**
@@ -236,11 +297,11 @@ public class MainActivity extends Activity implements SensorEventListener{
 		case R.id.exit:
 			finish();
 			return true;
-				
+
 		case R.id.action_treadmill:
 			startTreadmill();
 			return true;
-			
+
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
@@ -315,7 +376,8 @@ public class MainActivity extends Activity implements SensorEventListener{
 	}
 
 	/**
-	 * Show all rooms function. Builds upon what layers have been selected in the popupmenu, and then stored in layerSelection.
+	 * Show all rooms function. Builds upon what layers have been selected in
+	 * the popupmenu, and then stored in layerSelection.
 	 */
 	private void showRooms() {
 
@@ -357,32 +419,35 @@ public class MainActivity extends Activity implements SensorEventListener{
 			customMaps.drawBuildings();
 		}
 	}
-	
-	public void startTreadmill(){
-		//Setup the accelerometer
-				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-				mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-				mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
+
+	public void startTreadmill() {
+		// Setup the accelerometer
+		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		mSensorManager.registerListener(this, mSensor,
+				SensorManager.SENSOR_DELAY_GAME);
 	}
+
 	/**
 	 * Treadmill
 	 */
-	public void onSensorChanged(SensorEvent event){
-		
-		if(event.values[1]>10){
-			Toast.makeText(this, "You have taken "+steps+" steps!", Toast.LENGTH_SHORT)
-			.show();
+	public void onSensorChanged(SensorEvent event) {
+
+		if (event.values[1] > 10) {
+			Toast.makeText(this, "You have taken " + steps + " steps!",
+					Toast.LENGTH_SHORT).show();
 			steps++;
-			
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * @see android.app.Activity#onCreateDialog(int)
-	 * @param id of the popupmenu to be created
+	 * @param id
+	 *            of the popupmenu to be created
 	 * 
-	 * Creates a popup dialog
+	 *            Creates a popup dialog
 	 **/
 	protected Dialog onCreateDialog(int id) {
 		return new AlertDialog.Builder(this)
@@ -392,6 +457,7 @@ public class MainActivity extends Activity implements SensorEventListener{
 				.setPositiveButton("OK", new DialogButtonClickHandler())
 				.create();
 	}
+
 	public class DialogSelectionClickHandler implements
 			DialogInterface.OnMultiChoiceClickListener {
 		public void onClick(DialogInterface dialog, int clicked,
@@ -399,12 +465,12 @@ public class MainActivity extends Activity implements SensorEventListener{
 			Log.i("ME", layerOptions[clicked] + " selected: " + selected);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @author Niklas
-	 *
-	 * Handles buttons on popupmenus
+	 * 
+	 *         Handles buttons on popupmenus
 	 */
 	public class DialogButtonClickHandler implements
 			DialogInterface.OnClickListener {
@@ -421,6 +487,6 @@ public class MainActivity extends Activity implements SensorEventListener{
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
