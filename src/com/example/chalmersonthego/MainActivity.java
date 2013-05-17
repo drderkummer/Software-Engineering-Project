@@ -48,13 +48,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
 
-	// Used for showing the custom view button in the map
-	private OnInfoWindowElemTouchListener infoButtonListener;
-	private ViewGroup infoWindow;
-	private TextView infoTitle;
-	private TextView infoSnippet;
-	private Button infoButton;
-
 	// Treadmill
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
@@ -90,56 +83,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
-
-		/**
-		 * Code for getting the custom info buttons to work
-		 */
-		// Get fragment to the custom veiws code
-		final MapFragment mapFragment = (MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map);
-		// TODO Fix this so that the parse goes through
-		//final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.LinearLayout1);
-		this.infoWindow = (ViewGroup) getLayoutInflater().inflate(
-				R.layout.info_window, null);
-		this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
-		this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
-		this.infoButton = (Button) infoWindow.findViewById(R.id.button);
-		this.infoButton.setText("Go here");
-		this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
-				getResources().getDrawable(R.drawable.icon_daymode),
-				getResources().getDrawable(R.drawable.icon_nightmode)) {
-			@Override
-			protected void onClickConfirmed(View v, Marker marker) {
-				// Here we can perform some action triggered after clicking the
-				// button
-				Toast.makeText(MainActivity.this,
-						marker.getTitle() + "'s button clicked!",
-						Toast.LENGTH_SHORT).show();
-			}
-		};
-
-		// Further setting up the customizeable infowindows on the map
-		this.infoButton.setOnTouchListener(infoButtonListener);
-		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
-			@Override
-			public View getInfoWindow(Marker marker) {
-				return null;
-			}
-
-			@Override
-			public View getInfoContents(Marker marker) {
-				// Setting up the infoWindow with current's marker info
-				infoTitle.setText(marker.getTitle());
-				infoSnippet.setText(marker.getSnippet());
-				infoButtonListener.setMarker(marker);
-
-				// We must call this to set the current marker and infoWindow
-				// references
-				// to the MapWrapperLayout
-				//mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-				return infoWindow;
-			}
-		});
 
 	}
 

@@ -7,10 +7,13 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -26,7 +29,7 @@ public class CustomGoogleMaps {
 	private GoogleMap googleMap;
 
 	// The Activity owning the map
-	Activity owningActivity;
+	final Activity owningActivity;
 
 	TextView tvDistanceDuration;
 	private NavigationManager navManager;
@@ -35,6 +38,13 @@ public class CustomGoogleMaps {
 	private LatLng northWest = new LatLng(57.697497, 11.985397);
 	private LatLng southEast = new LatLng(57.678687, 11.969347);
 	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
+	
+	// Used for showing the custom view button in the map
+	private OnInfoWindowElemTouchListener infoButtonListener;
+	private ViewGroup infoWindow;
+	private TextView infoTitle;
+	private TextView infoSnippet;
+	private Button infoButton;
 
 	/**
 	 * 
@@ -43,7 +53,7 @@ public class CustomGoogleMaps {
 	 * @param googleMap
 	 *            in instance of GoogleMap
 	 */
-	public CustomGoogleMaps(Activity owningActivity, GoogleMap googleMap) {
+	public CustomGoogleMaps(final Activity owningActivity, GoogleMap googleMap) {
 		this.owningActivity = owningActivity;
 		this.googleMap = googleMap;
 
@@ -54,6 +64,55 @@ public class CustomGoogleMaps {
 
 		// Set up the map
 		setUpMapIfNeeded();
+		
+		/**
+		 * Code for getting the custom info buttons to work
+		 */
+		// Get fragment to the custom veiws code
+		final MapFragment mapFragment = (MapFragment) owningActivity.getFragmentManager()
+				.findFragmentById(R.id.map);
+		// TODO Fix this so that the parse goes through to get the button to work
+		//final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.layout.activity_main);
+		this.infoWindow = (ViewGroup) owningActivity.getLayoutInflater().inflate(
+				R.layout.info_window, null);
+		this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
+		this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
+		this.infoButton = (Button) infoWindow.findViewById(R.id.button);
+		this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
+				owningActivity.getResources().getDrawable(R.drawable.icon_daymode),
+				owningActivity.getResources().getDrawable(R.drawable.icon_nightmode)) {
+			@Override
+			protected void onClickConfirmed(View v, Marker marker) {
+				// Here we can perform some action triggered after clicking the
+				// button
+				Toast.makeText(owningActivity,
+						marker.getTitle() + "'s button clicked!",
+						Toast.LENGTH_SHORT).show();
+			}
+		};
+
+		// Further setting up the customizeable infowindows on the map
+		this.infoButton.setOnTouchListener(infoButtonListener);
+		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+			@Override
+			public View getInfoWindow(Marker marker) {
+				return null;
+			}
+
+			@Override
+			public View getInfoContents(Marker marker) {
+				// Setting up the infoWindow with current's marker info
+				infoTitle.setText(marker.getTitle());
+				infoSnippet.setText(marker.getSnippet());
+				infoButtonListener.setMarker(marker);
+
+				// We must call this to set the current marker and infoWindow
+				// references
+				// to the MapWrapperLayout
+				//mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+				return infoWindow;
+			}
+		});
 	}
 
 	/**
