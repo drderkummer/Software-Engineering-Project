@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,9 @@ import com.google.android.gms.maps.model.Marker;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
+	//CalendarSynch stuff
+	private ICalReader iCal;
+	
 	// Treadmill stuff
 	private int steps = 0;
 	private float mLimit = 10;
@@ -93,6 +97,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
+		
+		iCal = new ICalReader(this);
+
 	}
 
 	/**
@@ -254,11 +261,34 @@ public class MainActivity extends Activity implements SensorEventListener {
 			startTreadmill();
 			return true;
 
+		case R.id.action_calendarSynch:
+			synchWithCal();
+			return true;
+
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
 			return true;
 		}
+	}
+
+	private void synchWithCal() {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setTitle("Please enter the iCal url");
+		final EditText input = new EditText(this);
+		b.setView(input);
+		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				iCal.downloadICal(input.getText().toString());
+				
+			}
+		});
+		b.setNegativeButton("CANCEL", null);
+		b.create().show();
+		
+		
+
 	}
 
 	private void startTreadmill() {
@@ -466,7 +496,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 							// Step confirmed!
 							Log.i("main", "step");
 							steps++;
-							getActionBar().setTitle("You have taken " + steps + " steps.");
+							getActionBar().setTitle(
+									"You have taken " + steps + " steps.");
 							mLastMatch = extType;
 						} else {
 							mLastMatch = -1;

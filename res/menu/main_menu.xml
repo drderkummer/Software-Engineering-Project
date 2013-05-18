@@ -1,14 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    
-<!-- Mode button, will try to fix this in a better way
+
+    <!--
+     Mode button, will try to fix this in a better way
     <item
         android:id="@+id/action_modes"
         android:icon="@drawable/action_settings"
         android:orderInCategory="98"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/action_selectMode"/>
-        -->
-        
+        android:title="@string/action_selectMode"/>
+    -->
+
     <item
         android:id="@+id/action_search"
         android:actionViewClass="android.widget.SearchView"
@@ -24,8 +25,8 @@
         android:title="@string/action_layers"/>
     <item
         android:id="@+id/action_my_location"
-        android:orderInCategory="101"
         android:icon="@drawable/action_my_location"
+        android:orderInCategory="101"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_my_location"/>
     <item
@@ -33,10 +34,15 @@
         android:orderInCategory="102"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/exit_app"/>
-    
-    <item android:id="@+id/action_treadmill"
+    <item
+        android:id="@+id/action_treadmill"
         android:orderInCategory="103"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_treadmill"/>
+    <item
+        android:id="@+id/action_calendarSynch"
+        android:orderInCategory="104"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_calendarSynch"/>
 
 </menu>

@@ -25,5 +25,6 @@
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="action_my_location">My Location</string>
     <string name="action_treadmill">Activate treadmill</string>
+    <string name="action_calendarSynch">Synch with ICal</string>
 
 </resources>
