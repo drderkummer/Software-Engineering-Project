@@ -45,10 +45,10 @@ import com.google.android.gms.maps.model.Marker;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
-	//CalendarSynch stuff
+	//Calendar synch related variables
 	private ICalReader iCal;
 	
-	// Treadmill stuff
+	// Treadmill related variables
 	private int steps = 0;
 	private float mLimit = 10;
 	private float mLastValues[] = new float[3 * 2];
@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private Sensor mSensor;
 	// End of treadmill
 
+	
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
@@ -272,6 +273,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		}
 	}
 
+	/**
+	 * Called when the user wants to synch with iCalendar
+	 */
 	private void synchWithCal() {
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
 		b.setTitle("Please enter the iCal url");
@@ -286,11 +290,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 		});
 		b.setNegativeButton("CANCEL", null);
 		b.create().show();
-		
-		
-
 	}
 
+	
+	/**
+	 * Called when the user wants to start the treadmill function
+	 */
 	private void startTreadmill() {
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -303,7 +308,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		mScale[1] = -(h * 0.5f * (1.0f / (SensorManager.MAGNETIC_FIELD_EARTH_MAX)));
 
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the options menu from XML
@@ -458,7 +462,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	/**
-	 * Treadmill stuff
+	 * Treadmill methods, onSensorChanged is called when a sensor pushes a event to the active listeners.
 	 * 
 	 * @param event
 	 */
