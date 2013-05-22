@@ -1,5 +1,7 @@
 package com.example.chalmersonthego;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -28,6 +30,8 @@ public class CustomGoogleMaps {
 
 	private GoogleMap googleMap;
 
+	private ArrayList<MarkerOptions> markerOptionsArray = new ArrayList<MarkerOptions>();
+	
 	// The Activity owning the map
 	final Activity owningActivity;
 
@@ -45,6 +49,12 @@ public class CustomGoogleMaps {
 	private TextView infoTitle;
 	private TextView infoSnippet;
 	private Button infoButton;
+	
+	public void rePrint(){
+		for (MarkerOptions m : markerOptionsArray){
+			googleMap.addMarker(m);
+		}
+	}
 
 	/**
 	 * 
@@ -129,31 +139,34 @@ public class CustomGoogleMaps {
 	 */
 	void showMarkerOnMap(LatLng latLng, String title, String floor, String type) {
 		if ((latLng != null && title != null && floor != null && type != null)) {
+			MarkerOptions markerOptions;
 			if (type.equalsIgnoreCase("computer room")) {
-				googleMap.addMarker(new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("computerroom.png")));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("computerroom.png"));
 			} else if (type.equalsIgnoreCase("lecture hall")) {
-				googleMap.addMarker(new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("lecturehall.png")));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("lecturehall.png"));
 			} else if (type.equalsIgnoreCase("group room")) {
-				googleMap.addMarker(new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("grouproom.png")));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("grouproom.png"));
 			} else {
-				googleMap.addMarker(new MarkerOptions().position(latLng)
-						.title(title).snippet("floor: " + floor + type));
+				markerOptions = new MarkerOptions().position(latLng)
+						.title(title).snippet("floor: " + floor + type);
 			}
+			markerOptionsArray.add(markerOptions);
+			googleMap.addMarker(markerOptions);
 		}
 	}
 
@@ -161,6 +174,7 @@ public class CustomGoogleMaps {
 	 * removes all markers from the map
 	 */
 	void removeAllMarkerFromMap() {
+		markerOptionsArray.clear();
 		googleMap.clear();
 	}
 
@@ -346,5 +360,12 @@ public class CustomGoogleMaps {
 
 		}
 
+	}
+	public ArrayList<MarkerOptions> getMarkerOptionsArray() {
+		return markerOptionsArray;
+	}
+
+	public void setMarkerOptionsArray(ArrayList<MarkerOptions> markerOptionsArray) {
+		this.markerOptionsArray = markerOptionsArray;
 	}
 }

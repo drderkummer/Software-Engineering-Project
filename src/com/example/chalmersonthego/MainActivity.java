@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
@@ -546,6 +547,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	    savedInstanceState.putInt(stepsString, steps);
 	    //Save the layerSelecations
 	    savedInstanceState.putBooleanArray(layerSelectionString, layerSelections);
+	    
+	    savedInstanceState.putParcelableArrayList("markers", customMaps.getMarkerOptionsArray());
+	    
 	    // Always call the superclass so it can save the view hierarchy state
 	    super.onSaveInstanceState(savedInstanceState);
 	}
@@ -557,6 +561,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 	    stepCounterActivated = savedInstanceState.getBoolean(stepCounterActivatedString,stepCounterActivated);
 	    steps = savedInstanceState.getInt(stepsString);
 	    layerSelections = savedInstanceState.getBooleanArray(layerSelectionString);
+	    
+	    ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState.getParcelableArrayList("markers");
+	    customMaps.setMarkerOptionsArray(markerOptionsArray);
+	    customMaps.rePrint();
 	    showRooms();
 	}
 }
