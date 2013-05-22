@@ -32,6 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +73,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	// Keep track of daymode and nightmode
 	Boolean nightModeOn = false;
 
+	//A boolean set to 'true' when a room-type-layer is chosen
+	private boolean layerIsChosen = false;
 	// A car array with all the different types of rooms, avaliable to be
 	// selected in the show all menu
 	protected final CharSequence[] layerOptions = { "Computer Rooms",
@@ -234,6 +238,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		super.onDestroy();
 	}
 
+
 	/**
 	 * Following method is called when launcher icon clicked
 	 * 
@@ -310,6 +315,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		if(layerIsChosen){
+			menu.add(Menu.NONE,0,Menu.NONE,"floors").setIcon(R.drawable.action_floors)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		}
 		// Inflate the options menu from XML
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
@@ -456,6 +465,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 			case DialogInterface.BUTTON_POSITIVE:
 				customMaps.removeAllMarkerFromMap();
 				showRooms();
+				if(layerSelections[0]||layerSelections[1]||layerSelections[2]||layerSelections[3]){
+					layerIsChosen = true;
+				}else{
+					layerIsChosen = false;
+				}
+				invalidateOptionsMenu();
 				break;
 			}
 		}
