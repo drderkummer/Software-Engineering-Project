@@ -26,5 +26,8 @@
     <string name="action_my_location">My Location</string>
     <string name="action_treadmill">Activate treadmill</string>
     <string name="action_calendarSynch">Synch with ICal</string>
+    <string name="action_floors">floors</string>
+    <string name="first">1</string>
+    <string name="second">2</string>
 
 </resources>
