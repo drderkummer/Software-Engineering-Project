@@ -64,7 +64,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	// Keep track of daymode and nightmode
 	Boolean nightModeOn = false;
 
-	//A boolean set to 'true' when a room-type-layer is chosen
+	// A boolean set to 'true' when a room-type-layer is chosen
 	private boolean layerIsChosen = false;
 	// A car array with all the different types of rooms, avaliable to be
 	// selected in the show all menu
@@ -72,6 +72,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 			"Lecture Halls", "Group Rooms", "Pubs" };
 	// Used to store what layers the user has choosen to show
 	protected boolean[] layerSelections = new boolean[layerOptions.length];
+
+	// A car array with all the floors
+	protected final CharSequence[] floorOptions = { "-1 Floor","Ground floor",
+			"1st Floor", "2nd Floor", "3rd Floor","4th Floor", "5th Floor" };
+	// Used to store what floorlayers the user has choosen to show
+	protected boolean[] floorSelections = new boolean[floorOptions.length];
 
 	@SuppressLint("NewApi")
 	@Override
@@ -229,7 +235,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		super.onDestroy();
 	}
 
-
 	/**
 	 * Following method is called when launcher icon clicked
 	 * 
@@ -242,8 +247,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 		switch (item.getItemId()) {
 
 		case R.id.action_layers:
-			Dialog dialog = onCreateDialog(0);
-			dialog.show();
+			Dialog layerDialog = onCreateDialog(0);
+			layerDialog.show();
+			return true;
+
+		case R.id.action_floors:
+			Dialog floorDialog = onCreateDialog(1);
+			floorDialog.show();
 			return true;
 
 		case R.id.action_my_location:
@@ -306,10 +316,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if(layerIsChosen){
-			menu.add(Menu.NONE,0,Menu.NONE,"floors").setIcon(R.drawable.action_floors)
-				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		}
 		// Inflate the options menu from XML
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
@@ -427,19 +433,77 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 *            Creates a popup dialog
 	 **/
 	protected Dialog onCreateDialog(int id) {
-		return new AlertDialog.Builder(this)
-				.setTitle("Show all on map")
-				.setMultiChoiceItems(layerOptions, layerSelections,
-						new DialogSelectionClickHandler())
-				.setPositiveButton("OK", new DialogButtonClickHandler())
-				.create();
+
+		if (id == 0) {
+			return new AlertDialog.Builder(this)
+					.setTitle("Show layers on map")
+					.setMultiChoiceItems(layerOptions, layerSelections,
+							new LayerDialogSelectionClickHandler())
+					.setPositiveButton("OK",
+							new LayerDialogButtonClickHandler()).create();
+		} else if (id == 1) {
+			return new AlertDialog.Builder(this)
+					.setTitle("Select floors to show")
+					.setMultiChoiceItems(floorOptions, floorSelections,
+							new FloorDialogSelectionClickHandler())
+					.setPositiveButton("OK",
+							new FloorDialogButtonClickHandler()).create();
+		}
+		return null;
 	}
 
-	public class DialogSelectionClickHandler implements
+	/**
+	 * 
+	 * @author Niklas Handles selections on layers menu
+	 */
+	public class LayerDialogSelectionClickHandler implements
 			DialogInterface.OnMultiChoiceClickListener {
+
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
+
 			Log.i("ME", layerOptions[clicked] + " selected: " + selected);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @author Niklas Handles selections on floor menu
+	 */
+	public class FloorDialogSelectionClickHandler implements
+			DialogInterface.OnMultiChoiceClickListener {
+
+		public void onClick(DialogInterface dialog, int clicked,
+				boolean selected) {
+
+			Log.i("ME", floorOptions[clicked] + " selected: " + selected);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @author Niklas
+	 * 
+	 *         Handles click on layers menu
+	 */
+	public class LayerDialogButtonClickHandler implements
+			DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int clicked) {
+			switch (clicked) {
+			case DialogInterface.BUTTON_POSITIVE:
+				customMaps.removeAllMarkerFromMap();
+				showRooms();
+				if (layerSelections[0] || layerSelections[1]
+						|| layerSelections[2] || layerSelections[3]) {
+					layerIsChosen = true;
+				} else {
+					layerIsChosen = false;
+				}
+				invalidateOptionsMenu();
+				break;
+			}
 		}
 	}
 
@@ -447,22 +511,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * 
 	 * @author Niklas
 	 * 
-	 *         Handles buttons on popupmenus
+	 *         Handles click on floor menu
 	 */
-	public class DialogButtonClickHandler implements
+	public class FloorDialogButtonClickHandler implements
 			DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int clicked) {
 			switch (clicked) {
 			case DialogInterface.BUTTON_POSITIVE:
-				customMaps.removeAllMarkerFromMap();
-				showRooms();
-				if(layerSelections[0]||layerSelections[1]||layerSelections[2]||layerSelections[3]){
-					layerIsChosen = true;
-				}else{
-					layerIsChosen = false;
-				}
-				invalidateOptionsMenu();
-				break;
+				// ADD LINES FOR SHOWING ONLY SELECTED LAYERS HERE
 			}
 		}
 	}
