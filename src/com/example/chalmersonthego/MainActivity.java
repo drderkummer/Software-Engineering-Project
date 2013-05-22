@@ -4,8 +4,6 @@ import group5.database.DAO;
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,41 +18,35 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
-	//Calendar synch related variables
+	// Calendar synch related variables
 	private ICalReader iCal;
 	
 	//Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
-	
+
 	// Treadmill related variables
 	private boolean stepCounterActivated;
 	private int steps = 0;
@@ -71,7 +63,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private Sensor mSensor;
 	// End of treadmill
 
-	
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
@@ -108,7 +99,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
-		
+
 		iCal = new ICalReader(this);
 		
 		startTreadmill();
@@ -293,19 +284,18 @@ public class MainActivity extends Activity implements SensorEventListener {
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
 		b.setTitle("Please enter the iCal url");
 		final EditText input = new EditText(this);
+		input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 		b.setView(input);
 		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
-				iCal.downloadICal(input.getText().toString());
-				
+				iCal.getWebpageSource(input.getText().toString());
 			}
 		});
 		b.setNegativeButton("CANCEL", null);
 		b.create().show();
 	}
 
-	
 	/**
 	 * Called when the user wants to start the treadmill function
 	 */
@@ -322,7 +312,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	}
 
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if(layerIsChosen){
@@ -487,7 +476,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	/**
-	 * Treadmill methods, onSensorChanged is called when a sensor pushes a event to the active listeners.
+	 * Treadmill methods, onSensorChanged is called when a sensor pushes a event
+	 * to the active listeners.
 	 * 
 	 * @param event
 	 */
