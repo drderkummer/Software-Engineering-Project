@@ -41,8 +41,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	// Calendar synch related variables
 	private ICalReader iCal;
+	
+	//Constant strings to use with save and restore instance state
+	private static final String stepCounterActivatedString = "stepCounterActivated";
+	private static final String stepsString = "steps";
+	private static final String layerSelectionString = "layerSelection";
 
 	// Treadmill related variables
+	private boolean stepCounterActivated;
 	private int steps = 0;
 	private float mLimit = 10;
 	private float mLastValues[] = new float[3 * 2];
@@ -101,6 +107,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		insertDataForTheFirstTime();
 
 		iCal = new ICalReader(this);
+		
+		startTreadmill();
 
 	}
 
@@ -265,7 +273,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 			return true;
 
 		case R.id.action_treadmill:
-			startTreadmill();
+			stepCounterActivated = !stepCounterActivated;
 			return true;
 
 		case R.id.action_calendarSynch:
@@ -530,50 +538,52 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param event
 	 */
 	public void onSensorChanged(SensorEvent event) {
-		Sensor sensor = event.sensor;
-		synchronized (this) {
-			int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
-			if (j == 1) {
-				float vSum = 0;
-				for (int i = 0; i < 3; i++) {
-					final float v = mYOffset + event.values[i] * mScale[j];
-					vSum += v;
-				}
-				int k = 0;
-				float v = vSum / 3;
-
-				float direction = (v > mLastValues[k] ? 1
-						: (v < mLastValues[k] ? -1 : 0));
-				if (direction == -mLastDirections[k]) {
-					// Direction changed
-					int extType = (direction > 0 ? 0 : 1); // minumum or
-															// maximum?
-					mLastExtremes[extType][k] = mLastValues[k];
-					float diff = Math.abs(mLastExtremes[extType][k]
-							- mLastExtremes[1 - extType][k]);
-
-					if (diff > mLimit) {
-
-						boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
-						boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
-						boolean isNotContra = (mLastMatch != 1 - extType);
-
-						if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough
-								&& isNotContra) {
-							// Step confirmed!
-							Log.i("main", "step");
-							steps++;
-							getActionBar().setTitle(
-									"You have taken " + steps + " steps.");
-							mLastMatch = extType;
-						} else {
-							mLastMatch = -1;
-						}
+		if(stepCounterActivated){
+			Sensor sensor = event.sensor;
+			synchronized (this) {
+				int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
+				if (j == 1) {
+					float vSum = 0;
+					for (int i = 0; i < 3; i++) {
+						final float v = mYOffset + event.values[i] * mScale[j];
+						vSum += v;
 					}
-					mLastDiff[k] = diff;
+					int k = 0;
+					float v = vSum / 3;
+	
+					float direction = (v > mLastValues[k] ? 1
+							: (v < mLastValues[k] ? -1 : 0));
+					if (direction == -mLastDirections[k]) {
+						// Direction changed
+						int extType = (direction > 0 ? 0 : 1); // minumum or
+																// maximum?
+						mLastExtremes[extType][k] = mLastValues[k];
+						float diff = Math.abs(mLastExtremes[extType][k]
+								- mLastExtremes[1 - extType][k]);
+	
+						if (diff > mLimit) {
+	
+							boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
+							boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
+							boolean isNotContra = (mLastMatch != 1 - extType);
+	
+							if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough
+									&& isNotContra) {
+								// Step confirmed!
+								Log.i("main", "step");
+								steps++;
+								getActionBar().setTitle(
+										"You have taken " + steps + " steps.");
+								mLastMatch = extType;
+							} else {
+								mLastMatch = -1;
+							}
+						}
+						mLastDiff[k] = diff;
+					}
+					mLastDirections[k] = direction;
+					mLastValues[k] = v;
 				}
-				mLastDirections[k] = direction;
-				mLastValues[k] = v;
 			}
 		}
 	}
@@ -582,5 +592,27 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 
+	}
+	
+
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	    savedInstanceState.putBoolean(stepCounterActivatedString, stepCounterActivated);
+	    savedInstanceState.putInt(stepsString, steps);
+	    //Save the layerSelecations
+	    savedInstanceState.putBooleanArray(layerSelectionString, layerSelections);
+	    // Always call the superclass so it can save the view hierarchy state
+	    super.onSaveInstanceState(savedInstanceState);
+	}
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	    // Always call the superclass so it can restore the view hierarchy
+	    super.onRestoreInstanceState(savedInstanceState);
+	   
+	    // Restore state members from saved instance
+	    stepCounterActivated = savedInstanceState.getBoolean(stepCounterActivatedString,stepCounterActivated);
+	    steps = savedInstanceState.getInt(stepsString);
+	    layerSelections = savedInstanceState.getBooleanArray(layerSelectionString);
+	    showRooms();
 	}
 }
