@@ -11,7 +11,6 @@ import group5.database.DAO;
 /**
  * This class should test all the methods in DAO.java
  * @author Fredrik
- *
  */
 public class DAOTest extends AndroidTestCase {
 	

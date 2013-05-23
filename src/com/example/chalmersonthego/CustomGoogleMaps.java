@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -31,7 +32,7 @@ public class CustomGoogleMaps {
 	private GoogleMap googleMap;
 
 	private ArrayList<MarkerOptions> markerOptionsArray = new ArrayList<MarkerOptions>();
-	
+
 	// The Activity owning the map
 	final Activity owningActivity;
 
@@ -42,14 +43,14 @@ public class CustomGoogleMaps {
 	private LatLng northWest = new LatLng(57.697497, 11.985397);
 	private LatLng southEast = new LatLng(57.678687, 11.969347);
 	private LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
-	
+
 	// Used for showing the custom view button in the map
 	private OnInfoWindowElemTouchListener infoButtonListener;
 	private ViewGroup infoWindow;
 	private TextView infoTitle;
 	private TextView infoSnippet;
 	private Button infoButton;
-	
+
 	public void rePrint(){
 		for (MarkerOptions m : markerOptionsArray){
 			googleMap.addMarker(m);
@@ -74,7 +75,7 @@ public class CustomGoogleMaps {
 
 		// Set up the map
 		setUpMapIfNeeded();
-		
+
 		/**
 		 * Code for getting the custom info buttons to work
 		 */
@@ -123,6 +124,30 @@ public class CustomGoogleMaps {
 				return infoWindow;
 			}
 		});
+		
+		googleMap.setOnMapLongClickListener(new OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng point) {
+            	// Creating an instance of MarkerOptions
+                MarkerOptions markerOptions = new MarkerOptions();
+ 
+                // Setting position for the marker
+                markerOptions.position(point);
+ 
+                // Setting custom icon for the marker
+               // markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.));
+ 
+                // Setting title for the infowindow
+                markerOptions.title(point.latitude + ","+point.longitude);
+ 
+                // Adding the marker to the map
+                markerOptionsArray.add(markerOptions);
+                rePrint();
+            }
+        });
+		
+		
+		
 	}
 
 	/**
@@ -220,10 +245,10 @@ public class CustomGoogleMaps {
 			if (strictBounds.contains(myPosition)) {
 				Marker hereAmI = googleMap
 						.addMarker(new MarkerOptions()
-								.position(myPosition)
-								.title("My Location")
-								.icon(BitmapDescriptorFactory
-										.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+						.position(myPosition)
+						.title("My Location")
+						.icon(BitmapDescriptorFactory
+								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 								.snippet("I am here"));
 				hereAmI.showInfoWindow();
 
@@ -241,23 +266,16 @@ public class CustomGoogleMaps {
 
 	/**
 	 * Get current position
-	 * 
 	 * @return my current location
 	 */
 	private Location getCurrentPosition() {
 
 		LocationManager locationManager = (LocationManager) owningActivity
 				.getSystemService(Context.LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		String provider = locationManager.getBestProvider(criteria, true);
+		String provider = locationManager.getBestProvider(new Criteria(), true);
 		Location location = locationManager.getLastKnownLocation(provider);
-		Location testLoc = new Location("TEST");
-		testLoc.setLatitude(57.687199);
-		testLoc.setLongitude(11.978673);
 
-		return (testLoc);
-		// return location;
-
+		return location;
 	}
 
 	/**
@@ -282,52 +300,52 @@ public class CustomGoogleMaps {
 
 			// When user drag map
 			googleMap
-					.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-						@Override
-						public void onCameraChange(CameraPosition position) {
+			.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				@Override
+				public void onCameraChange(CameraPosition position) {
 
-							// Set minimum zoom level
-							if (position.zoom < 14) {
-								googleMap.animateCamera(CameraUpdateFactory
-										.zoomTo(14));
-								Toast.makeText(owningActivity, "Minimum zoom",
-										Toast.LENGTH_LONG).show();
-							}
+					// Set minimum zoom level
+					if (position.zoom < 14) {
+						googleMap.animateCamera(CameraUpdateFactory
+								.zoomTo(14));
+						Toast.makeText(owningActivity, "Minimum zoom",
+								Toast.LENGTH_LONG).show();
+					}
 
-							// Limits on the map
-							LatLng northWest = new LatLng(57.697497, 11.985397);
-							LatLng southEast = new LatLng(57.678687, 11.969347);
-							strictBounds = new LatLngBounds(southEast,
-									northWest);
+					// Limits on the map
+					LatLng northWest = new LatLng(57.697497, 11.985397);
+					LatLng southEast = new LatLng(57.678687, 11.969347);
+					strictBounds = new LatLngBounds(southEast,
+							northWest);
 
-							// If position is within, do nothing.
-							if (strictBounds.contains(googleMap
-									.getCameraPosition().target))
-								return;
+					// If position is within, do nothing.
+					if (strictBounds.contains(googleMap
+							.getCameraPosition().target))
+						return;
 
-							Toast.makeText(owningActivity,
-									"Outside restricted area",
-									Toast.LENGTH_LONG).show();
+					Toast.makeText(owningActivity,
+							"Outside restricted area",
+							Toast.LENGTH_LONG).show();
 
-							// Seems that we are out of bound
-							double x = googleMap.getCameraPosition().target.latitude;
-							double y = googleMap.getCameraPosition().target.longitude;
+					// Seems that we are out of bound
+					double x = googleMap.getCameraPosition().target.latitude;
+					double y = googleMap.getCameraPosition().target.longitude;
 
-							if (x < southEast.latitude)
-								x = southEast.latitude;
-							if (x > northWest.latitude)
-								x = northWest.latitude;
-							if (y < southEast.longitude)
-								y = southEast.longitude;
-							if (y > northWest.longitude)
-								y = northWest.longitude;
+					if (x < southEast.latitude)
+						x = southEast.latitude;
+					if (x > northWest.latitude)
+						x = northWest.latitude;
+					if (y < southEast.longitude)
+						y = southEast.longitude;
+					if (y > northWest.longitude)
+						y = northWest.longitude;
 
-							// Set new center
-							LatLng center = new LatLng(x, y);
-							googleMap.moveCamera(CameraUpdateFactory
-									.newLatLng(center));
-						}
-					});
+					// Set new center
+					LatLng center = new LatLng(x, y);
+					googleMap.moveCamera(CameraUpdateFactory
+							.newLatLng(center));
+				}
+			});
 
 			/*
 			 * googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
@@ -343,21 +361,17 @@ public class CustomGoogleMaps {
 			 * return v; } });
 			 */
 
-			googleMap
-					.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-						public void onInfoWindowClick(Marker marker) {
-							Location l = getCurrentPosition();
-							LatLng LatLngMyPos = new LatLng(l.getLatitude(), l
-									.getLongitude());
-							if (!strictBounds.contains(LatLngMyPos))
-								return;
+			googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+				public void onInfoWindowClick(Marker marker) {
+					Location l = getCurrentPosition();
+					LatLng LatLngMyPos = new LatLng(l.getLatitude(), l.getLongitude());
+					if (!strictBounds.contains(LatLngMyPos))
+						return;
 
-							navManager.drawPathOnMap(LatLngMyPos,
-									marker.getPosition());
-
-						}
-					});
-
+					navManager.drawPathOnMap(LatLngMyPos,
+							marker.getPosition());
+				}
+			});			
 		}
 
 	}

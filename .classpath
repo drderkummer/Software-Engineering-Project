@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry exported="true" kind="src" path="/google-play-services_lib"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-<<<<<<< HEAD
-	<classpathentry exported="true" kind="lib" path="C:/adt-bundle-windows-x86_64-20130219/sdk/platforms/android-17/android.jar"/>
-=======
->>>>>>> bcb1e687aa94d51e0e367675da95ecee00803785
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/google-play-services_lib"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
