@@ -2,6 +2,7 @@ package com.example.chalmersonthego;
 
 import group5.database.DAO;
 import group5.database.DatabaseConstants;
+import group5.database.InsertionsOfData;
 
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
