@@ -7,7 +7,7 @@
         android:icon="@drawable/action_settings"
         android:orderInCategory="98"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/action_selectMode"/>
+        android:title="@string/action_selectMode"/>
     -->
 
     <item
@@ -30,20 +30,16 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_my_location"/>
     <item
-        android:id="@+id/exit"
-        android:orderInCategory="102"
-        android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/exit_app"/>
-    <item
         android:id="@+id/action_treadmill"
         android:orderInCategory="103"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_treadmill"/>
     <item
-        android:id="@+id/action_calendarSynch"
+        android:id="@+id/action_calories"
         android:orderInCategory="104"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_calendarSynch"/>
+        android:title="@string/action_calories"
+        android:visible="true"/>
     <item
         android:id="@+id/action_floors"
         android:icon="@drawable/action_floors"
@@ -51,4 +47,10 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_floors"
         android:visible="true"/>
+        <item
+        android:id="@+id/exit"
+        android:orderInCategory="106"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/exit_app"/>
+
 </menu>

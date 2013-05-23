@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,10 +27,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -40,15 +47,25 @@ import com.google.android.gms.maps.model.MarkerOptions;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
-	// Calendar synch related variables
-	private ICalReader iCal;
-	
-	//Constant strings to use with save and restore instance state
+
+	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
 
 	// Treadmill related variables
+	private ProgressDialog progressDialog;
+
+	private ProgressBar beerProgressBar;
+	private ProgressBar shotProgressBar;
+	private ProgressBar wineProgressBar;
+	private int amountOfBeers = 0;
+	private int amountOfShots = 0;
+	private int amountOfWine = 0;
+	private final int STEPSINBEER = 2500;
+	private final int STEPSINSHOT = 500;
+	private final int STEPSINWINE = 2500;
+
 	private boolean stepCounterActivated;
 	private int steps = 0;
 	private float mLimit = 10;
@@ -67,6 +84,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
+	private final Context context = this;
 
 	// Keep track of daymode and nightmode
 	Boolean nightModeOn = false;
@@ -81,8 +99,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	protected boolean[] layerSelections = new boolean[layerOptions.length];
 
 	// A car array with all the floors
-	protected final CharSequence[] floorOptions = { "-1 Floor","Ground floor",
-			"1st Floor", "2nd Floor", "3rd Floor","4th Floor", "5th Floor" };
+	protected final CharSequence[] floorOptions = { "-1 Floor", "Ground floor",
+			"1st Floor", "2nd Floor", "3rd Floor", "4th Floor", "5th Floor" };
 	// Used to store what floorlayers the user has choosen to show
 	protected boolean[] floorSelections = new boolean[floorOptions.length];
 
@@ -107,8 +125,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao.open();
 		insertDataForTheFirstTime();
 
-		iCal = new ICalReader(this);
-		
 		startTreadmill();
 
 	}
@@ -265,6 +281,17 @@ public class MainActivity extends Activity implements SensorEventListener {
 			floorDialog.show();
 			return true;
 
+		case R.id.action_calories:
+			if (stepCounterActivated) {
+				Dialog calorieDialog = onCreateDialog(2);
+				calorieDialog.show();
+				updateProgressBars();
+			} else {
+				Toast.makeText(this, "Enable treadmill to show this function",
+						Toast.LENGTH_SHORT).show();
+			}
+			return true;
+
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
 			return true;
@@ -275,10 +302,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		case R.id.action_treadmill:
 			stepCounterActivated = !stepCounterActivated;
+			if (stepCounterActivated) {
+				item.setTitle("Disable Stepcounter");
+			} else {
+				item.setTitle(R.string.action_treadmill);
+			}
 			return true;
 
-		case R.id.action_calendarSynch:
-			synchWithCal();
+		case R.id.action_search:
 			return true;
 
 		default:
@@ -286,25 +317,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 					.show();
 			return true;
 		}
-	}
-
-	/**
-	 * Called when the user wants to synch with iCalendar
-	 */
-	private void synchWithCal() {
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle("Please enter the iCal url");
-		final EditText input = new EditText(this);
-		input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-		b.setView(input);
-		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				iCal.getWebpageSource(input.getText().toString());
-			}
-		});
-		b.setNegativeButton("CANCEL", null);
-		b.create().show();
 	}
 
 	/**
@@ -444,6 +456,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	protected Dialog onCreateDialog(int id) {
 
 		if (id == 0) {
+			//Inflate the show layers menu
 			return new AlertDialog.Builder(this)
 					.setTitle("Show layers on map")
 					.setMultiChoiceItems(layerOptions, layerSelections,
@@ -451,12 +464,96 @@ public class MainActivity extends Activity implements SensorEventListener {
 					.setPositiveButton("OK",
 							new LayerDialogButtonClickHandler()).create();
 		} else if (id == 1) {
+			//Inflate the show floors menu
 			return new AlertDialog.Builder(this)
 					.setTitle("Select floors to show")
 					.setMultiChoiceItems(floorOptions, floorSelections,
 							new FloorDialogSelectionClickHandler())
 					.setPositiveButton("OK",
 							new FloorDialogButtonClickHandler()).create();
+		} else if (id == 2) {
+			// Calorie beer wine and shot progress window
+			final Dialog dialog = new Dialog(context);
+			dialog.setContentView(R.layout.calorie_progress);
+			dialog.setTitle("Calorie progress!");
+
+			// Beer realted code
+			final TextView beerTextField=(TextView) dialog.findViewById(R.id.beerText);
+			beerTextField.setText("Beer progress bar. You have taken: "+amountOfBeers);
+			
+			
+			beerProgressBar = (ProgressBar) dialog
+					.findViewById(R.id.beerProgressBar);
+			beerProgressBar.setMax(STEPSINBEER + STEPSINBEER * amountOfBeers);
+			Button beerButton = (Button) dialog
+					.findViewById(R.id.beerDrinkButton);
+			beerButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (steps < STEPSINBEER * amountOfShots + STEPSINBEER) {
+						Toast.makeText(context,
+								"You will get fat if you continue like this",
+								Toast.LENGTH_SHORT).show();
+					}
+					//Set progress bar to next level of steps
+					amountOfBeers++;
+					beerProgressBar.setMax(STEPSINBEER + STEPSINBEER
+							* amountOfBeers);
+					beerTextField.setText("Beer progress bar. You have taken: "+amountOfBeers);
+				}
+			});
+
+			// Shot related code
+			final TextView shotTextField=(TextView) dialog.findViewById(R.id.shotText);
+			shotTextField.setText("Shot progress bar. You have taken: "+amountOfShots);
+			
+			shotProgressBar = (ProgressBar) dialog
+					.findViewById(R.id.shotProgressBar);
+			shotProgressBar.setMax(STEPSINSHOT + STEPSINSHOT * amountOfShots);
+			Button shotButton = (Button) dialog
+					.findViewById(R.id.shotDrinkButton);
+			shotButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (steps < STEPSINSHOT * amountOfShots + STEPSINSHOT) {
+						Toast.makeText(context,
+								"You will get fat if you continue like this",
+								Toast.LENGTH_SHORT).show();
+					}
+					//Set progress bar to next level of steps
+					amountOfShots++;
+					shotProgressBar.setMax(STEPSINSHOT + STEPSINSHOT
+							* amountOfShots);
+					shotTextField.setText("Shot progress bar. You have taken: "+amountOfShots);
+				}
+			});
+
+			// Wine related code
+			final TextView wineTextField=(TextView) dialog.findViewById(R.id.wineText);
+			wineTextField.setText("Wine progress bar. You have taken: "+amountOfWine);
+			
+			wineProgressBar = (ProgressBar) dialog
+					.findViewById(R.id.wineProgressBar);
+			wineProgressBar.setMax(STEPSINWINE + STEPSINWINE * amountOfWine);
+			Button wineButton = (Button) dialog
+					.findViewById(R.id.wineDrinkButton);
+			wineButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (steps < STEPSINWINE * amountOfShots + STEPSINWINE) {
+						Toast.makeText(context,
+								"You will get fat if you continue like this",
+								Toast.LENGTH_SHORT).show();
+					}
+					//Set progress bar to next level of steps
+					amountOfWine++;
+					wineProgressBar.setMax(STEPSINWINE + STEPSINWINE
+							* amountOfWine);
+					wineTextField.setText("Wine progress bar. You have taken: "+amountOfWine);
+				}
+			});
+
+			return dialog;
 		}
 		return null;
 	}
@@ -539,7 +636,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param event
 	 */
 	public void onSensorChanged(SensorEvent event) {
-		if(stepCounterActivated){
+		if (stepCounterActivated) {
 			Sensor sensor = event.sensor;
 			synchronized (this) {
 				int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
@@ -551,7 +648,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					}
 					int k = 0;
 					float v = vSum / 3;
-	
+
 					float direction = (v > mLastValues[k] ? 1
 							: (v < mLastValues[k] ? -1 : 0));
 					if (direction == -mLastDirections[k]) {
@@ -561,20 +658,21 @@ public class MainActivity extends Activity implements SensorEventListener {
 						mLastExtremes[extType][k] = mLastValues[k];
 						float diff = Math.abs(mLastExtremes[extType][k]
 								- mLastExtremes[1 - extType][k]);
-	
+
 						if (diff > mLimit) {
-	
+
 							boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
 							boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
 							boolean isNotContra = (mLastMatch != 1 - extType);
-	
-							if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough
-									&& isNotContra) {
+
+							if (isAlmostAsLargeAsPrevious
+									&& isPreviousLargeEnough && isNotContra) {
 								// Step confirmed!
 								Log.i("main", "step");
 								steps++;
 								getActionBar().setTitle(
 										"You have taken " + steps + " steps.");
+								updateProgressBars();
 								mLastMatch = extType;
 							} else {
 								mLastMatch = -1;
@@ -594,33 +692,47 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// TODO Auto-generated method stub
 
 	}
-	
 
-	
+	public void updateProgressBars() {
+		if (beerProgressBar != null && shotProgressBar != null
+				&& wineProgressBar != null) {
+			beerProgressBar.setProgress(steps);
+			wineProgressBar.setProgress(steps);
+			shotProgressBar.setProgress(steps);
+		}
+	}
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-	    savedInstanceState.putBoolean(stepCounterActivatedString, stepCounterActivated);
-	    savedInstanceState.putInt(stepsString, steps);
-	    //Save the layerSelecations
-	    savedInstanceState.putBooleanArray(layerSelectionString, layerSelections);
-	    
-	    savedInstanceState.putParcelableArrayList("markers", customMaps.getMarkerOptionsArray());
-	    
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putBoolean(stepCounterActivatedString,
+				stepCounterActivated);
+		savedInstanceState.putInt(stepsString, steps);
+		// Save the layerSelecations
+		savedInstanceState.putBooleanArray(layerSelectionString,
+				layerSelections);
+
+		savedInstanceState.putParcelableArrayList("markers",
+				customMaps.getMarkerOptionsArray());
+
+		// Always call the superclass so it can save the view hierarchy state
+		super.onSaveInstanceState(savedInstanceState);
 	}
+
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	    // Always call the superclass so it can restore the view hierarchy
-	    super.onRestoreInstanceState(savedInstanceState);
-	   
-	    // Restore state members from saved instance
-	    stepCounterActivated = savedInstanceState.getBoolean(stepCounterActivatedString,stepCounterActivated);
-	    steps = savedInstanceState.getInt(stepsString);
-	    layerSelections = savedInstanceState.getBooleanArray(layerSelectionString);
-	    
-	    ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState.getParcelableArrayList("markers");
-	    customMaps.setMarkerOptionsArray(markerOptionsArray);
-	    customMaps.rePrint();
-	    showRooms();
+		// Always call the superclass so it can restore the view hierarchy
+		super.onRestoreInstanceState(savedInstanceState);
+
+		// Restore state members from saved instance
+		stepCounterActivated = savedInstanceState.getBoolean(
+				stepCounterActivatedString, stepCounterActivated);
+		steps = savedInstanceState.getInt(stepsString);
+		layerSelections = savedInstanceState
+				.getBooleanArray(layerSelectionString);
+
+		ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState
+				.getParcelableArrayList("markers");
+		customMaps.setMarkerOptionsArray(markerOptionsArray);
+		customMaps.rePrint();
+		showRooms();
 	}
 }

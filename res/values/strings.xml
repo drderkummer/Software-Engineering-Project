@@ -24,9 +24,9 @@
     <string name="layers_groupRooms">Show group rooms</string>
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="action_my_location">My Location</string>
-    <string name="action_treadmill">Activate treadmill</string>
+    <string name="action_treadmill">Activate Stepcounter</string>
     <string name="action_calendarSynch">Synch with ICal</string>
     <string name="action_floors">Select visible floors</string>
-    
+    <string name="action_calories">Calorie Drinking Progress</string>
 
 </resources>
