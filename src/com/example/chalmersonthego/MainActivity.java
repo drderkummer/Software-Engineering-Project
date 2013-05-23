@@ -47,7 +47,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
-
+	private static final String sharedPrefsString = "shared";
+	private static final String markerOptionsArrayString = "markerOptionsArray";
+	
 	// Treadmill related variables
 	private boolean stepCounterActivated;
 	private int steps = 0;
@@ -215,10 +217,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			String message = "Enable either GPS or any other location"
-					+ " service to find current location.";
-			builder.setMessage(message)
-					.setPositiveButton("Yes",
+			builder.setMessage(R.string.question_gps)
+					.setPositiveButton(R.string.alert_positive,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface d, int id) {
 									startActivity(new Intent(
@@ -226,7 +226,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 									d.dismiss();
 								}
 							})
-					.setNegativeButton("No",
+					.setNegativeButton(R.string.alert_negative,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface d, int id) {
 									d.cancel();
@@ -240,7 +240,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public void insertDataForTheFirstTime() {
 		String firstTime = "firstTime";
 		boolean isFirstTime = true;
-		SharedPreferences prefs = getSharedPreferences("com.example.android", 0);
+		SharedPreferences prefs = getSharedPreferences(sharedPrefsString, 0);
 		if (prefs.getBoolean(firstTime, isFirstTime)) {
 			InsertionsOfData.basicDataInsert(dao);
 			prefs.edit().putBoolean(firstTime, !isFirstTime).commit();
@@ -318,6 +318,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
 			break;
+		case R.id.action_search:
+			break;
 		case R.id.exit:
 			finish();
 			break;
@@ -326,6 +328,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 			break;
 		case R.id.action_emptyMap:
 			customMaps.removeAllMarkerFromMap();
+			break;
+		case R.id.action_calories:
 			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
@@ -406,8 +410,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to exit?")
-				.setPositiveButton("Yes", dialogClickListener)
-				.setNegativeButton("No", dialogClickListener).show();
+				.setPositiveButton(R.string.alert_positive, dialogClickListener)
+				.setNegativeButton(R.string.alert_negative, dialogClickListener).show();
 	}
 
 	/**
@@ -651,7 +655,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		savedInstanceState.putBooleanArray(layerSelectionString,
 				layerSelections);
 
-		savedInstanceState.putParcelableArrayList("markers",
+		savedInstanceState.putParcelableArrayList(markerOptionsArrayString,
 				customMaps.getMarkerOptionsArray());
 
 		// Always call the superclass so it can save the view hierarchy state
@@ -670,7 +674,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				.getBooleanArray(layerSelectionString);
 
 		ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState
-				.getParcelableArrayList("markers");
+				.getParcelableArrayList(markerOptionsArrayString);
 		customMaps.setMarkerOptionsArray(markerOptionsArray);
 		customMaps.rePrint();
 		showRooms();
