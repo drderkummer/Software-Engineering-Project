@@ -47,25 +47,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
-
 	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
 
 	// Treadmill related variables
-	private ProgressDialog progressDialog;
 
-	private ProgressBar beerProgressBar;
-	private ProgressBar shotProgressBar;
-	private ProgressBar wineProgressBar;
-	private int amountOfBeers = 0;
-	private int amountOfShots = 0;
-	private int amountOfWine = 0;
-	private final int STEPSINBEER = 2500;
-	private final int STEPSINSHOT = 500;
-	private final int STEPSINWINE = 2500;
-
+	private CalorieDialog calorieDialog;
 	private boolean stepCounterActivated;
 	private int steps = 0;
 	private float mLimit = 10;
@@ -283,11 +272,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		case R.id.action_calories:
 			if (stepCounterActivated) {
-				Dialog calorieDialog = onCreateDialog(2);
+				// Calorie beer wine and shot progress window
+				calorieDialog = new CalorieDialog(this,steps);
 				calorieDialog.show();
-				updateProgressBars();
+				calorieDialog.updateCalorieWindow();
 			} else {
-				Toast.makeText(this, "Enable treadmill to show this function",
+				Toast.makeText(this,
+						"Enable stepcounter to show this function",
 						Toast.LENGTH_SHORT).show();
 			}
 			return true;
@@ -456,7 +447,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	protected Dialog onCreateDialog(int id) {
 
 		if (id == 0) {
-			//Inflate the show layers menu
+			// Inflate the show layers menu
 			return new AlertDialog.Builder(this)
 					.setTitle("Show layers on map")
 					.setMultiChoiceItems(layerOptions, layerSelections,
@@ -464,97 +455,15 @@ public class MainActivity extends Activity implements SensorEventListener {
 					.setPositiveButton("OK",
 							new LayerDialogButtonClickHandler()).create();
 		} else if (id == 1) {
-			//Inflate the show floors menu
+			// Inflate the show floors menu
 			return new AlertDialog.Builder(this)
 					.setTitle("Select floors to show")
 					.setMultiChoiceItems(floorOptions, floorSelections,
 							new FloorDialogSelectionClickHandler())
 					.setPositiveButton("OK",
 							new FloorDialogButtonClickHandler()).create();
-		} else if (id == 2) {
-			// Calorie beer wine and shot progress window
-			final Dialog dialog = new Dialog(context);
-			dialog.setContentView(R.layout.calorie_progress);
-			dialog.setTitle("Calorie progress!");
-
-			// Beer realted code
-			final TextView beerTextField=(TextView) dialog.findViewById(R.id.beerText);
-			beerTextField.setText("Beer progress bar. You have taken: "+amountOfBeers);
-			
-			
-			beerProgressBar = (ProgressBar) dialog
-					.findViewById(R.id.beerProgressBar);
-			beerProgressBar.setMax(STEPSINBEER + STEPSINBEER * amountOfBeers);
-			Button beerButton = (Button) dialog
-					.findViewById(R.id.beerDrinkButton);
-			beerButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (steps < STEPSINBEER * amountOfShots + STEPSINBEER) {
-						Toast.makeText(context,
-								"You will get fat if you continue like this",
-								Toast.LENGTH_SHORT).show();
-					}
-					//Set progress bar to next level of steps
-					amountOfBeers++;
-					beerProgressBar.setMax(STEPSINBEER + STEPSINBEER
-							* amountOfBeers);
-					beerTextField.setText("Beer progress bar. You have taken: "+amountOfBeers);
-				}
-			});
-
-			// Shot related code
-			final TextView shotTextField=(TextView) dialog.findViewById(R.id.shotText);
-			shotTextField.setText("Shot progress bar. You have taken: "+amountOfShots);
-			
-			shotProgressBar = (ProgressBar) dialog
-					.findViewById(R.id.shotProgressBar);
-			shotProgressBar.setMax(STEPSINSHOT + STEPSINSHOT * amountOfShots);
-			Button shotButton = (Button) dialog
-					.findViewById(R.id.shotDrinkButton);
-			shotButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (steps < STEPSINSHOT * amountOfShots + STEPSINSHOT) {
-						Toast.makeText(context,
-								"You will get fat if you continue like this",
-								Toast.LENGTH_SHORT).show();
-					}
-					//Set progress bar to next level of steps
-					amountOfShots++;
-					shotProgressBar.setMax(STEPSINSHOT + STEPSINSHOT
-							* amountOfShots);
-					shotTextField.setText("Shot progress bar. You have taken: "+amountOfShots);
-				}
-			});
-
-			// Wine related code
-			final TextView wineTextField=(TextView) dialog.findViewById(R.id.wineText);
-			wineTextField.setText("Wine progress bar. You have taken: "+amountOfWine);
-			
-			wineProgressBar = (ProgressBar) dialog
-					.findViewById(R.id.wineProgressBar);
-			wineProgressBar.setMax(STEPSINWINE + STEPSINWINE * amountOfWine);
-			Button wineButton = (Button) dialog
-					.findViewById(R.id.wineDrinkButton);
-			wineButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (steps < STEPSINWINE * amountOfShots + STEPSINWINE) {
-						Toast.makeText(context,
-								"You will get fat if you continue like this",
-								Toast.LENGTH_SHORT).show();
-					}
-					//Set progress bar to next level of steps
-					amountOfWine++;
-					wineProgressBar.setMax(STEPSINWINE + STEPSINWINE
-							* amountOfWine);
-					wineTextField.setText("Wine progress bar. You have taken: "+amountOfWine);
-				}
-			});
-
-			return dialog;
 		}
+
 		return null;
 	}
 
@@ -672,7 +581,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 								steps++;
 								getActionBar().setTitle(
 										"You have taken " + steps + " steps.");
-								updateProgressBars();
+
+								if (calorieDialog != null) {
+									calorieDialog.updateCalorieWindow();
+									calorieDialog.setSteps(steps);
+								}
+
 								mLastMatch = extType;
 							} else {
 								mLastMatch = -1;
@@ -691,15 +605,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public void updateProgressBars() {
-		if (beerProgressBar != null && shotProgressBar != null
-				&& wineProgressBar != null) {
-			beerProgressBar.setProgress(steps);
-			wineProgressBar.setProgress(steps);
-			shotProgressBar.setProgress(steps);
-		}
 	}
 
 	@Override
