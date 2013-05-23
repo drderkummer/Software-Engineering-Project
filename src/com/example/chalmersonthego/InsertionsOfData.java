@@ -18,12 +18,32 @@ public class InsertionsOfData {
 				mydao.insertIntoTable2("lecture hall");
 				mydao.insertIntoTable2("group room");
 				mydao.insertIntoTable2("computer room");
-				mydao.insertIntoTable4("pub");
+				mydao.insertIntoTable2("pub");
+				mydao.insertIntoTable2("microwave");
+				mydao.insertIntoTable2("cinema");
+				mydao.insertIntoTable2("gym");
+				mydao.insertIntoTable2("billiard room");
+				mydao.insertIntoTable2("sauna");
+				mydao.insertIntoTable2("cafeteria");
+
+
+				/******************************************************************************
+				*********************INSERTION OF "STUDENT UNION":*****************************
+				******************************************************************************/
+				mydao.insertIntoTable3("Pripps", 57.688945, 11.974169, "pub", "Student Union", "ground");
+				mydao.insertIntoTable3("Kyrkan", 57.68911, 11.974352, "billiard room", "Student Union", "ground");
+				mydao.insertIntoTable3("cafeteria foyer", 57.68918, 11.974059, "cafeteria", "Student Union", "ground");
+				//mydao.insertIntoTable3("hauptmensa", , , "", "", "");
+				mydao.insertIntoTable3("cinema", 57.689125, 11.973869, "", "", "");
+				mydao.insertIntoTable3("Gym", 57.688925, 11.974099, "gym", "Student Union", "1");
+				//mydao.insertIntoTable3("", , , "", "", "");
+
 				
 				//insert into 'buildings' table:
 				mydao.insertIntoTable4("EDIT");
 				mydao.insertIntoTable4("Architecture");
 				mydao.insertIntoTable4("Vasa");
+				mydao.insertIntoTable4("Student Union");
 				
 				/******************************************************************************
 				*********************INSERTION OF "EDIT" BUILDING:*****************************
