@@ -74,7 +74,7 @@ public class DAO {
 	public void insertIntoTable2(String name) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_2_COLUMN_1, name);
-		database.insert(DBHelper.TABLE_2_NAME, null, values);
+		database.replace(DBHelper.TABLE_2_NAME, null, values);
 	}
 
 	/**
