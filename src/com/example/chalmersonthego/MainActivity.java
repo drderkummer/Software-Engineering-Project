@@ -3,14 +3,12 @@ package com.example.chalmersonthego;
 import group5.database.DAO;
 import group5.database.DatabaseConstants;
 import group5.database.InsertionsOfData;
-
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,44 +23,32 @@ import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.view.ActionMode;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+@SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
-	// Constant strings to use with save and restore instance state
-	private static final String stepCounterActivatedString =
-			"stepCounterActivated";
+	// Calendar synch related variables
+	private ICalReader iCal;
+	
+	//Constant strings to use with save and restore instance state
+	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
-	private static final String markerOptionsArrayString = "markerOptionsArray";
 
 	// Treadmill related variables
-	private ProgressDialog progressDialog;
-	private ProgressBar beerProgressBar;
-	private ProgressBar shotProgressBar;
-	private ProgressBar wineProgressBar;
-	private int amountOfBeers = 0;
-	private int amountOfShots = 0;
-	private int amountOfWine = 0;
-	private final int STEPSINBEER = 2500;
-	private final int STEPSINSHOT = 500;
-	private final int STEPSINWINE = 2500;
-
 	private boolean stepCounterActivated;
 	private int steps = 0;
 	private float mLimit = 10;
@@ -81,7 +67,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 	private NavigationManager navigationManager;
-	private final Context context = this;
 
 	// Keep track of daymode and nightmode
 	Boolean nightModeOn = false;
@@ -89,15 +74,16 @@ public class MainActivity extends Activity implements SensorEventListener {
 	// A boolean set to 'true' when a room-type-layer is chosen
 	private boolean layerIsChosen = false;
 	
-	// Used to store what layers the user has chosen to show
-	private boolean[] layerSelections =
-			new boolean[DatabaseConstants.layerOptions.length];
+	protected Object mActionMode;
+	// A car array with all the different types of rooms, avaliable to be
+	// selected in the show all menu
+	// Used to store what layers the user has choosen to show
+	protected boolean[] layerSelections = new boolean[DatabaseConstants.layerOptions.length];
 
-	// Used to store what floor-layers the user has chosen to show
-	private boolean[] floorSelections =
-			new boolean[DatabaseConstants.floorOptions.length];
+	// Used to store what floorlayers the user has choosen to show
+	protected boolean[] floorSelections = new boolean[DatabaseConstants.floorOptions.length];
 
-
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -118,10 +104,76 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao.open();
 		insertDataForTheFirstTime();
 
+		iCal = new ICalReader(this);
+		
 		startTreadmill();
+
 
 	}
 
+	
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+	    // Called when the action mode is created; startActionMode() was called
+	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	      // Inflate a menu resource providing context menu items
+	      MenuInflater inflater = mode.getMenuInflater();
+	      //.inflate(R.layout.contextual_layout, null)
+
+	      // Assumes that you have "contexual.xml" menu resources
+	      inflater.inflate(R.menu.contextual, menu);
+	      return true;
+	    }
+
+	    // Called each time the action mode is shown. Always called after
+	    // onCreateActionMode, but
+	    // may be called multiple times if the mode is invalidated.
+	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	    	return false; // Return false if nothing is done
+	    }
+
+	    // Called when the user selects a contextual menu item
+	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	    	switch (item.getItemId()) {
+	    	case R.id.basement:
+	    		Toast.makeText(MainActivity.this, "show all rooms in basement",
+	    			  Toast.LENGTH_LONG).show();
+	        		//mode.finish(); // Action picked, so close the CAB
+	    		floorSelections[0]=true;
+	    		return true;
+	    	case R.id.ground:
+	    		floorSelections[1]=true;
+	    		return true;
+	    	case R.id.first:
+	    		floorSelections[2]=true;
+	    		return true;
+	    	case R.id.second:
+	    		floorSelections[3]=true;
+	    		return true;
+	    	case R.id.third:
+	    		floorSelections[4]=true;
+	    		return true;
+	    	case R.id.fourth:
+	    		floorSelections[5]=true;
+	    		return true;
+	    	case R.id.fifth:
+	    		floorSelections[6]=true;
+	    		return true;
+	    	case R.id.sixth:
+	    		floorSelections[7]=true;
+	    		return true;
+	    	default:
+	    		return false;
+	    	}
+	    }
+
+	    // Called when the user exits the action mode
+	    public void onDestroyActionMode(ActionMode mode) {
+	      mActionMode = null;
+	    }
+	  };
+
+	
 	/**
 	 * private void customPath(LatLng from, LatLng to){ //Get length via
 	 * standard API. int apiLength = 0;
@@ -264,53 +316,47 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		switch (item.getItemId()) {
 
-			case R.id.action_layers:
-				Dialog layerDialog = onCreateDialog(0);
-				layerDialog.show();
-				break;
-			case R.id.action_floors:
-				Dialog floorDialog = onCreateDialog(1);
-				floorDialog.show();
-				break;
-			case R.id.action_calories:
-				if (stepCounterActivated) {
-					Dialog calorieDialog = onCreateDialog(2);
-					calorieDialog.show();
-					updateProgressBars();
-				} else {
-					Toast.makeText(this, "Enable treadmill to show this function",
-							Toast.LENGTH_SHORT).show();
-				}
-				break;
-			case R.id.action_my_location:
-				customMaps.setMyPosition();
-				break;
-			case R.id.exit:
-				finish();
-				break;
-			case R.id.action_treadmill:
-				stepCounterActivated = !stepCounterActivated;
-				break;
-			/*case R.id.action_calendarSynch:
-				synchWithCal();
-				break;*/
-			case R.id.action_emptyMap:
-				customMaps.removeAllMarkerFromMap();
-				if (stepCounterActivated) {
-					item.setTitle("Disable Stepcounter");
-				} else {
-					item.setTitle(R.string.action_treadmill);
-				}
-				break;
-			case R.id.action_search:
-				break;
-			default:
-				//Should never happen but toast if it does
-				Toast.makeText(this, "Illegal menu alternative!",
-						Toast.LENGTH_SHORT).show();
-				break;
+		case R.id.action_layers:
+			Dialog layerDialog = onCreateDialog(0);
+			layerDialog.show();
+			return true;
+
+		case R.id.action_my_location:
+			customMaps.setMyPosition();
+			return true;
+
+		case R.id.exit:
+			finish();
+			return true;
+
+		case R.id.action_treadmill:
+			stepCounterActivated = !stepCounterActivated;
+			return true;
+
+		default:
+			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
+					.show();
+			return true;
+		}
+	}
+
+	/**
+	 * Called when the user wants to synch with iCalendar
+	 */
+	private void synchWithCal() {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setTitle("Please enter the iCal url");
+		final EditText input = new EditText(this);
+		input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		b.setView(input);
+		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				iCal.getWebpageSource(input.getText().toString());
 			}
-		return true;
+		});
+		b.setNegativeButton("CANCEL", null);
+		b.create().show();
 	}
 
 	/**
@@ -399,8 +445,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * Show all rooms function. Builds upon what layers have been selected in
 	 * the popupmenu, and then stored in layerSelection.
 	 */
-	private void showRooms() {
-
+	private boolean showRooms() {
+		layerIsChosen = false;
 		if (layerSelections[0]) {
 			ArrayList<String> r1 = dao.getAllRoomsWithType("computer room");
 			for (int i = 0; i < r1.size(); i++) {
@@ -409,6 +455,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
 						"computer room");
 			}
+			layerIsChosen = true;
 		}
 		if (layerSelections[1]) {
 			ArrayList<String> r3 = dao.getAllRoomsWithType("lecture hall");
@@ -418,6 +465,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
 						"lecture hall");
 			}
+			layerIsChosen = true;
 		}
 		if (layerSelections[2]) {
 			ArrayList<String> r2 = dao.getAllRoomsWithType("group room");
@@ -427,6 +475,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
 						"group room");
 			}
+			layerIsChosen = true;
 		}
 		if (layerSelections[3]) {
 			ArrayList<String> r4 = dao.getAllRoomsWithType("pub");
@@ -437,8 +486,15 @@ public class MainActivity extends Activity implements SensorEventListener {
 						"pub");
 			}
 			customMaps.drawBuildings();
+			layerIsChosen = true;
+		}
+		if (layerIsChosen){
+			return true;
+		}else{
+			return false;
 		}
 	}
+	
 
 	/**
 	 * @see android.app.Activity#onCreateDialog(int)
@@ -450,107 +506,28 @@ public class MainActivity extends Activity implements SensorEventListener {
 	protected Dialog onCreateDialog(int id) {
 
 		if (id == 0) {
-			//Inflate the show layers menu
 			return new AlertDialog.Builder(this)
 					.setTitle("Show layers on map")
 					.setMultiChoiceItems(DatabaseConstants.layerOptions, layerSelections,
 							new LayerDialogSelectionClickHandler())
 					.setPositiveButton("OK",
 							new LayerDialogButtonClickHandler()).create();
-		} else if (id == 1) {
-			//Inflate the show floors menu
-			return new AlertDialog.Builder(this)
-					.setTitle("Select floors to show")
-					.setMultiChoiceItems(DatabaseConstants.floorOptions,
-							floorSelections,new FloorDialogSelectionClickHandler())
-					.setPositiveButton("OK",
-							new FloorDialogButtonClickHandler()).create();
-		} else if (id == 2) {
-			// Calorie beer wine and shot progress window
-			final Dialog dialog = new Dialog(context);
-			dialog.setContentView(R.layout.calorie_progress);
-			dialog.setTitle("Calorie progress!");
-
-			// Beer realted code
-			final TextView beerTextField=(TextView) dialog.findViewById(R.id.beerText);
-			beerTextField.setText("Beer progress bar. You have taken: "+amountOfBeers);
-			
-			
-			beerProgressBar = (ProgressBar) dialog
-					.findViewById(R.id.beerProgressBar);
-			beerProgressBar.setMax(STEPSINBEER + STEPSINBEER * amountOfBeers);
-			Button beerButton = (Button) dialog
-					.findViewById(R.id.beerDrinkButton);
-			beerButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (steps < STEPSINBEER * amountOfShots + STEPSINBEER) {
-						Toast.makeText(context,
-								"You will get fat if you continue like this",
-								Toast.LENGTH_SHORT).show();
-					}
-					//Set progress bar to next level of steps
-					amountOfBeers++;
-					beerProgressBar.setMax(STEPSINBEER + STEPSINBEER
-							* amountOfBeers);
-					beerTextField.setText("Beer progress bar. You have taken: "+amountOfBeers);
-				}
-			});
-
-			// Shot related code
-			final TextView shotTextField=(TextView) dialog.findViewById(R.id.shotText);
-			shotTextField.setText("Shot progress bar. You have taken: "+amountOfShots);
-			
-			shotProgressBar = (ProgressBar) dialog
-					.findViewById(R.id.shotProgressBar);
-			shotProgressBar.setMax(STEPSINSHOT + STEPSINSHOT * amountOfShots);
-			Button shotButton = (Button) dialog
-					.findViewById(R.id.shotDrinkButton);
-			shotButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (steps < STEPSINSHOT * amountOfShots + STEPSINSHOT) {
-						Toast.makeText(context,
-								"You will get fat if you continue like this",
-								Toast.LENGTH_SHORT).show();
-					}
-					//Set progress bar to next level of steps
-					amountOfShots++;
-					shotProgressBar.setMax(STEPSINSHOT + STEPSINSHOT
-							* amountOfShots);
-					shotTextField.setText("Shot progress bar. You have taken: "+amountOfShots);
-				}
-			});
-
-			// Wine related code
-			final TextView wineTextField=(TextView) dialog.findViewById(R.id.wineText);
-			wineTextField.setText("Wine progress bar. You have taken: "+amountOfWine);
-			
-			wineProgressBar = (ProgressBar) dialog
-					.findViewById(R.id.wineProgressBar);
-			wineProgressBar.setMax(STEPSINWINE + STEPSINWINE * amountOfWine);
-			Button wineButton = (Button) dialog
-					.findViewById(R.id.wineDrinkButton);
-			wineButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (steps < STEPSINWINE * amountOfShots + STEPSINWINE) {
-						Toast.makeText(context,
-								"You will get fat if you continue like this",
-								Toast.LENGTH_SHORT).show();
-					}
-					//Set progress bar to next level of steps
-					amountOfWine++;
-					wineProgressBar.setMax(STEPSINWINE + STEPSINWINE
-							* amountOfWine);
-					wineTextField.setText("Wine progress bar. You have taken: "+amountOfWine);
-				}
-			});
-
-			return dialog;
-		}
+		} 
+		
+		/**
+		 * can be removed(?):
+		 */
+		//else if (id == 1) {
+		//	return new AlertDialog.Builder(this)
+		//			.setTitle("Select floors to show")
+		//			.setMultiChoiceItems(DatabaseConstants.floorOptions, floorSelections,
+		//					new FloorDialogSelectionClickHandler())
+		//			.setPositiveButton("OK",
+		//					new FloorDialogButtonClickHandler()).create();
+		//}
 		return null;
 	}
+	
 
 	/**
 	 * 
@@ -594,31 +571,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 			switch (clicked) {
 			case DialogInterface.BUTTON_POSITIVE:
 				customMaps.removeAllMarkerFromMap();
-				showRooms();
-				if (layerSelections[0] || layerSelections[1]
-						|| layerSelections[2] || layerSelections[3]) {
-					layerIsChosen = true;
-				} else {
-					layerIsChosen = false;
+				if(showRooms()==true){
+			        // Start the CAB using the ActionMode.Callback defined above
+			        mActionMode = MainActivity.this
+			        .startActionMode(mActionModeCallback);;
 				}
 				invalidateOptionsMenu();
 				break;
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @author Niklas
-	 * 
-	 *         Handles click on floor menu
-	 */
-	public class FloorDialogButtonClickHandler implements
-			DialogInterface.OnClickListener {
-		public void onClick(DialogInterface dialog, int clicked) {
-			switch (clicked) {
-			case DialogInterface.BUTTON_POSITIVE:
-				// ADD LINES FOR SHOWING ONLY SELECTED LAYERS HERE
 			}
 		}
 	}
@@ -630,7 +589,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param event
 	 */
 	public void onSensorChanged(SensorEvent event) {
-		if (stepCounterActivated) {
+		if(stepCounterActivated){
 			Sensor sensor = event.sensor;
 			synchronized (this) {
 				int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
@@ -642,7 +601,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					}
 					int k = 0;
 					float v = vSum / 3;
-
+	
 					float direction = (v > mLastValues[k] ? 1
 							: (v < mLastValues[k] ? -1 : 0));
 					if (direction == -mLastDirections[k]) {
@@ -652,21 +611,20 @@ public class MainActivity extends Activity implements SensorEventListener {
 						mLastExtremes[extType][k] = mLastValues[k];
 						float diff = Math.abs(mLastExtremes[extType][k]
 								- mLastExtremes[1 - extType][k]);
-
+	
 						if (diff > mLimit) {
-
+	
 							boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
 							boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
 							boolean isNotContra = (mLastMatch != 1 - extType);
-
-							if (isAlmostAsLargeAsPrevious
-									&& isPreviousLargeEnough && isNotContra) {
+	
+							if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough
+									&& isNotContra) {
 								// Step confirmed!
 								Log.i("main", "step");
 								steps++;
 								getActionBar().setTitle(
 										"You have taken " + steps + " steps.");
-								updateProgressBars();
 								mLastMatch = extType;
 							} else {
 								mLastMatch = -1;
@@ -686,55 +644,33 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// TODO Auto-generated method stub
 
 	}
+	
 
-	public void updateProgressBars() {
-		if (beerProgressBar != null && shotProgressBar != null
-				&& wineProgressBar != null) {
-			beerProgressBar.setProgress(steps);
-			wineProgressBar.setProgress(steps);
-			shotProgressBar.setProgress(steps);
-		}
-	}
+	
 	@Override
-	/**
-	 * This is a standard method called automatically to save all instance
-	 * variables needed to be saved
-	 */
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		//save all needed to be saved
-		savedInstanceState.putBoolean(stepCounterActivatedString,
-				stepCounterActivated);
-		savedInstanceState.putInt(stepsString, steps);
-		savedInstanceState.putBooleanArray(layerSelectionString,
-				layerSelections);
-		savedInstanceState.putParcelableArrayList(markerOptionsArrayString,
-				customMaps.getMarkerOptionsArray());
-
-		// Always call the superclass so it can save the view hierarchy state
-		super.onSaveInstanceState(savedInstanceState);
+	    savedInstanceState.putBoolean(stepCounterActivatedString, stepCounterActivated);
+	    savedInstanceState.putInt(stepsString, steps);
+	    //Save the layerSelecations
+	    savedInstanceState.putBooleanArray(layerSelectionString, layerSelections);
+	    
+	    savedInstanceState.putParcelableArrayList("markers", customMaps.getMarkerOptionsArray());
+	    
+	    // Always call the superclass so it can save the view hierarchy state
+	    super.onSaveInstanceState(savedInstanceState);
 	}
-	/**
-	 * This is a standard method automatically called after onResume
-	 * when there is state to restore.
-	 */
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		// Always call the superclass so it can restore the view hierarchy
-		super.onRestoreInstanceState(savedInstanceState);
-
-		// Restore state members from saved instance
-		stepCounterActivated = savedInstanceState.getBoolean(
-				stepCounterActivatedString, stepCounterActivated);
-		steps = savedInstanceState.getInt(stepsString);
-		layerSelections = savedInstanceState.getBooleanArray(
-				layerSelectionString);
-		//restore layers if needed
-		showRooms();
-		ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState
-				.getParcelableArrayList(markerOptionsArrayString);
-		//save markers and reprint the map if markers has been restored
-		if(markerOptionsArray != null){
-			customMaps.setMarkerOptionsArray(markerOptionsArray);
-			customMaps.rePrint();
-		}
+	    // Always call the superclass so it can restore the view hierarchy
+	    super.onRestoreInstanceState(savedInstanceState);
+	   
+	    // Restore state members from saved instance
+	    stepCounterActivated = savedInstanceState.getBoolean(stepCounterActivatedString,stepCounterActivated);
+	    steps = savedInstanceState.getInt(stepsString);
+	    layerSelections = savedInstanceState.getBooleanArray(layerSelectionString);
+	    
+	    ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState.getParcelableArrayList("markers");
+	    customMaps.setMarkerOptionsArray(markerOptionsArray);
+	    customMaps.rePrint();
+	    showRooms();
 	}
 }
