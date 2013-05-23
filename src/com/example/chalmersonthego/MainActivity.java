@@ -42,8 +42,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	// Calendar synch related variables
 	private ICalReader iCal;
-	
-	//Constant strings to use with save and restore instance state
+
+	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	// A boolean set to 'true' when a room-type-layer is chosen
 	private boolean layerIsChosen = false;
-	
+
 	protected Object mActionMode;
 	// A car array with all the different types of rooms, avaliable to be
 	// selected in the show all menu
@@ -105,75 +105,72 @@ public class MainActivity extends Activity implements SensorEventListener {
 		insertDataForTheFirstTime();
 
 		iCal = new ICalReader(this);
-		
-		startTreadmill();
 
+		startTreadmill();
 
 	}
 
-	
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
-	    // Called when the action mode is created; startActionMode() was called
-	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-	      // Inflate a menu resource providing context menu items
-	      MenuInflater inflater = mode.getMenuInflater();
-	      //.inflate(R.layout.contextual_layout, null)
+		// Called when the action mode is created; startActionMode() was called
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Inflate a menu resource providing context menu items
+			MenuInflater inflater = mode.getMenuInflater();
+			// .inflate(R.layout.contextual_layout, null)
 
-	      // Assumes that you have "contexual.xml" menu resources
-	      inflater.inflate(R.menu.contextual, menu);
-	      return true;
-	    }
+			// Assumes that you have "contexual.xml" menu resources
+			inflater.inflate(R.menu.contextual, menu);
+			return true;
+		}
 
-	    // Called each time the action mode is shown. Always called after
-	    // onCreateActionMode, but
-	    // may be called multiple times if the mode is invalidated.
-	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-	    	return false; // Return false if nothing is done
-	    }
+		// Called each time the action mode is shown. Always called after
+		// onCreateActionMode, but
+		// may be called multiple times if the mode is invalidated.
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false; // Return false if nothing is done
+		}
 
-	    // Called when the user selects a contextual menu item
-	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-	    	switch (item.getItemId()) {
-	    	case R.id.basement:
-	    		Toast.makeText(MainActivity.this, "show all rooms in basement",
-	    			  Toast.LENGTH_LONG).show();
-	        		//mode.finish(); // Action picked, so close the CAB
-	    		floorSelections[0]=true;
-	    		return true;
-	    	case R.id.ground:
-	    		floorSelections[1]=true;
-	    		return true;
-	    	case R.id.first:
-	    		floorSelections[2]=true;
-	    		return true;
-	    	case R.id.second:
-	    		floorSelections[3]=true;
-	    		return true;
-	    	case R.id.third:
-	    		floorSelections[4]=true;
-	    		return true;
-	    	case R.id.fourth:
-	    		floorSelections[5]=true;
-	    		return true;
-	    	case R.id.fifth:
-	    		floorSelections[6]=true;
-	    		return true;
-	    	case R.id.sixth:
-	    		floorSelections[7]=true;
-	    		return true;
-	    	default:
-	    		return false;
-	    	}
-	    }
+		// Called when the user selects a contextual menu item
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.basement:
+				Toast.makeText(MainActivity.this, "show all rooms in basement",
+						Toast.LENGTH_LONG).show();
+				// mode.finish(); // Action picked, so close the CAB
+				floorSelections[0] = true;
+				return true;
+			case R.id.ground:
+				floorSelections[1] = true;
+				return true;
+			case R.id.first:
+				floorSelections[2] = true;
+				return true;
+			case R.id.second:
+				floorSelections[3] = true;
+				return true;
+			case R.id.third:
+				floorSelections[4] = true;
+				return true;
+			case R.id.fourth:
+				floorSelections[5] = true;
+				return true;
+			case R.id.fifth:
+				floorSelections[6] = true;
+				return true;
+			case R.id.sixth:
+				floorSelections[7] = true;
+				return true;
+			default:
+				return false;
+			}
+		}
 
-	    // Called when the user exits the action mode
-	    public void onDestroyActionMode(ActionMode mode) {
-	      mActionMode = null;
-	    }
-	  };
+		// Called when the user exits the action mode
+		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
+		}
+	};
 
-	
 	/**
 	 * private void customPath(LatLng from, LatLng to){ //Get length via
 	 * standard API. int apiLength = 0;
@@ -313,31 +310,29 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
 		switch (item.getItemId()) {
-
 		case R.id.action_layers:
 			Dialog layerDialog = onCreateDialog(0);
 			layerDialog.show();
-			return true;
-
+			break;
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
-			return true;
-
+			break;
 		case R.id.exit:
 			finish();
-			return true;
-
+			break;
 		case R.id.action_treadmill:
 			stepCounterActivated = !stepCounterActivated;
-			return true;
-
+			break;
+		case R.id.action_emptyMap:
+			customMaps.removeAllMarkerFromMap();
+			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
-			return true;
+			break;
 		}
+		return true;
 	}
 
 	/**
@@ -488,13 +483,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 			customMaps.drawBuildings();
 			layerIsChosen = true;
 		}
-		if (layerIsChosen){
+		if (layerIsChosen) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
 
 	/**
 	 * @see android.app.Activity#onCreateDialog(int)
@@ -508,26 +502,26 @@ public class MainActivity extends Activity implements SensorEventListener {
 		if (id == 0) {
 			return new AlertDialog.Builder(this)
 					.setTitle("Show layers on map")
-					.setMultiChoiceItems(DatabaseConstants.layerOptions, layerSelections,
+					.setMultiChoiceItems(DatabaseConstants.layerOptions,
+							layerSelections,
 							new LayerDialogSelectionClickHandler())
 					.setPositiveButton("OK",
 							new LayerDialogButtonClickHandler()).create();
-		} 
-		
+		}
+
 		/**
 		 * can be removed(?):
 		 */
-		//else if (id == 1) {
-		//	return new AlertDialog.Builder(this)
-		//			.setTitle("Select floors to show")
-		//			.setMultiChoiceItems(DatabaseConstants.floorOptions, floorSelections,
-		//					new FloorDialogSelectionClickHandler())
-		//			.setPositiveButton("OK",
-		//					new FloorDialogButtonClickHandler()).create();
-		//}
+		// else if (id == 1) {
+		// return new AlertDialog.Builder(this)
+		// .setTitle("Select floors to show")
+		// .setMultiChoiceItems(DatabaseConstants.floorOptions, floorSelections,
+		// new FloorDialogSelectionClickHandler())
+		// .setPositiveButton("OK",
+		// new FloorDialogButtonClickHandler()).create();
+		// }
 		return null;
 	}
-	
 
 	/**
 	 * 
@@ -539,7 +533,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
 
-			Log.i("ME", DatabaseConstants.layerOptions[clicked] + " selected: " + selected);
+			Log.i("ME", DatabaseConstants.layerOptions[clicked] + " selected: "
+					+ selected);
 		}
 
 	}
@@ -554,7 +549,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
 
-			Log.i("ME", DatabaseConstants.floorOptions[clicked] + " selected: " + selected);
+			Log.i("ME", DatabaseConstants.floorOptions[clicked] + " selected: "
+					+ selected);
 		}
 
 	}
@@ -571,10 +567,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 			switch (clicked) {
 			case DialogInterface.BUTTON_POSITIVE:
 				customMaps.removeAllMarkerFromMap();
-				if(showRooms()==true){
-			        // Start the CAB using the ActionMode.Callback defined above
-			        mActionMode = MainActivity.this
-			        .startActionMode(mActionModeCallback);;
+				if (showRooms() == true) {
+					// Start the CAB using the ActionMode.Callback defined above
+					mActionMode = MainActivity.this
+							.startActionMode(mActionModeCallback);
+					;
 				}
 				invalidateOptionsMenu();
 				break;
@@ -589,7 +586,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param event
 	 */
 	public void onSensorChanged(SensorEvent event) {
-		if(stepCounterActivated){
+		if (stepCounterActivated) {
 			Sensor sensor = event.sensor;
 			synchronized (this) {
 				int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
@@ -601,7 +598,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					}
 					int k = 0;
 					float v = vSum / 3;
-	
+
 					float direction = (v > mLastValues[k] ? 1
 							: (v < mLastValues[k] ? -1 : 0));
 					if (direction == -mLastDirections[k]) {
@@ -611,15 +608,15 @@ public class MainActivity extends Activity implements SensorEventListener {
 						mLastExtremes[extType][k] = mLastValues[k];
 						float diff = Math.abs(mLastExtremes[extType][k]
 								- mLastExtremes[1 - extType][k]);
-	
+
 						if (diff > mLimit) {
-	
+
 							boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
 							boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
 							boolean isNotContra = (mLastMatch != 1 - extType);
-	
-							if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough
-									&& isNotContra) {
+
+							if (isAlmostAsLargeAsPrevious
+									&& isPreviousLargeEnough && isNotContra) {
 								// Step confirmed!
 								Log.i("main", "step");
 								steps++;
@@ -644,33 +641,38 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// TODO Auto-generated method stub
 
 	}
-	
 
-	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-	    savedInstanceState.putBoolean(stepCounterActivatedString, stepCounterActivated);
-	    savedInstanceState.putInt(stepsString, steps);
-	    //Save the layerSelecations
-	    savedInstanceState.putBooleanArray(layerSelectionString, layerSelections);
-	    
-	    savedInstanceState.putParcelableArrayList("markers", customMaps.getMarkerOptionsArray());
-	    
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putBoolean(stepCounterActivatedString,
+				stepCounterActivated);
+		savedInstanceState.putInt(stepsString, steps);
+		// Save the layerSelecations
+		savedInstanceState.putBooleanArray(layerSelectionString,
+				layerSelections);
+
+		savedInstanceState.putParcelableArrayList("markers",
+				customMaps.getMarkerOptionsArray());
+
+		// Always call the superclass so it can save the view hierarchy state
+		super.onSaveInstanceState(savedInstanceState);
 	}
+
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	    // Always call the superclass so it can restore the view hierarchy
-	    super.onRestoreInstanceState(savedInstanceState);
-	   
-	    // Restore state members from saved instance
-	    stepCounterActivated = savedInstanceState.getBoolean(stepCounterActivatedString,stepCounterActivated);
-	    steps = savedInstanceState.getInt(stepsString);
-	    layerSelections = savedInstanceState.getBooleanArray(layerSelectionString);
-	    
-	    ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState.getParcelableArrayList("markers");
-	    customMaps.setMarkerOptionsArray(markerOptionsArray);
-	    customMaps.rePrint();
-	    showRooms();
+		// Always call the superclass so it can restore the view hierarchy
+		super.onRestoreInstanceState(savedInstanceState);
+
+		// Restore state members from saved instance
+		stepCounterActivated = savedInstanceState.getBoolean(
+				stepCounterActivatedString, stepCounterActivated);
+		steps = savedInstanceState.getInt(stepsString);
+		layerSelections = savedInstanceState
+				.getBooleanArray(layerSelectionString);
+
+		ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState
+				.getParcelableArrayList("markers");
+		customMaps.setMarkerOptionsArray(markerOptionsArray);
+		customMaps.rePrint();
+		showRooms();
 	}
 }
