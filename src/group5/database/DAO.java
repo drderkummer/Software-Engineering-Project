@@ -271,6 +271,28 @@ public class DAO{
 			 return result;
 		 }
 	}
+	/**
+	 * 
+	 * @param type
+	 * @param floor
+	 * @return
+	 */
+	public ArrayList<String> getAllRoomsWithTypeOnFloor(String type, int floor){
+		ArrayList<String> result = new ArrayList<String>();
+		String[] columns = {DBHelper.TABLE_3_COLUMN_1};
+		String selection = DBHelper.TABLE_3_COLUMN_4 + " LIKE '" + type +"' AND " + DBHelper.TABLE_3_COLUMN_6 + " LIKE '" + floor + "'";
+		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection, null, null, null, null);
+		if(c.getCount() == 0){
+			 return null;
+		 }else{
+			 while(c.moveToNext()){
+				 result.add(c.getString(0));
+			 }
+			 c.close();
+			 return result;
+		 }
+	}
+	
 	public Cursor suggestionsCursor(String searchString){
 		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + 
 				", '" + DBHelper.TABLE_4_NAME +"' "+ SearchManager.SUGGEST_COLUMN_TEXT_2 +
