@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	// Calendar synch related variables
 	private ICalReader iCal;
-
+	
 	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
