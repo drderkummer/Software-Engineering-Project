@@ -258,34 +258,32 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.action_layers:
 			Dialog layerDialog = onCreateDialog(0);
 			layerDialog.show();
-			return true;
-
+			break;
 		case R.id.action_floors:
 			Dialog floorDialog = onCreateDialog(1);
 			floorDialog.show();
-			return true;
-
+			break;
 		case R.id.action_my_location:
 			customMaps.setMyPosition();
-			return true;
-
+			break;
 		case R.id.exit:
 			finish();
-			return true;
-
+			break;
 		case R.id.action_treadmill:
 			stepCounterActivated = !stepCounterActivated;
-			return true;
-
+			break;
 		case R.id.action_calendarSynch:
 			synchWithCal();
-			return true;
-
+			break;
+		case R.id.action_emptyMap:
+			customMaps.removeAllMarkerFromMap();
+			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
-			return true;
+			break;
 		}
+		return true;
 	}
 
 	/**
