@@ -27,6 +27,6 @@
     <string name="action_treadmill">Activate Stepcounter</string>
     <string name="action_calendarSynch">Synch with ICal</string>
     <string name="action_floors">Select visible floors</string>
+    <string name="action_emptyMap">Empty map</string>
     <string name="action_calories">Calorie Drinking Progress</string>
-
 </resources>

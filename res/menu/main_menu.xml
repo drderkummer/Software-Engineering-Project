@@ -47,10 +47,14 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_floors"
         android:visible="true"/>
+    <item
+        android:id="@+id/action_emptyMap"
+        android:orderInCategory="106"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_emptyMap"/>
         <item
         android:id="@+id/exit"
         android:orderInCategory="106"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/exit_app"/>
-
 </menu>
