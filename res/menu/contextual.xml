@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item 
+        android:id="@+id/basement"
+        android:title="on level -1"
+        android:icon="@drawable/basement"
+    	android:showAsAction="always"/>
+    <item
+        android:id="@+id/ground"
+        android:title="on level 0"
+        android:icon="@drawable/ground"
+    	android:showAsAction="always"/>
+    <item
+        android:id="@+id/first"
+        android:title="on level 1"
+        android:icon="@drawable/first"
+    	android:showAsAction="always"/>
+    <item
+        android:id="@+id/second"
+        android:title="on level 2"
+    	android:showAsAction="always"
+    	android:icon="@drawable/second"/>
+    <item 
+        android:id="@+id/third"
+        android:title="on level 3"
+    	android:showAsAction="ifRoom|collapseActionView"/>
+    	android:icon="@drawable/third"/>
+    <item
+        android:id="@+id/fourth"
+        android:title="on level 4"
+    	android:showAsAction="ifRoom|collapseActionView"/>
+    <item 
+        android:id="@+id/fifth"
+        android:title="on level 5"
+    	android:showAsAction="ifRoom|collapseActionView"/>
+    	<!--android:icon="@drawable/fifth"/ -->
+    <item 
+        android:id="@+id/sixth"
+        android:title="on level 6"
+    	android:showAsAction="ifRoom|collapseActionView"/>
+    	<!--android:icon="@drawable/fifth"/ -->
+</menu> 
