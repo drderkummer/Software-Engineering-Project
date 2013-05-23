@@ -409,7 +409,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		};
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Are you sure you want to exit?")
+		builder.setMessage(R.string.question_exit)
 				.setPositiveButton(R.string.alert_positive, dialogClickListener)
 				.setNegativeButton(R.string.alert_negative, dialogClickListener).show();
 	}
@@ -447,42 +447,42 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private boolean showRooms() {
 		layerIsChosen = false;
 		if (layerSelections[0]) {
-			ArrayList<String> r1 = dao.getAllRoomsWithType("computer room");
+			ArrayList<String> r1 = dao.getAllRoomsWithType(DatabaseConstants.type_computerRoom);
 			for (int i = 0; i < r1.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r1.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"computer room");
+						DatabaseConstants.type_computerRoom);
 			}
 			layerIsChosen = true;
 		}
 		if (layerSelections[1]) {
-			ArrayList<String> r3 = dao.getAllRoomsWithType("lecture hall");
+			ArrayList<String> r3 = dao.getAllRoomsWithType(DatabaseConstants.type_lectureHall);
 			for (int i = 0; i < r3.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r3.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"lecture hall");
+						DatabaseConstants.type_lectureHall);
 			}
 			layerIsChosen = true;
 		}
 		if (layerSelections[2]) {
-			ArrayList<String> r2 = dao.getAllRoomsWithType("group room");
+			ArrayList<String> r2 = dao.getAllRoomsWithType(DatabaseConstants.type_groupRoom);
 			for (int i = 0; i < r2.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r2.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"group room");
+						DatabaseConstants.type_groupRoom);
 			}
 			layerIsChosen = true;
 		}
 		if (layerSelections[3]) {
-			ArrayList<String> r4 = dao.getAllRoomsWithType("pub");
+			ArrayList<String> r4 = dao.getAllRoomsWithType(DatabaseConstants.type_pub);
 			for (int i = 0; i < r4.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r4.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"pub");
+						DatabaseConstants.type_pub);
 			}
 			customMaps.drawBuildings();
 			layerIsChosen = true;
@@ -505,11 +505,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		if (id == 0) {
 			return new AlertDialog.Builder(this)
-					.setTitle("Show layers on map")
+					.setTitle(R.string.info_layers)
 					.setMultiChoiceItems(DatabaseConstants.layerOptions,
 							layerSelections,
 							new LayerDialogSelectionClickHandler())
-					.setPositiveButton("OK",
+					.setPositiveButton(R.string.ok,
 							new LayerDialogButtonClickHandler()).create();
 		}
 
