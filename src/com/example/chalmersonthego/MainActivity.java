@@ -316,7 +316,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 			layerDialog.show();
 			break;
 		case R.id.action_my_location:
-			customMaps.setMyPosition();
+			customMaps.drawMyPosition();
 			break;
 		case R.id.action_search:
 			break;

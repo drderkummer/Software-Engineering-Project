@@ -22,9 +22,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
  * Handles navigation on the map. Like drawing the route etc.
  * @author Anders Nordin
  */
-public class NavigationManager {
-	
-	
+public class NavigationManager {	
 	private GoogleMap map;
 
 	String duration;
