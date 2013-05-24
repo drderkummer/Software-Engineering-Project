@@ -136,30 +136,44 @@ public class MainActivity extends Activity implements SensorEventListener {
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			switch (item.getItemId()) {
 			case R.id.basement:
-				Toast.makeText(MainActivity.this, "show all rooms in basement",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(MainActivity.this, "all rooms in basement",
+						Toast.LENGTH_SHORT).show();
 				// mode.finish(); // Action picked, so close the CAB
 				floorSelections[0] = true;
 				return true;
 			case R.id.ground:
+				Toast.makeText(MainActivity.this, "all rooms on ground level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[1] = true;
 				return true;
 			case R.id.first:
+				Toast.makeText(MainActivity.this, "all rooms at 1st level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[2] = true;
 				return true;
 			case R.id.second:
+				Toast.makeText(MainActivity.this, "all rooms at 2nd level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[3] = true;
 				return true;
 			case R.id.third:
+				Toast.makeText(MainActivity.this, "all rooms at 3rd level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[4] = true;
 				return true;
 			case R.id.fourth:
+				Toast.makeText(MainActivity.this, "all rooms at 4th level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[5] = true;
 				return true;
 			case R.id.fifth:
+				Toast.makeText(MainActivity.this, "all rooms at 6th level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[6] = true;
 				return true;
 			case R.id.sixth:
+				Toast.makeText(MainActivity.this, "all rooms at 7th level",
+						Toast.LENGTH_SHORT).show();
 				floorSelections[7] = true;
 				return true;
 			default:
