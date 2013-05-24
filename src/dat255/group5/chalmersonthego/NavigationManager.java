@@ -86,7 +86,7 @@ public class NavigationManager {
 		if(distance != null && duration != null)
 			return "Distance:"+distance + ", Duration:"+duration;
 		else
-			return "Not set";
+			return null;
 	}
 
 	/**

@@ -35,7 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public class CustomGoogleMaps {
-	
+
 	// Constants
 	final GoogleMap googleMap;
 	final Activity owningActivity;
@@ -43,8 +43,8 @@ public class CustomGoogleMaps {
 	final LatLng southEast = new LatLng(57.678687, 11.969347);
 
 	private ArrayList<MarkerOptions> markerOptionsArray = new ArrayList<MarkerOptions>();
-	private Marker highlighted, hereAmI;
-	
+	public Marker highlighted, hereAmI;
+
 	private NavigationManager navManager;
 
 	// Used for showing the custom view button in the map
@@ -56,16 +56,21 @@ public class CustomGoogleMaps {
 	/**
 	 * Redraw all markers on the map.
 	 */
-	public void reDrawMarkers(){
+	public void reDrawMarkers() {
 		googleMap.clear();
+
 		for (MarkerOptions m : markerOptionsArray)
-			googleMap.addMarker(m);		
+			googleMap.addMarker(m);
+
 	}
 
 	/**
 	 * Constructor.
-	 * @param owningActivity, the calling Activity
-	 * @param googleMap, in instance of GoogleMap
+	 * 
+	 * @param owningActivity
+	 *            , the calling Activity
+	 * @param googleMap
+	 *            , in instance of GoogleMap
 	 */
 	public CustomGoogleMaps(final Activity owningActivity, GoogleMap googleMap) {
 		this.owningActivity = owningActivity;
@@ -73,23 +78,27 @@ public class CustomGoogleMaps {
 
 		navManager = new NavigationManager(googleMap);
 
-		tvDistanceDuration = (TextView)owningActivity.findViewById(R.id.tv_distance_time);
+		tvDistanceDuration = (TextView) owningActivity
+				.findViewById(R.id.tv_distance_time);
 
 		setUpMapIfNeeded();
 
 		// Get fragment to the custom veiws code
-		final MapFragment mapFragment = (MapFragment) owningActivity.getFragmentManager()
-				.findFragmentById(R.id.map);
-		// TODO Fix this so that the parse goes through to get the button to work
-		//final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.layout.activity_main);
-		this.infoWindow = (ViewGroup) owningActivity.getLayoutInflater().inflate(
-				R.layout.info_window, null);
+		final MapFragment mapFragment = (MapFragment) owningActivity
+				.getFragmentManager().findFragmentById(R.id.map);
+		// TODO Fix this so that the parse goes through to get the button to
+		// work
+		// final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout)
+		// findViewById(R.layout.activity_main);
+		this.infoWindow = (ViewGroup) owningActivity.getLayoutInflater()
+				.inflate(R.layout.info_window, null);
 		this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
 		this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
 		this.infoButton = (Button) infoWindow.findViewById(R.id.button);
 		this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
-				owningActivity.getResources().getDrawable(R.drawable.icon_daymode),
-				owningActivity.getResources().getDrawable(R.drawable.icon_nightmode)) {
+				owningActivity.getResources().getDrawable(
+						R.drawable.icon_daymode), owningActivity.getResources()
+						.getDrawable(R.drawable.icon_nightmode)) {
 			@Override
 			protected void onClickConfirmed(View v, Marker marker) {
 				// Here we can perform some action triggered after clicking the
@@ -112,11 +121,8 @@ public class CustomGoogleMaps {
 			public View getInfoContents(Marker marker) {
 				infoTitle.setText(marker.getTitle());
 				infoSnippet.setText(marker.getSnippet());
-				infoButtonListener.setMarker(marker);			
+				infoButtonListener.setMarker(marker);
 
-				// We must call this to set the current marker and infoWindow
-				// references to the MapWrapperLayout
-				// mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
 				return infoWindow;
 			}
 		});
@@ -125,102 +131,116 @@ public class CustomGoogleMaps {
 		googleMap.setOnMapLongClickListener(new OnMapLongClickListener() {
 			@Override
 			public void onMapLongClick(LatLng point) {
-				if(highlighted != null)
+				if (highlighted != null)
 					highlighted.remove();
 
-				highlighted = CustomGoogleMaps.this.googleMap.addMarker(new MarkerOptions()
-				.position(point)
-				.title("Targeted position")
-				.draggable(true)				
-				.snippet("You've marked this location"));
+				highlighted = CustomGoogleMaps.this.googleMap
+						.addMarker(new MarkerOptions().position(point)
+								.title("Targeted position").draggable(true)
+								.snippet("You've marked this location"));
 
 				highlighted.showInfoWindow();
 			}
-		});		
-		
+		});
+
 		// When user click info window on marker. Show navigation options
 		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			public void onInfoWindowClick(Marker marker) {
 				printNavigationPopup(marker.getPosition());
 			}
-		});	
+		});
 	}
-	
+
 	/**
 	 * Checks whether given location is inside the limited area
-	 * @param location, given location to test
+	 * 
+	 * @param location
+	 *            , given location to test
 	 * @return true if inside, otherwise false
 	 */
-	public boolean isLocationInBound(LatLng latlng){		
+	public boolean isLocationInBound(LatLng latlng) {
 		// Bounds the map to a given area
 		LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
-		
-		return(strictBounds.contains(latlng));		
+
+		return (strictBounds.contains(latlng));
 	}
-	
+
 	// NOT FINISHED
-	private void printNavigationPopup(LatLng point){
-		final LatLng _point = point;		
-		
+	private void printNavigationPopup(LatLng point) {
+		final LatLng _point = point;
+
 		// Where to display it, set context
 		AlertDialog.Builder builder = new AlertDialog.Builder(owningActivity);
-		    // Get the layout inflater
-		    LayoutInflater inflater = owningActivity.getLayoutInflater();
+		// Get the layout inflater
+		LayoutInflater inflater = owningActivity.getLayoutInflater();
 
-		    // Inflate and set the layout for the dialog
-		    // Pass null as the parent view because its going in the dialog layout
-		    builder.setView(inflater.inflate(R.layout.navigation_dialog, null))
-		    // Add action buttons
-		    		.setTitle("Navigation")
-		           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-		               @Override
-		               public void onClick(DialogInterface dialog, int id) {
-		   				LatLng latLng = getCurrentLocation();
-						reDrawMarkers();
-						navManager.drawPathOnMap(latLng, _point);
-		               }
-		           })
-		           .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		               public void onClick(DialogInterface dialog, int id) {
-		            	   dialog.cancel();            
-		               }
-		           });      
-		    builder.create();
-		    builder.show();
+		// Inflate and set the layout for the dialog
+		// Pass null as the parent view because its going in the dialog layout
+		builder.setView(inflater.inflate(R.layout.navigation_dialog, null))
+				// Add action buttons
+				.setTitle("Navigation")
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								LatLng latLng = getCurrentLocation();
+								reDrawMarkers();
+
+								if (navManager.drawPathOnMap(latLng, _point)) {
+									tvDistanceDuration
+											.setVisibility(TextView.VISIBLE);
+									while(navManager.getDurationDistanceStr() != null){
+									tvDistanceDuration.setText(navManager
+											.getDurationDistanceStr());
+									}
+								}
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		builder.create();
+		builder.show();
 	}
 
 	/**
 	 * Show the specified marker with specified information on the map
 	 * 
-	 * @param latLng, the coordinates of the marker
-	 * @param title, the title of the marker
-	 * @param floor, the floor the room is on
-	 * @param type, the types of the room
+	 * @param latLng
+	 *            , the coordinates of the marker
+	 * @param title
+	 *            , the title of the marker
+	 * @param floor
+	 *            , the floor the room is on
+	 * @param type
+	 *            , the types of the room
 	 */
 	void showMarkerOnMap(LatLng latLng, String title, String floor, String type) {
 		if ((latLng != null && title != null && floor != null && type != null)) {
 			MarkerOptions markerOptions;
 			if (type.equalsIgnoreCase("computer room")) {
 				markerOptions = new MarkerOptions()
-				.position(latLng)
-				.title(title)
-				.snippet("floor: " + floor)
-				.icon(BitmapDescriptorFactory
-						.fromAsset("computerroom.png"));
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("computerroom.png"));
 			} else if (type.equalsIgnoreCase("lecture hall")) {
 				markerOptions = new MarkerOptions()
-				.position(latLng)
-				.title(title)
-				.snippet("floor: " + floor)
-				.icon(BitmapDescriptorFactory
-						.fromAsset("lecturehall.png"));
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("lecturehall.png"));
 			} else if (type.equalsIgnoreCase("group room")) {
 				markerOptions = new MarkerOptions()
-				.position(latLng)
-				.title(title)
-				.snippet("floor: " + floor)
-				.icon(BitmapDescriptorFactory
-						.fromAsset("grouproom.png"));
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("grouproom.png"));
 			} else {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor + type);
@@ -233,7 +253,7 @@ public class CustomGoogleMaps {
 	/**
 	 * Removes all markers from array and map.
 	 */
-	void removeAllMarkerFromMap(){
+	void removeAllMarkerFromMap() {
 		markerOptionsArray.clear();
 		googleMap.clear();
 	}
@@ -265,47 +285,50 @@ public class CustomGoogleMaps {
 
 	/**
 	 * Puts a marker on map where the user's current position is
+	 * 
 	 * @return true if position was set, false if otherwise
 	 */
-	public boolean drawMyPosition(){
-		LatLng latlng = getCurrentLocation();		
+	public boolean drawMyPosition() {
+		LatLng latlng = getCurrentLocation();
 
-		if (latlng != null){
+		if (latlng != null) {
 			Location location = new Location("Current Position");
 			location.setLatitude(latlng.latitude);
 			location.setLongitude(latlng.longitude);
 
 			// If position is in range. Print out a marker.
 			if (isLocationInBound(latlng)) {
-				if(hereAmI != null)
+				if (hereAmI != null)
 					hereAmI.remove();
 
-				hereAmI = googleMap
-						.addMarker(new MarkerOptions()
+				MarkerOptions markeroptions = new MarkerOptions()
 						.position(latlng)
 						.title("My Location")
 						.icon(BitmapDescriptorFactory
 								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-								.snippet("I am here"));
+						.snippet("I am here");
+				hereAmI = CustomGoogleMaps.this.googleMap
+						.addMarker(markeroptions);
 				hereAmI.showInfoWindow();
+				markerOptionsArray.add(markeroptions);
 
 				googleMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
 				googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
 				return true;
 			}
-			Toast.makeText(owningActivity,
-					"You are not on campus", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(owningActivity, "You are not on campus",
+					Toast.LENGTH_LONG).show();
 		}
 		return false;
 	}
 
 	/**
 	 * Returns the current location.
+	 * 
 	 * @return user's current location
 	 */
-	private LatLng getCurrentLocation(){
+	private LatLng getCurrentLocation() {
 		LocationManager locationManager = (LocationManager) owningActivity
 				.getSystemService(Context.LOCATION_SERVICE);
 		String provider = locationManager.getBestProvider(new Criteria(), true);
@@ -316,7 +339,7 @@ public class CustomGoogleMaps {
 
 	private void setUpMapIfNeeded() {
 		// Check if map has been instantiated, if not. Set up!
-		if (owningActivity != null && googleMap != null) {				
+		if (owningActivity != null && googleMap != null) {
 			if (!drawMyPosition()) {
 				// Initialize map center
 				googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -325,49 +348,52 @@ public class CustomGoogleMaps {
 			}
 
 			// When user change the map view
-			googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-				@Override
-				public void onCameraChange(CameraPosition position) {
-					// Set minimum zoom level
-					if (position.zoom < 14){
-						googleMap.animateCamera(CameraUpdateFactory
-								.zoomTo(14));
-						Toast.makeText(owningActivity, "Minimum zoom",
-								Toast.LENGTH_LONG).show();
-					}
+			googleMap
+					.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+						@Override
+						public void onCameraChange(CameraPosition position) {
+							// Set minimum zoom level
+							if (position.zoom < 14) {
+								googleMap.animateCamera(CameraUpdateFactory
+										.zoomTo(14));
+								Toast.makeText(owningActivity, "Minimum zoom",
+										Toast.LENGTH_LONG).show();
+							}
 
-					// If position is within, do nothing.
-					if (isLocationInBound(googleMap.getCameraPosition().target))
-						return;
+							// If position is within, do nothing.
+							if (isLocationInBound(googleMap.getCameraPosition().target))
+								return;
 
-					Toast.makeText(owningActivity,
-							"Outside restricted area",
-							Toast.LENGTH_LONG).show();
+							Toast.makeText(owningActivity,
+									"Outside restricted area",
+									Toast.LENGTH_LONG).show();
 
-					// Seems that we are out of bound
-					double x = googleMap.getCameraPosition().target.latitude;
-					double y = googleMap.getCameraPosition().target.longitude;
+							// Seems that we are out of bound
+							double x = googleMap.getCameraPosition().target.latitude;
+							double y = googleMap.getCameraPosition().target.longitude;
 
-					if (x < southEast.latitude)
-						x = southEast.latitude;
-					if (x > northWest.latitude)
-						x = northWest.latitude;
-					if (y < southEast.longitude)
-						y = southEast.longitude;
-					if (y > northWest.longitude)
-						y = northWest.longitude;
+							if (x < southEast.latitude)
+								x = southEast.latitude;
+							if (x > northWest.latitude)
+								x = northWest.latitude;
+							if (y < southEast.longitude)
+								y = southEast.longitude;
+							if (y > northWest.longitude)
+								y = northWest.longitude;
 
-					// Set new center
-					LatLng center = new LatLng(x, y);
-					googleMap.moveCamera(CameraUpdateFactory
-							.newLatLng(center));
-				}
-			});		
+							// Set new center
+							LatLng center = new LatLng(x, y);
+							googleMap.moveCamera(CameraUpdateFactory
+									.newLatLng(center));
+						}
+					});
 		}
 
 	}
+
 	/**
-	 * Get all markers 
+	 * Get all markers
+	 * 
 	 * @return arrayList with all markersOptions
 	 */
 	public ArrayList<MarkerOptions> getMarkerOptionsArray() {
@@ -376,9 +402,12 @@ public class CustomGoogleMaps {
 
 	/**
 	 * Set all markers to array
-	 * @param markerOptionsArray containing all markers
+	 * 
+	 * @param markerOptionsArray
+	 *            containing all markers
 	 */
-	public void setMarkerOptionsArray(ArrayList<MarkerOptions> markerOptionsArray) {
+	public void setMarkerOptionsArray(
+			ArrayList<MarkerOptions> markerOptionsArray) {
 		this.markerOptionsArray = markerOptionsArray;
 	}
 }

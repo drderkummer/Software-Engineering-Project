@@ -7,6 +7,7 @@ public class InsertionsOfData {
 	/**
 	 * This method should be called only ones during the first launch of the
 	 * Activity
+	 * 
 	 * @param mydao
 	 */
 
@@ -57,7 +58,7 @@ public class InsertionsOfData {
 				mydao.insertIntoTable4(DatabaseConstants.building_studentUnion);
 
 				/***************************************************************
-				 ******************INSERTION OF DatabaseConstants.building_edit
+				 ****************** INSERTION OF DatabaseConstants.building_edit
 				 * BUILDING:*****************************
 				 **************************************************************/
 				// insert into 'entries' table:
