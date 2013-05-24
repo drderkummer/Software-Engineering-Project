@@ -175,7 +175,7 @@ public class DAOTest extends AndroidTestCase {
 		dao.insertIntoTable3(room2, xCord, yCord, type, building, "2");
 		dao.insertIntoTable3(falseRoom, xCord, yCord, falseType, building, "1");
 		
-		ArrayList<String> results = dao.getAllRoomsInBuilding(building);
+		ArrayList<String> results = dao.getAllRoomsWithType(type);
 		Assert.assertTrue(results.size() == 2);
 		Assert.assertTrue(results.contains(room));
 		Assert.assertTrue(results.contains(room2));

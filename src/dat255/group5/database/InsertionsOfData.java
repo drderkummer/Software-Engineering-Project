@@ -7,9 +7,9 @@ public class InsertionsOfData {
 	/**
 	 * This method should be called only ones during the first launch of the
 	 * Activity
+	 * 
 	 * @param mydao
 	 */
-
 	public static void basicDataInsert(DAO dao) {
 		final DAO mydao = dao;
 		new Thread() {
@@ -57,7 +57,7 @@ public class InsertionsOfData {
 				mydao.insertIntoTable4(DatabaseConstants.building_studentUnion);
 
 				/***************************************************************
-				 ******************INSERTION OF DatabaseConstants.building_edit
+				 ****************** INSERTION OF DatabaseConstants.building_edit
 				 * BUILDING:*****************************
 				 **************************************************************/
 				// insert into 'entries' table:
@@ -410,9 +410,9 @@ public class InsertionsOfData {
 				 * INSERTIONS*************************
 				 **************************************************************/
 
-				/********************************************************************************
-				 ************************* INSERTIONS OF VASA BUILDING ****************************
-				 ********************************************************************************/
+				/***************************************************************
+				 ************************* INSERTIONS OF VASA BUILDING *********
+				 **************************************************************/
 				// insert into 'entries' table:
 
 				// insert into "rooms" table:
