@@ -35,39 +35,39 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public class CustomGoogleMaps {
-
+	
+	// Constants
 	final GoogleMap googleMap;
+	final Activity owningActivity;
+	final LatLng northWest = new LatLng(57.697497, 11.985397);
+	final LatLng southEast = new LatLng(57.678687, 11.969347);
 
 	private ArrayList<MarkerOptions> markerOptionsArray = new ArrayList<MarkerOptions>();
 	private Marker highlighted, hereAmI;
-
-	final Activity owningActivity;
-	TextView tvDistanceDuration;
+	
 	private NavigationManager navManager;
-
-	// Bounds the map to a given area
-	LatLng northWest = new LatLng(57.697497, 11.985397);
-	LatLng southEast = new LatLng(57.678687, 11.969347);
-	LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
 
 	// Used for showing the custom view button in the map
 	private OnInfoWindowElemTouchListener infoButtonListener;
 	private ViewGroup infoWindow;
-	private TextView infoTitle;
-	private TextView infoSnippet;
+	private TextView infoTitle, infoSnippet, tvDistanceDuration;
 	private Button infoButton;
 
-	public void rePrint(){
+	/**
+	 * Redraw all markers on the map.
+	 */
+	public void reDrawMarkers(){
 		googleMap.clear();
 		for (MarkerOptions m : markerOptionsArray)
 			googleMap.addMarker(m);		
 	}
 
 	/**
+	 * Constructor.
 	 * @param owningActivity, the calling Activity
 	 * @param googleMap, in instance of GoogleMap
 	 */
-	public CustomGoogleMaps(final Activity owningActivity,final GoogleMap googleMap) {
+	public CustomGoogleMaps(final Activity owningActivity, GoogleMap googleMap) {
 		this.owningActivity = owningActivity;
 		this.googleMap = googleMap;
 
@@ -76,8 +76,6 @@ public class CustomGoogleMaps {
 		tvDistanceDuration = (TextView)owningActivity.findViewById(R.id.tv_distance_time);
 
 		setUpMapIfNeeded();
-
-		// Code for getting the custom info buttons to work
 
 		// Get fragment to the custom veiws code
 		final MapFragment mapFragment = (MapFragment) owningActivity.getFragmentManager()
@@ -123,21 +121,14 @@ public class CustomGoogleMaps {
 			}
 		});
 
-		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-			@Override
-			public void onInfoWindowClick(Marker marker) {
-				printNavigationPopup(marker.getPosition());
-
-			}			
-		});
-
+		// Creates a marker for target position. Possible to drag around.
 		googleMap.setOnMapLongClickListener(new OnMapLongClickListener() {
 			@Override
 			public void onMapLongClick(LatLng point) {
 				if(highlighted != null)
 					highlighted.remove();
 
-				highlighted = googleMap.addMarker(new MarkerOptions()
+				highlighted = CustomGoogleMaps.this.googleMap.addMarker(new MarkerOptions()
 				.position(point)
 				.title("Targeted position")
 				.draggable(true)				
@@ -146,9 +137,34 @@ public class CustomGoogleMaps {
 				highlighted.showInfoWindow();
 			}
 		});		
+		
+		// When user click info window on marker. Show navigation options
+		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			public void onInfoWindowClick(Marker marker) {
+				LatLng latlng = getCurrentLocation();
+				if (!isLocationInBound(latlng))
+					return;
+
+				reDrawMarkers();
+				navManager.drawPathOnMap(latlng,marker.getPosition());
+				printNavigationPopup(marker.getPosition());
+			}
+		});	
 	}
-
-
+	
+	/**
+	 * Checks whether given location is inside the limited area
+	 * @param location, given location to test
+	 * @return true if inside, otherwise false
+	 */
+	public boolean isLocationInBound(LatLng latlng){		
+		// Bounds the map to a given area
+		LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
+		
+		return(strictBounds.contains(latlng));		
+	}
+	
+	// NOT FINISHED
 	private void printNavigationPopup(LatLng point){
 		final LatLng _point = point;		
 		
@@ -165,10 +181,9 @@ public class CustomGoogleMaps {
 		           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 		               @Override
 		               public void onClick(DialogInterface dialog, int id) {
-		   				Location tempLoc = getCurrentLocation();
-						LatLng tempL = new LatLng(tempLoc.getLatitude(), tempLoc.getLongitude());	
-						rePrint();
-						navManager.drawPathOnMap(tempL, _point);
+		   				LatLng latLng = getCurrentLocation();
+						reDrawMarkers();
+						navManager.drawPathOnMap(latLng, _point);
 		               }
 		           })
 		           .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -221,6 +236,9 @@ public class CustomGoogleMaps {
 		}
 	}
 
+	/**
+	 * Removes all markers from array and map.
+	 */
 	void removeAllMarkerFromMap(){
 		markerOptionsArray.clear();
 		googleMap.clear();
@@ -256,29 +274,28 @@ public class CustomGoogleMaps {
 	 * @return true if position was set, false if otherwise
 	 */
 	public boolean drawMyPosition(){
-		Location location = getCurrentLocation();		
-		// Location location = new Location("TEMP");
-		//		location.setLatitude(57.68806);
-		//		location.setLongitude(11.977978);
+		LatLng latlng = getCurrentLocation();		
 
-		if (location != null) {
-			LatLng myPosition = new LatLng(location.getLatitude(),
-					location.getLongitude());
+		if (latlng != null){
+			Location location = new Location("Current Position");
+			location.setLatitude(latlng.latitude);
+			location.setLongitude(latlng.longitude);
 
-			if (strictBounds.contains(myPosition)) {
+			// If position is in range. Print out a marker.
+			if (isLocationInBound(latlng)) {
 				if(hereAmI != null)
 					hereAmI.remove();
 
 				hereAmI = googleMap
 						.addMarker(new MarkerOptions()
-						.position(myPosition)
+						.position(latlng)
 						.title("My Location")
 						.icon(BitmapDescriptorFactory
 								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 								.snippet("I am here"));
 				hereAmI.showInfoWindow();
 
-				googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+				googleMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
 				googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
 				return true;
@@ -291,16 +308,16 @@ public class CustomGoogleMaps {
 	}
 
 	/**
+	 * Returns the current location.
 	 * @return user's current location
 	 */
-	private Location getCurrentLocation(){
-
+	private LatLng getCurrentLocation(){
 		LocationManager locationManager = (LocationManager) owningActivity
 				.getSystemService(Context.LOCATION_SERVICE);
 		String provider = locationManager.getBestProvider(new Criteria(), true);
 		Location location = locationManager.getLastKnownLocation(provider);
 
-		return location;
+		return new LatLng(location.getLatitude(), location.getLongitude());
 	}
 
 	private void setUpMapIfNeeded() {
@@ -317,9 +334,8 @@ public class CustomGoogleMaps {
 			googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 				@Override
 				public void onCameraChange(CameraPosition position) {
-
 					// Set minimum zoom level
-					if (position.zoom < 14) {
+					if (position.zoom < 14){
 						googleMap.animateCamera(CameraUpdateFactory
 								.zoomTo(14));
 						Toast.makeText(owningActivity, "Minimum zoom",
@@ -327,8 +343,7 @@ public class CustomGoogleMaps {
 					}
 
 					// If position is within, do nothing.
-					if (strictBounds.contains(googleMap
-							.getCameraPosition().target))
+					if (isLocationInBound(googleMap.getCameraPosition().target))
 						return;
 
 					Toast.makeText(owningActivity,
@@ -353,40 +368,22 @@ public class CustomGoogleMaps {
 					googleMap.moveCamera(CameraUpdateFactory
 							.newLatLng(center));
 				}
-			});
-
-			/*
-			 * googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
-			 * 
-			 * @Override public View getInfoWindow(Marker arg0) { return null; }
-			 * 
-			 * // Defines the contents of the InfoWindow
-			 * 
-			 * @Override public View getInfoContents(Marker arg0) { View v =
-			 * null; // Getting the position from the marker LatLng latLng =
-			 * arg0.getPosition();
-			 * 
-			 * return v; } });
-			 */
-
-			googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-				public void onInfoWindowClick(Marker marker) {
-					Location l = getCurrentLocation();
-					LatLng LatLngMyPos = new LatLng(l.getLatitude(), l.getLongitude());
-					if (!strictBounds.contains(LatLngMyPos))
-						return;
-
-					rePrint();
-					navManager.drawPathOnMap(LatLngMyPos,marker.getPosition());
-				}
-			});			
+			});		
 		}
 
 	}
+	/**
+	 * Get all markers 
+	 * @return arrayList with all markersOptions
+	 */
 	public ArrayList<MarkerOptions> getMarkerOptionsArray() {
 		return markerOptionsArray;
 	}
 
+	/**
+	 * Set all markers to array
+	 * @param markerOptionsArray containing all markers
+	 */
 	public void setMarkerOptionsArray(ArrayList<MarkerOptions> markerOptionsArray) {
 		this.markerOptionsArray = markerOptionsArray;
 	}

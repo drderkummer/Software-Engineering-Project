@@ -693,7 +693,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState
 				.getParcelableArrayList(markerOptionsArrayString);
 		customMaps.setMarkerOptionsArray(markerOptionsArray);
-		customMaps.rePrint();
+		customMaps.reDrawMarkers();
 		showRooms();
 	}
 }
