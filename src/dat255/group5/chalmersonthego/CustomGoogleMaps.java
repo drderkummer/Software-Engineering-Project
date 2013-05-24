@@ -38,7 +38,7 @@ public class CustomGoogleMaps {
 
 	// Constants
 	final GoogleMap googleMap;
-	final Activity owningActivity;
+	public final Activity owningActivity;
 	final LatLng northWest = new LatLng(57.697497, 11.985397);
 	final LatLng southEast = new LatLng(57.678687, 11.969347);
 
@@ -50,7 +50,8 @@ public class CustomGoogleMaps {
 	// Used for showing the custom view button in the map
 	private OnInfoWindowElemTouchListener infoButtonListener;
 	private ViewGroup infoWindow;
-	private TextView infoTitle, infoSnippet, tvDistanceDuration;
+	private TextView infoTitle, infoSnippet;
+	final TextView tvDistanceDuration; 
 	private Button infoButton;
 
 	/**
@@ -186,14 +187,10 @@ public class CustomGoogleMaps {
 								LatLng latLng = getCurrentLocation();
 								reDrawMarkers();
 
-								if (navManager.drawPathOnMap(latLng, _point)) {
+								if (navManager.drawPathOnMap(latLng, _point))
 									tvDistanceDuration
 											.setVisibility(TextView.VISIBLE);
-									while(navManager.getDurationDistanceStr() != null){
-									tvDistanceDuration.setText(navManager
-											.getDurationDistanceStr());
-									}
-								}
+								
 							}
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -328,7 +325,7 @@ public class CustomGoogleMaps {
 	 * 
 	 * @return user's current location
 	 */
-	private LatLng getCurrentLocation() {
+	public LatLng getCurrentLocation() {
 		LocationManager locationManager = (LocationManager) owningActivity
 				.getSystemService(Context.LOCATION_SERVICE);
 		String provider = locationManager.getBestProvider(new Criteria(), true);

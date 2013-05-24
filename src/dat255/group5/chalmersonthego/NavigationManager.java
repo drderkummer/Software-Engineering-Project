@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.json.JSONObject;
+
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,9 +26,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
  */
 public class NavigationManager {	
 	private GoogleMap map;
-
-	String duration;
-	String distance;
 	
 	// Same troughtout the map
 	final int LINE_COLOR = Color.RED;
@@ -76,17 +75,6 @@ public class NavigationManager {
 		}
 		return false;
 
-	}
-
-	/**
-	 * Creates a string with distance and duration
-	 * @return string to print out
-	 */
-	public String getDurationDistanceStr(){
-		if(distance != null && duration != null)
-			return "Distance:"+distance + ", Duration:"+duration;
-		else
-			return null;
 	}
 
 	/**
@@ -156,8 +144,7 @@ public class NavigationManager {
 	}
 
 	 // Fetches data from url passed
-    private class DownloadTask extends AsyncTask<String, Void, String>{
- 
+    private class DownloadTask extends AsyncTask<String, Void, String>{ 
         // Downloading data in non-ui thread
         @Override
         protected String doInBackground(String... url) {
@@ -214,6 +201,8 @@ public class NavigationManager {
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
+        	String duration;
+        	String distance;
   
             // Traversing through all the routes
             for(int i=0;i<result.size();i++){
@@ -246,7 +235,9 @@ public class NavigationManager {
                 lineOptions.addAll(points);
                 lineOptions.width(LINE_WIDTH);
                 lineOptions.color(LINE_COLOR);
-            }
+            }            
+            
+            CustomGoogleMaps.this.owningActivity.toString();
  
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);
