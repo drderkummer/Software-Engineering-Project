@@ -305,12 +305,12 @@ public class DAO {
 	}
 
 	/**
-	 * 
+	 * Tested with testGetALlRoomsWithTypeOnFloor
 	 * @param type
 	 * @param floor
 	 * @return
 	 */
-	public ArrayList<String> getAllRoomsWithTypeOnFloor(String type, int floor) {
+	public ArrayList<String> getAllRoomsWithTypeOnFloor(String type, String floor) {
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns = { DBHelper.TABLE_3_COLUMN_1 };
 		String selection = DBHelper.TABLE_3_COLUMN_4 + " LIKE '" + type
