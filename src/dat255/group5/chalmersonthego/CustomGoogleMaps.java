@@ -141,12 +141,6 @@ public class CustomGoogleMaps {
 		// When user click info window on marker. Show navigation options
 		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			public void onInfoWindowClick(Marker marker) {
-				LatLng latlng = getCurrentLocation();
-				if (!isLocationInBound(latlng))
-					return;
-
-				reDrawMarkers();
-				navManager.drawPathOnMap(latlng,marker.getPosition());
 				printNavigationPopup(marker.getPosition());
 			}
 		});	
