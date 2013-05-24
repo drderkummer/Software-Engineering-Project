@@ -295,7 +295,7 @@ public class CustomGoogleMaps {
 						.position(latlng)
 						.title("My Location")
 						.icon(BitmapDescriptorFactory
-								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+								.fromAsset("map_blue_dot.png"))
 						.snippet("I am here");
 				hereAmI = CustomGoogleMaps.this.googleMap
 						.addMarker(markeroptions);
