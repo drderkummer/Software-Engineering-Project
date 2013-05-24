@@ -1,6 +1,8 @@
 package com.example.chalmersonthego;
 
 import group5.database.DAO;
+import group5.database.DatabaseConstants;
+import group5.database.InsertionsOfData;
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -27,11 +29,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.SearchView;
 import android.widget.Toast;
-
+import android.view.ActionMode;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,11 +43,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 	// Calendar synch related variables
 	private ICalReader iCal;
 	
-	//Constant strings to use with save and restore instance state
+	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
 	private static final String layerSelectionString = "layerSelection";
-
+	private static final String sharedPrefsString = "shared";
+	private static final String markerOptionsArrayString = "markerOptionsArray";
+	
 	// Treadmill related variables
 	private boolean stepCounterActivated;
 	private int steps = 0;
@@ -73,18 +75,15 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	// A boolean set to 'true' when a room-type-layer is chosen
 	private boolean layerIsChosen = false;
+
+	protected Object mActionMode;
 	// A car array with all the different types of rooms, avaliable to be
 	// selected in the show all menu
-	protected final CharSequence[] layerOptions = { "Computer Rooms",
-			"Lecture Halls", "Group Rooms", "Pubs" };
 	// Used to store what layers the user has choosen to show
-	protected boolean[] layerSelections = new boolean[layerOptions.length];
+	protected boolean[] layerSelections = new boolean[DatabaseConstants.layerOptions.length];
 
-	// A car array with all the floors
-	protected final CharSequence[] floorOptions = { "-1 Floor","Ground floor",
-			"1st Floor", "2nd Floor", "3rd Floor","4th Floor", "5th Floor" };
 	// Used to store what floorlayers the user has choosen to show
-	protected boolean[] floorSelections = new boolean[floorOptions.length];
+	protected boolean[] floorSelections = new boolean[DatabaseConstants.floorOptions.length];
 
 	@SuppressLint("NewApi")
 	@Override
@@ -108,10 +107,71 @@ public class MainActivity extends Activity implements SensorEventListener {
 		insertDataForTheFirstTime();
 
 		iCal = new ICalReader(this);
-		
+
 		startTreadmill();
 
 	}
+
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+		// Called when the action mode is created; startActionMode() was called
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Inflate a menu resource providing context menu items
+			MenuInflater inflater = mode.getMenuInflater();
+			// .inflate(R.layout.contextual_layout, null)
+
+			// Assumes that you have "contexual.xml" menu resources
+			inflater.inflate(R.menu.contextual, menu);
+			return true;
+		}
+
+		// Called each time the action mode is shown. Always called after
+		// onCreateActionMode, but
+		// may be called multiple times if the mode is invalidated.
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false; // Return false if nothing is done
+		}
+
+		// Called when the user selects a contextual menu item
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.basement:
+				Toast.makeText(MainActivity.this, "show all rooms in basement",
+						Toast.LENGTH_LONG).show();
+				// mode.finish(); // Action picked, so close the CAB
+				floorSelections[0] = true;
+				return true;
+			case R.id.ground:
+				floorSelections[1] = true;
+				return true;
+			case R.id.first:
+				floorSelections[2] = true;
+				return true;
+			case R.id.second:
+				floorSelections[3] = true;
+				return true;
+			case R.id.third:
+				floorSelections[4] = true;
+				return true;
+			case R.id.fourth:
+				floorSelections[5] = true;
+				return true;
+			case R.id.fifth:
+				floorSelections[6] = true;
+				return true;
+			case R.id.sixth:
+				floorSelections[7] = true;
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		// Called when the user exits the action mode
+		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
+		}
+	};
 
 	/**
 	 * private void customPath(LatLng from, LatLng to){ //Get length via
@@ -157,10 +217,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			String message = "Enable either GPS or any other location"
-					+ " service to find current location.";
-			builder.setMessage(message)
-					.setPositiveButton("Yes",
+			builder.setMessage(R.string.question_gps)
+					.setPositiveButton(R.string.alert_positive,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface d, int id) {
 									startActivity(new Intent(
@@ -168,7 +226,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 									d.dismiss();
 								}
 							})
-					.setNegativeButton("No",
+					.setNegativeButton(R.string.alert_negative,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface d, int id) {
 									d.cancel();
@@ -182,7 +240,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public void insertDataForTheFirstTime() {
 		String firstTime = "firstTime";
 		boolean isFirstTime = true;
-		SharedPreferences prefs = getSharedPreferences("com.example.android", 0);
+		SharedPreferences prefs = getSharedPreferences(sharedPrefsString, 0);
 		if (prefs.getBoolean(firstTime, isFirstTime)) {
 			InsertionsOfData.basicDataInsert(dao);
 			prefs.edit().putBoolean(firstTime, !isFirstTime).commit();
@@ -252,40 +310,33 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
 		switch (item.getItemId()) {
-
 		case R.id.action_layers:
 			Dialog layerDialog = onCreateDialog(0);
 			layerDialog.show();
-			return true;
-
-		case R.id.action_floors:
-			Dialog floorDialog = onCreateDialog(1);
-			floorDialog.show();
-			return true;
-
+			break;
 		case R.id.action_my_location:
-			customMaps.setMyPosition();
-			return true;
-
+			customMaps.drawMyPosition();
+			break;
+		case R.id.action_search:
+			break;
 		case R.id.exit:
 			finish();
-			return true;
-
+			break;
 		case R.id.action_treadmill:
 			stepCounterActivated = !stepCounterActivated;
-			return true;
-
-		case R.id.action_calendarSynch:
-			synchWithCal();
-			return true;
-
+			break;
+		case R.id.action_emptyMap:
+			customMaps.removeAllMarkerFromMap();
+			break;
+		case R.id.action_calories:
+			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
-			return true;
+			break;
 		}
+		return true;
 	}
 
 	/**
@@ -358,9 +409,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		};
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Are you sure you want to exit?")
-				.setPositiveButton("Yes", dialogClickListener)
-				.setNegativeButton("No", dialogClickListener).show();
+		builder.setMessage(R.string.question_exit)
+				.setPositiveButton(R.string.alert_positive, dialogClickListener)
+				.setNegativeButton(R.string.alert_negative, dialogClickListener).show();
 	}
 
 	/**
@@ -393,44 +444,53 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * Show all rooms function. Builds upon what layers have been selected in
 	 * the popupmenu, and then stored in layerSelection.
 	 */
-	private void showRooms() {
-
+	private boolean showRooms() {
+		layerIsChosen = false;
 		if (layerSelections[0]) {
-			ArrayList<String> r1 = dao.getAllRoomsWithType("computer room");
+			ArrayList<String> r1 = dao.getAllRoomsWithType(DatabaseConstants.type_computerRoom);
 			for (int i = 0; i < r1.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r1.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"computer room");
+						DatabaseConstants.type_computerRoom);
 			}
+			layerIsChosen = true;
 		}
 		if (layerSelections[1]) {
-			ArrayList<String> r3 = dao.getAllRoomsWithType("lecture hall");
+			ArrayList<String> r3 = dao.getAllRoomsWithType(DatabaseConstants.type_lectureHall);
 			for (int i = 0; i < r3.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r3.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"lecture hall");
+						DatabaseConstants.type_lectureHall);
 			}
+			layerIsChosen = true;
 		}
 		if (layerSelections[2]) {
-			ArrayList<String> r2 = dao.getAllRoomsWithType("group room");
+			ArrayList<String> r2 = dao.getAllRoomsWithType(DatabaseConstants.type_groupRoom);
 			for (int i = 0; i < r2.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r2.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"group room");
+						DatabaseConstants.type_groupRoom);
 			}
+			layerIsChosen = true;
 		}
 		if (layerSelections[3]) {
-			ArrayList<String> r4 = dao.getAllRoomsWithType("pub");
+			ArrayList<String> r4 = dao.getAllRoomsWithType(DatabaseConstants.type_pub);
 			for (int i = 0; i < r4.size(); i++) {
 				LatLng coords = dao.getRoomCoordinates(r4.get(i));
 				String name = dao.getName(coords.latitude, coords.longitude);
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-						"pub");
+						DatabaseConstants.type_pub);
 			}
 			customMaps.drawBuildings();
+			layerIsChosen = true;
+		}
+		if (layerIsChosen) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -445,19 +505,25 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		if (id == 0) {
 			return new AlertDialog.Builder(this)
-					.setTitle("Show layers on map")
-					.setMultiChoiceItems(layerOptions, layerSelections,
+					.setTitle(R.string.info_layers)
+					.setMultiChoiceItems(DatabaseConstants.layerOptions,
+							layerSelections,
 							new LayerDialogSelectionClickHandler())
-					.setPositiveButton("OK",
+					.setPositiveButton(R.string.ok,
 							new LayerDialogButtonClickHandler()).create();
-		} else if (id == 1) {
-			return new AlertDialog.Builder(this)
-					.setTitle("Select floors to show")
-					.setMultiChoiceItems(floorOptions, floorSelections,
-							new FloorDialogSelectionClickHandler())
-					.setPositiveButton("OK",
-							new FloorDialogButtonClickHandler()).create();
 		}
+
+		/**
+		 * can be removed(?):
+		 */
+		// else if (id == 1) {
+		// return new AlertDialog.Builder(this)
+		// .setTitle("Select floors to show")
+		// .setMultiChoiceItems(DatabaseConstants.floorOptions, floorSelections,
+		// new FloorDialogSelectionClickHandler())
+		// .setPositiveButton("OK",
+		// new FloorDialogButtonClickHandler()).create();
+		// }
 		return null;
 	}
 
@@ -471,7 +537,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
 
-			Log.i("ME", layerOptions[clicked] + " selected: " + selected);
+			Log.i("ME", DatabaseConstants.layerOptions[clicked] + " selected: "
+					+ selected);
 		}
 
 	}
@@ -486,7 +553,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
 
-			Log.i("ME", floorOptions[clicked] + " selected: " + selected);
+			Log.i("ME", DatabaseConstants.floorOptions[clicked] + " selected: "
+					+ selected);
 		}
 
 	}
@@ -503,31 +571,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 			switch (clicked) {
 			case DialogInterface.BUTTON_POSITIVE:
 				customMaps.removeAllMarkerFromMap();
-				showRooms();
-				if (layerSelections[0] || layerSelections[1]
-						|| layerSelections[2] || layerSelections[3]) {
-					layerIsChosen = true;
-				} else {
-					layerIsChosen = false;
+				if (showRooms() == true) {
+					// Start the CAB using the ActionMode.Callback defined above
+					mActionMode = MainActivity.this
+							.startActionMode(mActionModeCallback);
+					;
 				}
 				invalidateOptionsMenu();
 				break;
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @author Niklas
-	 * 
-	 *         Handles click on floor menu
-	 */
-	public class FloorDialogButtonClickHandler implements
-			DialogInterface.OnClickListener {
-		public void onClick(DialogInterface dialog, int clicked) {
-			switch (clicked) {
-			case DialogInterface.BUTTON_POSITIVE:
-				// ADD LINES FOR SHOWING ONLY SELECTED LAYERS HERE
 			}
 		}
 	}
@@ -539,7 +590,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param event
 	 */
 	public void onSensorChanged(SensorEvent event) {
-		if(stepCounterActivated){
+		if (stepCounterActivated) {
 			Sensor sensor = event.sensor;
 			synchronized (this) {
 				int j = (sensor.getType() == Sensor.TYPE_ACCELEROMETER) ? 1 : 0;
@@ -551,7 +602,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					}
 					int k = 0;
 					float v = vSum / 3;
-	
+
 					float direction = (v > mLastValues[k] ? 1
 							: (v < mLastValues[k] ? -1 : 0));
 					if (direction == -mLastDirections[k]) {
@@ -561,15 +612,15 @@ public class MainActivity extends Activity implements SensorEventListener {
 						mLastExtremes[extType][k] = mLastValues[k];
 						float diff = Math.abs(mLastExtremes[extType][k]
 								- mLastExtremes[1 - extType][k]);
-	
+
 						if (diff > mLimit) {
-	
+
 							boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
 							boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
 							boolean isNotContra = (mLastMatch != 1 - extType);
-	
-							if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough
-									&& isNotContra) {
+
+							if (isAlmostAsLargeAsPrevious
+									&& isPreviousLargeEnough && isNotContra) {
 								// Step confirmed!
 								Log.i("main", "step");
 								steps++;
@@ -594,33 +645,38 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// TODO Auto-generated method stub
 
 	}
-	
 
-	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-	    savedInstanceState.putBoolean(stepCounterActivatedString, stepCounterActivated);
-	    savedInstanceState.putInt(stepsString, steps);
-	    //Save the layerSelecations
-	    savedInstanceState.putBooleanArray(layerSelectionString, layerSelections);
-	    
-	    savedInstanceState.putParcelableArrayList("markers", customMaps.getMarkerOptionsArray());
-	    
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putBoolean(stepCounterActivatedString,
+				stepCounterActivated);
+		savedInstanceState.putInt(stepsString, steps);
+		// Save the layerSelecations
+		savedInstanceState.putBooleanArray(layerSelectionString,
+				layerSelections);
+
+		savedInstanceState.putParcelableArrayList(markerOptionsArrayString,
+				customMaps.getMarkerOptionsArray());
+
+		// Always call the superclass so it can save the view hierarchy state
+		super.onSaveInstanceState(savedInstanceState);
 	}
+
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	    // Always call the superclass so it can restore the view hierarchy
-	    super.onRestoreInstanceState(savedInstanceState);
-	   
-	    // Restore state members from saved instance
-	    stepCounterActivated = savedInstanceState.getBoolean(stepCounterActivatedString,stepCounterActivated);
-	    steps = savedInstanceState.getInt(stepsString);
-	    layerSelections = savedInstanceState.getBooleanArray(layerSelectionString);
-	    
-	    ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState.getParcelableArrayList("markers");
-	    customMaps.setMarkerOptionsArray(markerOptionsArray);
-	    customMaps.rePrint();
-	    showRooms();
+		// Always call the superclass so it can restore the view hierarchy
+		super.onRestoreInstanceState(savedInstanceState);
+
+		// Restore state members from saved instance
+		stepCounterActivated = savedInstanceState.getBoolean(
+				stepCounterActivatedString, stepCounterActivated);
+		steps = savedInstanceState.getInt(stepsString);
+		layerSelections = savedInstanceState
+				.getBooleanArray(layerSelectionString);
+
+		ArrayList<MarkerOptions> markerOptionsArray = savedInstanceState
+				.getParcelableArrayList(markerOptionsArrayString);
+		customMaps.setMarkerOptionsArray(markerOptionsArray);
+		customMaps.rePrint();
+		showRooms();
 	}
 }

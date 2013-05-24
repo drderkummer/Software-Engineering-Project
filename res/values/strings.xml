@@ -6,8 +6,8 @@
     <string name="title_activity_cmap">CMapActivity</string>
     <string name="action_layers">Layers</string>
     <string name="search_hint">Search lecture halls, buildings, grouprooms</string>
-
-    <!-- distance and duration  -->
+    <string name="drink_button">Drink!</string>
+    <!-- distance and duration -->
     <string name="tv_distance_time_init">Tap two locations in the map</string>
     <string name="tv_distance_time">Distance</string>
 
@@ -24,9 +24,15 @@
     <string name="layers_groupRooms">Show group rooms</string>
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="action_my_location">My Location</string>
-    <string name="action_treadmill">Activate treadmill</string>
+    <string name="action_treadmill">Activate Stepcounter</string>
     <string name="action_calendarSynch">Synch with ICal</string>
     <string name="action_floors">Select visible floors</string>
-    
-
+    <string name="action_emptyMap">Empty map</string>
+    <string name="action_calories">Calorie Drinking Progress</string>
+    <string name="alert_positive">Yes</string>
+    <string name="alert_negative">No</string>
+    <string name="info_layers">Show layers on map</string>
+    <string name="question_gps">"Do you want to enable either GPS or any other location service to find current location?</string>
+	<string name="question_exit">Are you sure you want to exit?</string>
+	<string name="ok">OK</string>
 </resources>

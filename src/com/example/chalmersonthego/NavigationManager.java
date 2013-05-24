@@ -18,26 +18,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class NavigationManager {
+/**
+ * Handles navigation on the map. Like drawing the route etc.
+ * @author Anders Nordin
+ */
+public class NavigationManager {	
 	private GoogleMap map;
 
 	String duration;
 	String distance;
 	
+	// Same troughtout the map
 	final int LINE_COLOR = Color.RED;
 	final int LINE_WIDTH = 4;		
 
+	// Getting correct instance of map to draw on.
 	public NavigationManager(GoogleMap googleMap){
 		this.map = googleMap;
 	}	
-
-//	public int getDistance(LatLng start, LatLng destination){
-//		NOT IMPLEMENTED YET
-//	}
-
-//	public int getDuration(LatLng start, LatLng destination){
-//		NOT IMPLEMENTED YET
-//	}
 
 	/**
 	 * Draw a straight line between given points
