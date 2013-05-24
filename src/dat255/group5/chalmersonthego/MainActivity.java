@@ -135,58 +135,102 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		// Called when the user selects a contextual menu item
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			customMaps.removeAllMarkerFromMap();
 			switch (item.getItemId()) {
 			case R.id.basement:
-				Toast.makeText(MainActivity.this, "all rooms in basement",
-						Toast.LENGTH_SHORT).show();
 				// mode.finish(); // Action picked, so close the CAB
-				floorSelections[0] = true;
+				showRoomsOnFloor("basement");
 				return true;
 			case R.id.ground:
-				Toast.makeText(MainActivity.this, "all rooms on ground level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[1] = true;
+				showRoomsOnFloor("ground");
 				return true;
 			case R.id.first:
-				Toast.makeText(MainActivity.this, "all rooms at 1st level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[2] = true;
+				showRoomsOnFloor("1");
 				return true;
 			case R.id.second:
-				Toast.makeText(MainActivity.this, "all rooms at 2nd level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[3] = true;
+				showRoomsOnFloor("2");
 				return true;
 			case R.id.third:
-				Toast.makeText(MainActivity.this, "all rooms at 3rd level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[4] = true;
+				showRoomsOnFloor("3");
 				return true;
 			case R.id.fourth:
-				Toast.makeText(MainActivity.this, "all rooms at 4th level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[5] = true;
+				showRoomsOnFloor("4");
 				return true;
 			case R.id.fifth:
-				Toast.makeText(MainActivity.this, "all rooms at 6th level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[6] = true;
+				showRoomsOnFloor("5");
 				return true;
 			case R.id.sixth:
-				Toast.makeText(MainActivity.this, "all rooms at 7th level",
-						Toast.LENGTH_SHORT).show();
-				floorSelections[7] = true;
+				showRoomsOnFloor("6");
 				return true;
 			default:
 				return false;
 			}
 		}
+		
+		
 
 		// Called when the user exits the action mode
 		public void onDestroyActionMode(ActionMode mode) {
 			mActionMode = null;
 		}
 	};
+	
+	private void showRoomsOnFloor(String floor) {
+		layerIsChosen = false;
+		if (layerSelections[0]) {
+			ArrayList<String> r1 = dao
+					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_computerRoom, floor);
+			if(r1!=null){
+				for (int i = 0; i < r1.size(); i++) {
+					LatLng coords = dao.getRoomCoordinates(r1.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+							DatabaseConstants.type_computerRoom);
+				}
+			}
+			layerIsChosen = true;
+		}
+		if (layerSelections[1]) {
+			ArrayList<String> r3 = dao
+					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_lectureHall, floor);
+			if(r3!=null){
+				for (int i = 0; i < r3.size(); i++) {
+					LatLng coords = dao.getRoomCoordinates(r3.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+							DatabaseConstants.type_lectureHall);
+				}
+			}
+			layerIsChosen = true;
+		}
+		if (layerSelections[2]) {
+			ArrayList<String> r2 = dao
+					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_groupRoom, floor);
+			if(r2!=null){
+				for (int i = 0; i < r2.size(); i++) {
+					LatLng coords = dao.getRoomCoordinates(r2.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+							DatabaseConstants.type_groupRoom);
+				}
+			}
+			layerIsChosen = true;
+		}
+		if (layerSelections[3]) {
+			ArrayList<String> r4 = dao
+					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_pub, floor);
+			if(r4!=null){
+				for (int i = 0; i < r4.size(); i++) {
+					LatLng coords = dao.getRoomCoordinates(r4.get(i));
+					String name = dao.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+							DatabaseConstants.type_pub);
+				}
+			}
+			customMaps.drawBuildings();
+			layerIsChosen = true;
+		}
+	}
 
 	/**
 	 * private void customPath(LatLng from, LatLng to){ //Get length via
