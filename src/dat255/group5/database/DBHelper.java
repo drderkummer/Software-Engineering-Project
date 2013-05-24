@@ -14,20 +14,25 @@ import android.util.Log;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
+	// Constants for whole database
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "ChalmersOnTheGo";
 
+	// Constants for table 4
 	public static final String TABLE_4_NAME = "Buildings";
 	public static final String TABLE_4_COLUMN_1 = "name";
 
+	// Constants for table 1
 	public static final String TABLE_1_NAME = "Entries";
 	public static final String TABLE_1_COLUMN_1 = "x";
 	public static final String TABLE_1_COLUMN_2 = "y";
 	public static final String TABLE_1_COLUMN_3 = "building";
 
+
+	// Constants for table 2
 	public static final String TABLE_2_NAME = "Types";
 	public static final String TABLE_2_COLUMN_1 = "name";
-
+	// Constants for table 3
 	public static final String TABLE_3_NAME = "Rooms";
 	public static final String TABLE_3_COLUMN_1 = "name";
 	public static final String TABLE_3_COLUMN_2 = "xCord";
@@ -36,10 +41,12 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String TABLE_3_COLUMN_5 = "building";
 	public static final String TABLE_3_COLUMN_6 = "floor";
 
+	// Constants for table 5
 	public static final String TABLE_5_NAME = "Pubs";
 	public static final String TABLE_5_COLUMN_1 = "name";
 	public static final String TABLE_5_COLUMN_2 = "picture";
 
+	// Create tables
 	private static final String DATABASE_TABLE_4_CREATE = "CREATE TABLE IF NOT EXISTS "
 			+ TABLE_4_NAME + " (" + TABLE_4_COLUMN_1 + " TEXT PRIMARY KEY)";
 	private static final String DATABASE_TABLE_1_CREATE = "CREATE TABLE IF NOT EXISTS "
@@ -116,6 +123,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL(DATABASE_TABLE_5_CREATE);
 	}
 
+	/**
+	 * Called when database is upgraded
+	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(DBHelper.class.getName(), "Upgrading database from version "

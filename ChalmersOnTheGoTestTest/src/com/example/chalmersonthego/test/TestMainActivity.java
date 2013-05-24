@@ -2,7 +2,14 @@ package com.example.chalmersonthego.test;
 
 import dat255.group5.chalmersonthego.MainActivity;
 import android.test.ActivityInstrumentationTestCase2;
-
+import android.widget.SearchView;
+/**
+ * This method class can be used to test clicking buttons on the activity.
+ * But we thought it makes more sense to do this manually to test the
+ * user experience and use automatic UnitTests for underlying functions.
+ * @author Fredrik
+ *
+ */
 public class TestMainActivity extends
 		ActivityInstrumentationTestCase2<MainActivity> {
 	
@@ -22,14 +29,11 @@ public class TestMainActivity extends
 		
 		mainActivity = getActivity();
 	}
-	
+	/**
+	 * This method can be used to click buttons
+	 */
 	public void testSearch(){
-		//here you can create unitTests for the gui and also add more methods
-		/**
-		SearchView searchView = (SearchView) mainActivity.findViewById(R.id.action_search);
-		assertNotNull(searchView);
-		TouchUtils.clickView(this, searchView);
-		**/
+		assertTrue(true);
 	}
 
 }

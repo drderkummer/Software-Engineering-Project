@@ -1,6 +1,8 @@
 package dat255.group5.database;
 
 import java.util.ArrayList;
+
+import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.model.LatLng;
 import android.app.SearchManager;
 import android.content.ContentValues;
@@ -11,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
 /**
- * Data Access object. Like a layer on top of the Database
+ * Data Access object. A layer on top Unit tested by DAOTest
  * 
  * @author Fredrik
  */
@@ -22,10 +24,10 @@ public class DAO {
 	private DBHelper dbHelper;
 
 	/**
-	 * Empty Constructor Gets an instance of the Helper
+	 * Empty Constructor creates instance of the Database Helper
 	 * 
 	 * @param context
-	 *            for example this
+	 *            for example this when called from Activity
 	 */
 	public DAO(Context context) {
 		dbHelper = new DBHelper(context);
@@ -33,7 +35,7 @@ public class DAO {
 
 	/**
 	 * Needs to be called before any other operation on the database is
-	 * performed. Get a writable database
+	 * performed. Gets a writable database.
 	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
@@ -41,19 +43,21 @@ public class DAO {
 
 	/**
 	 * Call this when you are done modifying the database. Closes connection to
-	 * database. Sameobject can be used again by calling open()
+	 * database. Same object can be used again by calling open()
 	 */
 	public void close() {
 		dbHelper.close();
 	}
 
 	/**
-	 * Insert into Table 1. Provide all columns
+	 * Insert into Table 1. Provide all columns.
 	 * 
 	 * @param x
+	 *            longitud coordinate
 	 * @param y
+	 *            latitude coordinate
 	 * @param building
-	 *            Tested by testInsertAndGetFromTable1,
+	 *            the name of the building Tested by testInsertAndGetFromTable1,
 	 *            testGetRoomCoordinatesAndInsertIntoTable1
 	 */
 	public void insertIntoTable1(double x, double y, String building) {
@@ -68,7 +72,7 @@ public class DAO {
 	 * Insert into Table 2. Provide all columns
 	 * 
 	 * @param name
-	 *            Tested in testInsertIntoTable2AndGetAllFromTable2,
+	 *            of the type Tested in testInsertIntoTable2AndGetAllFromTable2,
 	 *            testGetRoomCoordinatesAndInsertIntoTable1
 	 */
 	public void insertIntoTable2(String name) {
@@ -81,12 +85,17 @@ public class DAO {
 	 * Insert into Table 3. Provide all columns
 	 * 
 	 * @param name
+	 *            of the room
 	 * @param xCord
+	 *            longitude
 	 * @param yCord
+	 *            latitude
 	 * @param type
+	 *            of the room
 	 * @param building
+	 *            where
 	 * @param floor
-	 *            Tested testGetRoomCoordinatesAndInsertIntoTable3
+	 *            which floor Tested testGetRoomCoordinatesAndInsertIntoTable3
 	 */
 	public void insertIntoTable3(String name, double xCord, double yCord,
 			String type, String building, String floor) {
@@ -101,10 +110,10 @@ public class DAO {
 	}
 
 	/**
-	 * Insert into Table 4. Provide all columns.
+	 * Insert into Table 4.
 	 * 
 	 * @param name
-	 *            Tested in testInsertAndGetFromTable4
+	 *            of the building Tested in testInsertAndGetFromTable4
 	 */
 	public void insertIntoTable4(String name) {
 		ContentValues values = new ContentValues();
@@ -112,6 +121,14 @@ public class DAO {
 		database.insert(DBHelper.TABLE_4_NAME, null, values);
 	}
 
+	/**
+	 * Insert into Table 5
+	 * 
+	 * @param name
+	 *            name of the room that is also a pub
+	 * @param drawablePicture
+	 *            the id of the drawable to relate with the pub
+	 */
 	public void insertIntoTable5(String name, int drawablePicture) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.TABLE_5_COLUMN_1, name);
@@ -126,7 +143,6 @@ public class DAO {
 	 *         testInsertAndGetFromTable4
 	 */
 	public ArrayList<String> getAllFromTable4() {
-
 		String select = "SELECT * FROM " + DBHelper.TABLE_4_NAME;
 		Cursor c = database.rawQuery(select, null);
 		ArrayList<String> result = new ArrayList<String>(c.getCount());
@@ -163,15 +179,16 @@ public class DAO {
 	}
 
 	/**
+	 * Get coordinates for a room
 	 * 
 	 * @param room
+	 *            name of the room
 	 * @return Tested by testGetRoomCoordinatesAndInsertIntoTable1
 	 */
 	public LatLng getRoomCoordinates(String room) {
 		String[] columns = { DBHelper.TABLE_3_COLUMN_2,
 				DBHelper.TABLE_3_COLUMN_3 };
 		String selection = DBHelper.TABLE_3_COLUMN_1 + " LIKE '" + room + "'";
-
 		Cursor c = database.query(DBHelper.TABLE_3_NAME, columns, selection,
 				null, null, null, null);
 		if (c.moveToFirst()) {
@@ -186,15 +203,19 @@ public class DAO {
 	 * current position is also given.
 	 * 
 	 * @param building
+	 *            given building name
 	 * @return Tested by testCalculationOfClosestEntry
 	 */
 	public LatLng getClosestEntry(String building, LatLng currentCordinates) {
+		// Get users current coordinates
 		Double x = currentCordinates.latitude;
 		Double y = currentCordinates.longitude;
+		// Math expression to calculate length from current position to entry
 		String math = " ((" + x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") * ("
 				+ x + " - " + DBHelper.TABLE_1_COLUMN_1 + ") + " + " (" + y
 				+ " - " + DBHelper.TABLE_1_COLUMN_2 + ") * (" + y + " - "
 				+ DBHelper.TABLE_1_COLUMN_2 + ")) ";
+		// Select the closest
 		String select = "SELECT " + DBHelper.TABLE_1_COLUMN_1 + ", "
 				+ DBHelper.TABLE_1_COLUMN_2 + " FROM " + DBHelper.TABLE_1_NAME
 				+ " WHERE " + DBHelper.TABLE_1_COLUMN_3 + " LIKE '" + building
@@ -209,14 +230,14 @@ public class DAO {
 			c.close();
 			return latLng;
 		}
-
 		return null;
 	}
 
 	/**
+	 * GEt all rooms in a building
 	 * 
 	 * @param building
-	 * @return Tested by testGetAllRoomsInBuilding
+	 * @return ArrayList with all rooms Tested by testGetAllRoomsInBuilding
 	 */
 	public ArrayList<String> getAllRoomsInBuilding(String building) {
 		ArrayList<String> result = new ArrayList<String>();
@@ -236,8 +257,10 @@ public class DAO {
 	}
 
 	/**
-	 * @param xCord
-	 *            , ycoord
+	 * Get the name of the room with given coordinates
+	 * 
+	 * @param xCoord
+	 * @param yCoord
 	 * @return name tested by testGetName
 	 */
 	public String getName(double xCoord, double yCoord) {
@@ -253,8 +276,11 @@ public class DAO {
 	}
 
 	/**
+	 * Get floor from room name
+	 * 
 	 * @param name
-	 * @return floor tested by testGetFloor
+	 *            of the room
+	 * @return floor of room tested by testGetFloor
 	 */
 	public String getFloor(String name) {
 		String[] columns = { DBHelper.TABLE_3_COLUMN_6 };
@@ -268,8 +294,11 @@ public class DAO {
 	}
 
 	/**
+	 * Get type of a room
+	 * 
 	 * @param name
-	 * @return type tested by testGetType
+	 *            of the room
+	 * @return type of room tested by testGetType
 	 */
 	public String getType(String name) {
 		String[] columns = { DBHelper.TABLE_3_COLUMN_4 };
@@ -285,7 +314,9 @@ public class DAO {
 	/**
 	 * 
 	 * @param type
-	 * @return Tested by testGetAllRoomsWithType
+	 *            wanted
+	 * @return Arraylist with all rooms of a type Tested by
+	 *         testGetAllRoomsWithType
 	 */
 	public ArrayList<String> getAllRoomsWithType(String type) {
 		ArrayList<String> result = new ArrayList<String>();
@@ -305,12 +336,16 @@ public class DAO {
 	}
 
 	/**
-	 * Tested with testGetALlRoomsWithTypeOnFloor
+	 * Get all rooms with given type and floor
+	 * 
 	 * @param type
+	 *            wanted
 	 * @param floor
-	 * @return
+	 *            wanted
+	 * @return Tested with testGetALlRoomsWithTypeOnFloor
 	 */
-	public ArrayList<String> getAllRoomsWithTypeOnFloor(String type, String floor) {
+	public ArrayList<String> getAllRoomsWithTypeOnFloor(String type,
+			String floor) {
 		ArrayList<String> result = new ArrayList<String>();
 		String[] columns = { DBHelper.TABLE_3_COLUMN_1 };
 		String selection = DBHelper.TABLE_3_COLUMN_4 + " LIKE '" + type
@@ -329,17 +364,25 @@ public class DAO {
 		}
 	}
 
+	/**
+	 * For suggestions to the search function
+	 * 
+	 * @param searchString
+	 *            the String to suggest based on
+	 * @return a Cursor with suggestions
+	 */
 	public Cursor suggestionsCursor(String searchString) {
 		String query1 = " SELECT " + DBHelper.TABLE_4_COLUMN_1 + ", '"
 				+ DBHelper.TABLE_4_NAME + "' "
-				+ SearchManager.SUGGEST_COLUMN_TEXT_2 + "," + "NULL "
+				+ SearchManager.SUGGEST_COLUMN_TEXT_2 + ", '"
+				+ R.drawable.building + "'"
 				+ SearchManager.SUGGEST_COLUMN_ICON_1 + " FROM "
 				+ DBHelper.TABLE_4_NAME + " WHERE " + DBHelper.TABLE_4_COLUMN_1
 				+ " LIKE '%" + searchString + "%' ";
 		String query2 = " SELECT " + DBHelper.TABLE_2_COLUMN_1 + ", '"
 				+ DBHelper.TABLE_2_NAME + "' "
-				+ SearchManager.SUGGEST_COLUMN_TEXT_2 + "," + "NULL "
-				+ SearchManager.SUGGEST_COLUMN_ICON_1 + " FROM "
+				+ SearchManager.SUGGEST_COLUMN_TEXT_2 + ",'" + R.drawable.types
+				+ "' " + SearchManager.SUGGEST_COLUMN_ICON_1 + " FROM "
 				+ DBHelper.TABLE_2_NAME + " WHERE " + DBHelper.TABLE_2_COLUMN_1
 				+ " LIKE '%" + searchString + "%' ";
 		String query3 = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + ", '"

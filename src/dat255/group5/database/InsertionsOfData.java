@@ -3,6 +3,12 @@ package dat255.group5.database;
 import com.example.chalmersonthego.R;
 import com.example.chalmersonthego.R.drawable;
 
+/**
+ * This class is used to insert all data
+ * 
+ * @author Fredrik
+ * 
+ */
 public class InsertionsOfData {
 	/**
 	 * This method should be called only ones during the first launch of the
@@ -10,7 +16,6 @@ public class InsertionsOfData {
 	 * 
 	 * @param mydao
 	 */
-
 	public static void basicDataInsert(DAO dao) {
 		final DAO mydao = dao;
 		new Thread() {
@@ -43,13 +48,11 @@ public class InsertionsOfData {
 				mydao.insertIntoTable3("cafeteria foyer", 57.68918, 11.974059,
 						"cafeteria", DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_minus1);
-				// mydao.insertIntoTable3("hauptmensa", , , "", "", "");
 				mydao.insertIntoTable3("cinema", 57.689125, 11.973869, "", "",
 						"");
 				mydao.insertIntoTable3("Gym", 57.688925, 11.974099, "gym",
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_1);
-				// mydao.insertIntoTable3("", , , "", "", "");
 
 				// insert into 'buildings' table:
 				mydao.insertIntoTable4(DatabaseConstants.building_edit);
@@ -411,9 +414,9 @@ public class InsertionsOfData {
 				 * INSERTIONS*************************
 				 **************************************************************/
 
-				/********************************************************************************
-				 ************************* INSERTIONS OF VASA BUILDING ****************************
-				 ********************************************************************************/
+				/***************************************************************
+				 ************************* INSERTIONS OF VASA BUILDING *********
+				 **************************************************************/
 				// insert into 'entries' table:
 
 				// insert into "rooms" table:
