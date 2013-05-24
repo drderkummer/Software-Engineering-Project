@@ -38,7 +38,7 @@ public class CustomGoogleMaps {
 
 	// Constants
 	final GoogleMap googleMap;
-	public final Activity owningActivity;
+	final Activity owningActivity;
 	final LatLng northWest = new LatLng(57.697497, 11.985397);
 	final LatLng southEast = new LatLng(57.678687, 11.969347);
 
@@ -51,7 +51,6 @@ public class CustomGoogleMaps {
 	private OnInfoWindowElemTouchListener infoButtonListener;
 	private ViewGroup infoWindow;
 	private TextView infoTitle, infoSnippet;
-	final TextView tvDistanceDuration; 
 	private Button infoButton;
 
 	/**
@@ -77,10 +76,7 @@ public class CustomGoogleMaps {
 		this.owningActivity = owningActivity;
 		this.googleMap = googleMap;
 
-		navManager = new NavigationManager(googleMap);
-
-		tvDistanceDuration = (TextView) owningActivity
-				.findViewById(R.id.tv_distance_time);
+		navManager = new NavigationManager(googleMap, owningActivity);
 
 		setUpMapIfNeeded();
 
@@ -187,10 +183,7 @@ public class CustomGoogleMaps {
 								LatLng latLng = getCurrentLocation();
 								reDrawMarkers();
 
-								if (navManager.drawPathOnMap(latLng, _point))
-									tvDistanceDuration
-											.setVisibility(TextView.VISIBLE);
-								
+								navManager.drawPathOnMap(latLng, _point);							
 							}
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {

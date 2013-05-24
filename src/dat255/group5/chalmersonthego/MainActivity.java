@@ -71,7 +71,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
-	private NavigationManager navigationManager;
 
 	// Keep track of daymode and nightmode
 	Boolean nightModeOn = false;
@@ -101,7 +100,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		GoogleMap googleMap = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 		customMaps = new CustomGoogleMaps(this, googleMap);
-		navigationManager = new NavigationManager(googleMap);
 		configureUI();
 
 		// Open connection to the Database

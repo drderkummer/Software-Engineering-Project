@@ -15,6 +15,9 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
+
+import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,14 +29,20 @@ import com.google.android.gms.maps.model.PolylineOptions;
  */
 public class NavigationManager {	
 	private GoogleMap map;
+	private Activity owningActivity;
+	TextView tvDistanceDuration; 
 	
 	// Same troughtout the map
 	final int LINE_COLOR = Color.RED;
 	final int LINE_WIDTH = 4;		
 
 	// Getting correct instance of map to draw on.
-	public NavigationManager(GoogleMap googleMap){
+	public NavigationManager(GoogleMap googleMap, Activity owningActivity){
 		this.map = googleMap;
+		this.owningActivity = owningActivity;
+		tvDistanceDuration = (TextView) owningActivity
+				.findViewById(R.id.tv_distance_time);
+		
 	}	
 
 	/**
@@ -201,8 +210,8 @@ public class NavigationManager {
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
-        	String duration;
-        	String distance;
+        	String duration = "Not Available";
+        	String distance = "Not Available";
   
             // Traversing through all the routes
             for(int i=0;i<result.size();i++){
@@ -235,9 +244,9 @@ public class NavigationManager {
                 lineOptions.addAll(points);
                 lineOptions.width(LINE_WIDTH);
                 lineOptions.color(LINE_COLOR);
-            }            
-            
-            CustomGoogleMaps.this.owningActivity.toString();
+            }           
+            tvDistanceDuration.setText("Distance: " + distance + " Duration: " + duration);
+            tvDistanceDuration.setVisibility(TextView.VISIBLE);
  
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);
