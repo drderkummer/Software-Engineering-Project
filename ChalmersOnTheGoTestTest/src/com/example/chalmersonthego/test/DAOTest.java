@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import dat255.group5.database.DAO;
+
 import junit.framework.Assert;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
-import group5.database.DAO;
 /**
  * This class should test all the methods in DAO.java
  * @author Fredrik
@@ -16,6 +17,7 @@ public class DAOTest extends AndroidTestCase {
 	
 	private DAO dao;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		RenamingDelegatingContext context 
@@ -24,6 +26,7 @@ public class DAOTest extends AndroidTestCase {
 		dao.open();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		dao.close();
@@ -226,5 +229,38 @@ public class DAOTest extends AndroidTestCase {
 		dao.insertIntoTable3("ED3232", 2, 2, "computer room", "EDIT", "54");
 		String result = dao.getFloor("ED3232");
 		Assert.assertEquals("54", result);
+	}
+	/**
+	 * Tests method getAllRoomsWithTypeOnFloor
+	 */
+	public void testGetAllRoomsWithTypeOnFloor(){
+		String room = "EA";
+		String room2 = "EB";
+		String falseRoom = "XX";
+		
+		double xCord = 9.9;
+		double yCord = 5.5;
+		
+		double xxCord = 10.0;
+		double yyCord = 1.0;
+		
+		String building ="EDIT";
+		String falseType = "YY";
+		String type = "lecture";
+		
+		dao.insertIntoTable2(type);
+		dao.insertIntoTable2(falseType);
+		dao.insertIntoTable4(building);
+		
+		dao.insertIntoTable3(room, xCord, yCord, type, building, "ground");
+		dao.insertIntoTable3(room2, xCord, yCord, type, building, "2");
+		dao.insertIntoTable3(falseRoom, xxCord, yyCord, type, building, "ground");
+		
+		ArrayList<String> results = dao.getAllRoomsWithTypeOnFloor(type,"ground");
+		Assert.assertTrue(results.size() == 2);
+		Assert.assertTrue(results.contains(room));
+		Assert.assertFalse(results.contains(room2));
+		Assert.assertTrue(results.contains(falseRoom));
+		
 	}
 }
