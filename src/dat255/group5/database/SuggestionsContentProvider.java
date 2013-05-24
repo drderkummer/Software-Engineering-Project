@@ -6,10 +6,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-public class SuggestionsContentProvider extends ContentProvider{
-	
+/**
+ * Used with the suggestion
+ * 
+ * @author Fredrik
+ */
+public class SuggestionsContentProvider extends ContentProvider {
+
 	private DAO dao;
 
+	/**
+	 * Called automatically. Creates a dao.
+	 */
 	@Override
 	public boolean onCreate() {
 		dao = new DAO(getContext());
@@ -17,10 +25,13 @@ public class SuggestionsContentProvider extends ContentProvider{
 		return false;
 	}
 
+	/**
+	 * Gives the suggestions
+	 */
 	@Override
 	public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
 			String arg4) {
-		String query = arg0.getLastPathSegment(); 
+		String query = arg0.getLastPathSegment();
 		if (SearchManager.SUGGEST_URI_PATH_QUERY.equals(query)) {
 			// user hasn't entered anything
 			// thus return a default cursor
