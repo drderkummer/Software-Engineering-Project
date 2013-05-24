@@ -289,7 +289,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		LatLng latLng = dao.getRoomCoordinates(searchString);
 		ArrayList<String> list = dao.getAllRoomsWithType(searchString);
 		// Your current coordinates should be put in the following line
-		LatLng currentCoordinates = new LatLng(0.0, 0.0);
+		LatLng currentCoordinates = customMaps.getCurrentLocation();
 		LatLng closestEntry = dao.getClosestEntry(searchString,
 				currentCoordinates);
 		if (latLng != null) {
@@ -303,8 +303,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 						dao.getType(name));
 			}
 		} else if (closestEntry != null) {
-			customMaps.showMarkerOnMap(closestEntry, "Put description here",
-					null, null);
+			customMaps.showMarkerOnMap(closestEntry, searchString,
+					"", "");
 		} else {
 			Toast.makeText(this, searchString + " is not in the database",
 					Toast.LENGTH_LONG).show();

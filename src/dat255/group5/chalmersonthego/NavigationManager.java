@@ -237,7 +237,7 @@ public class NavigationManager {
                 lineOptions.color(LINE_COLOR);
             }            
             
-            CustomGoogleMaps.this.owningActivity.toString();
+//            CustomGoogleMaps.this.owningActivity.toString();
  
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);
