@@ -1,4 +1,4 @@
-package com.example.chalmersonthego;
+package dat255.group5.chalmersonthego;
 
 import java.util.ArrayList;
 import java.util.HashMap;

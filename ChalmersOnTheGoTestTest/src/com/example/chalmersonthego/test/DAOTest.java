@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import dat255.group5.database.DAO;
+
 import junit.framework.Assert;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
-import group5.database.DAO;
 /**
  * This class should test all the methods in DAO.java
  * @author Fredrik

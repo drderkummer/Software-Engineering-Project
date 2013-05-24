@@ -1,4 +1,4 @@
-package com.example.chalmersonthego;
+package dat255.group5.chalmersonthego;
 
 import java.io.BufferedReader;
 import java.io.IOException;

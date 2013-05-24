@@ -1,4 +1,4 @@
-package group5.database;
+package dat255.group5.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

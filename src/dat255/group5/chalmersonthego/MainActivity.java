@@ -1,8 +1,5 @@
-package com.example.chalmersonthego;
+package dat255.group5.chalmersonthego;
 
-import group5.database.DAO;
-import group5.database.DatabaseConstants;
-import group5.database.InsertionsOfData;
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -32,10 +29,16 @@ import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Toast;
 import android.view.ActionMode;
+
+import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import dat255.group5.database.DAO;
+import dat255.group5.database.DatabaseConstants;
+import dat255.group5.database.InsertionsOfData;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {

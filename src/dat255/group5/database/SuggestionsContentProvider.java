@@ -1,4 +1,4 @@
-package group5.database;
+package dat255.group5.database;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;

@@ -1,4 +1,4 @@
-package group5.database;
+package dat255.group5.database;
 
 import java.util.ArrayList;
 import com.google.android.gms.maps.model.LatLng;

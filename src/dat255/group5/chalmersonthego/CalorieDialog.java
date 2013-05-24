@@ -1,4 +1,6 @@
-package com.example.chalmersonthego;
+package dat255.group5.chalmersonthego;
+
+import com.example.chalmersonthego.R;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.example.chalmersonthego;
+package dat255.group5.chalmersonthego;
 
 import android.graphics.drawable.Drawable;
 import android.os.Handler;

@@ -1,4 +1,4 @@
-package group5.database;
+package dat255.group5.database;
 
 import com.example.chalmersonthego.R;
 import com.example.chalmersonthego.R.drawable;

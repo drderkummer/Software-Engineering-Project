@@ -1,4 +1,4 @@
-package group5.database;
+package dat255.group5.database;
 
 /**
  * This class stores all constants related to the database-data

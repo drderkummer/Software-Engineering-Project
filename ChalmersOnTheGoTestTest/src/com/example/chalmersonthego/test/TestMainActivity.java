@@ -1,6 +1,6 @@
 package com.example.chalmersonthego.test;
 
-import com.example.chalmersonthego.MainActivity;
+import dat255.group5.chalmersonthego.MainActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class TestMainActivity extends

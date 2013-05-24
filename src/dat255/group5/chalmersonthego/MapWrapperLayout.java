@@ -1,4 +1,4 @@
-package com.example.chalmersonthego;
+package dat255.group5.chalmersonthego;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
