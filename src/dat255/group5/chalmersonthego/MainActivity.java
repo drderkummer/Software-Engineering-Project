@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,12 +18,10 @@ import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Toast;
 import android.view.ActionMode;
@@ -44,7 +40,7 @@ import dat255.group5.database.InsertionsOfData;
 public class MainActivity extends Activity implements SensorEventListener {
 
 	// Calendar synch related variables
-	private ICalReader iCal;
+	//private ICalReader iCal;
 
 	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
@@ -72,9 +68,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
 
-	// Keep track of daymode and nightmode
-	Boolean nightModeOn = false;
-
 	// A boolean set to 'true' when a room-type-layer is chosen
 	private boolean layerIsChosen = false;
 
@@ -83,9 +76,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	// selected in the show all menu
 	// Used to store what layers the user has choosen to show
 	protected boolean[] layerSelections = new boolean[DatabaseConstants.layerOptions.length];
-
-	// Used to store what floorlayers the user has choosen to show
-	protected boolean[] floorSelections = new boolean[DatabaseConstants.floorOptions.length];
 
 	@SuppressLint("NewApi")
 	@Override
@@ -107,7 +97,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao.open();
 		insertDataForTheFirstTime();
 
-		iCal = new ICalReader(this);
+		//iCal = new ICalReader(this);
 
 		startTreadmill();
 
@@ -166,9 +156,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 				return false;
 			}
 		}
-		
-		
-
 		// Called when the user exits the action mode
 		public void onDestroyActionMode(ActionMode mode) {
 			mActionMode = null;
@@ -231,30 +218,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 			layerIsChosen = true;
 		}
 	}
-
-	/**
-	 * private void customPath(LatLng from, LatLng to){ //Get length via
-	 * standard API. int apiLength = 0;
-	 * 
-	 * //get current position in LatLng Location currentLocation =
-	 * customMaps.getCurrentPosition(); LatLng currentCordinates = new
-	 * LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
-	 * 
-	 * //Get the cloesest Entry from current position to all buildings //get all
-	 * buildings ArrayList<String> buildings = dao.getAllFromTable4(); //Loop
-	 * over all buildings
-	 * 
-	 * for(String building : buildings){ LatLng cloestEntry =
-	 * dao.getClosestEntry(building, currentCordinates);
-	 * 
-	 * //Calculate path length to the closestEntry int length = 0; //Get length
-	 * via API to this entry if(length < apiLength){ LatLng closestOut =
-	 * dao.getClosestEntry(building, to); length += 0; //=
-	 * getDistance(cloestEntry,closestOut) if(length <apiLength){ length +=
-	 * 0;//getAPILength(closestOut,to); } } }
-	 * 
-	 * }
-	 **/
 
 	/**
 	 * This method is used for all configuration of the UI which can't be done
@@ -398,25 +361,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	/**
-	 * Called when the user wants to synch with iCalendar
-	 */
-	private void synchWithCal() {
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle("Please enter the iCal url");
-		final EditText input = new EditText(this);
-		input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-		b.setView(input);
-		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				iCal.getWebpageSource(input.getText().toString());
-			}
-		});
-		b.setNegativeButton("CANCEL", null);
-		b.create().show();
-	}
-
-	/**
 	 * Called when the user wants to start the treadmill function
 	 */
 	private void startTreadmill() {
@@ -471,32 +415,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		.setPositiveButton(R.string.alert_positive, dialogClickListener)
 		.setNegativeButton(R.string.alert_negative, dialogClickListener)
 		.show();
-	}
-
-	/**
-	 * Switch from nightmode to daymode in the app
-	 */
-	private void switchMode() {
-		ActionBar ab = getActionBar();
-		if (nightModeOn) {
-			// Changing the apperance
-			ab.setTitle("Daymode");
-			ab.setBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206, 250)));
-			ab.setSplitBackgroundDrawable(new ColorDrawable(Color.rgb(135, 206,
-					250)));
-			ab.setIcon(R.drawable.icon_daymode);
-			ab.show();
-			customMaps.removeAllMarkerFromMap();
-			nightModeOn = false;
-		} else {
-			ab.setTitle("Nightmode");
-			ab.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-			ab.setSplitBackgroundDrawable(new ColorDrawable(Color.BLACK));
-			ab.setIcon(R.drawable.icon_nightmode);
-			ab.show();
-			customMaps.drawBuildings();
-			nightModeOn = true;
-		}
 	}
 
 	/**
@@ -563,6 +481,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 *            of the popupmenu to be created
 	 * 
 	 *            Creates a popup dialog
+	 *            
+	 *            TODO: CHECK THIS FUNCTION AGAIN!!!
 	 **/
 	protected Dialog onCreateDialog(int id) {
 
@@ -575,18 +495,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 					.setPositiveButton(R.string.ok,
 							new LayerDialogButtonClickHandler()).create();
 		}
-
-		/**
-		 * can be removed(?):
-		 */
-		// else if (id == 1) {
-		// return new AlertDialog.Builder(this)
-		// .setTitle("Select floors to show")
-		// .setMultiChoiceItems(DatabaseConstants.floorOptions, floorSelections,
-		// new FloorDialogSelectionClickHandler())
-		// .setPositiveButton("OK",
-		// new FloorDialogButtonClickHandler()).create();
-		// }
 		return null;
 	}
 
@@ -601,22 +509,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 				boolean selected) {
 
 			Log.i("ME", DatabaseConstants.layerOptions[clicked] + " selected: "
-					+ selected);
-		}
-
-	}
-
-	/**
-	 * 
-	 * @author Niklas Handles selections on floor menu
-	 */
-	public class FloorDialogSelectionClickHandler implements
-	DialogInterface.OnMultiChoiceClickListener {
-
-		public void onClick(DialogInterface dialog, int clicked,
-				boolean selected) {
-
-			Log.i("ME", DatabaseConstants.floorOptions[clicked] + " selected: "
 					+ selected);
 		}
 
