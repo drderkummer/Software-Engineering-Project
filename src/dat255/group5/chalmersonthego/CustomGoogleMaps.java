@@ -221,6 +221,10 @@ public class CustomGoogleMaps {
 						.replaceAll("\\s", "");
 
 				LatLng _latlng = latlng;
+				
+				if(!arrivedFrom.equals("Target Position") && !arrivedFrom.equals("My Position"))
+					_latlng = dao.getRoomCoordinates(start);			
+
 
 				if (!wantToGo.equals("Target Position")
 						&& !wantToGo.equals("My Position"))

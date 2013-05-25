@@ -15,20 +15,26 @@
         android:id="@+id/action_search"
         android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/action_search"
-        android:orderInCategory="99"
-        android:showAsAction="ifRoom|collapseActionView"
+        android:orderInCategory="98"
+        android:showAsAction="always|collapseActionView"
         android:title="@string/action_search"/>
+     <item
+        android:id="@+id/action_direction"
+        android:icon="@drawable/action_directions"
+        android:orderInCategory="99"
+        android:showAsAction="always|collapseActionView"
+        android:title="@string/action_direction"/>
     <item
         android:id="@+id/action_layers"
         android:icon="@drawable/av_add_to_queue"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom|collapseActionView"
+        android:showAsAction="always|collapseActionView"
         android:title="@string/action_layers"/>
     <item
         android:id="@+id/action_my_location"
         android:icon="@drawable/action_my_location"
         android:orderInCategory="101"
-        android:showAsAction="ifRoom|collapseActionView"
+        android:showAsAction="always|collapseActionView"
         android:title="@string/action_my_location"/>
     <item
         android:id="@+id/action_stepcounter"
@@ -55,7 +61,7 @@
         android:title="@string/action_emptyMap"/>
         <item
         android:id="@+id/exit"
-        android:orderInCategory="106"
+        android:orderInCategory="107"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/exit_app"/>
 </menu>
