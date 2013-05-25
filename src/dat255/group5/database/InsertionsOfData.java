@@ -40,7 +40,8 @@ public class InsertionsOfData {
 				mydao.insertIntoTable3("Pripps", 57.688945, 11.974169,
 						DatabaseConstants.type_pub,
 						DatabaseConstants.building_studentUnion,
-						DatabaseConstants.floor_ground);	
+						DatabaseConstants.floor_ground);
+				mydao.insertIntoTable5("Pripps", R.drawable.pripps);
 				mydao.insertIntoTable3("Kyrkan", 57.68911, 11.974352,
 						DatabaseConstants.type_billiard,
 						DatabaseConstants.building_studentUnion,
@@ -73,6 +74,7 @@ public class InsertionsOfData {
 				 * BUILDING:*****************************
 				 **************************************************************/
 				// insert into 'entries' table:
+				//edit:
 				mydao.insertIntoTable1(57.687815, 11.979233,
 						DatabaseConstants.building_edit);
 				mydao.insertIntoTable1(57.688196, 11.978493,
@@ -81,6 +83,27 @@ public class InsertionsOfData {
 						DatabaseConstants.building_edit);
 				mydao.insertIntoTable1(57.687507, 11.978482,
 						DatabaseConstants.building_edit);
+				//student union:
+				mydao.insertIntoTable1(57.689363, 11.973791,
+						DatabaseConstants.building_studentUnion);
+				mydao.insertIntoTable1(57.689176, 11.974408,
+						DatabaseConstants.building_studentUnion);
+				mydao.insertIntoTable1(57.688705, 11.975167,
+						DatabaseConstants.building_studentUnion);
+				//architecture:
+				mydao.insertIntoTable1(57.6875, 11.976328,
+						DatabaseConstants.building_architecture);
+				mydao.insertIntoTable1(57.6875, 11.976328,
+						DatabaseConstants.building_architecture);
+				//vasa:
+				mydao.insertIntoTable1(57.693036,11.975301,
+						DatabaseConstants.building_vasa);
+				mydao.insertIntoTable1(57.693099,11.975744,
+						DatabaseConstants.building_vasa);
+				mydao.insertIntoTable1(57.692942,11.975191,
+						DatabaseConstants.building_vasa);
+				mydao.insertIntoTable1(57.693448,11.975422,
+						DatabaseConstants.building_vasa);
 
 				// insert into 'rooms' table:
 				// lecture halls
@@ -283,10 +306,16 @@ public class InsertionsOfData {
 						DatabaseConstants.building_edit,
 						DatabaseConstants.floor_6);
 				// Pubs. Coordinates currently unknown.
-				mydao.insertIntoTable3("Datasektionen - Basen", 0.0, 0.0,
+				mydao.insertIntoTable3("Datasektionen - Basen", 57.687543, 11.978621,
 						DatabaseConstants.type_pub,
-						DatabaseConstants.building_edit, "0");
+						DatabaseConstants.building_edit,
+						DatabaseConstants.floor_minus1);
 				mydao.insertIntoTable5("Datasektionen - Basen", R.drawable.d);
+				mydao.insertIntoTable3("Kajsabaren", 57.688178, 11.978659,
+						DatabaseConstants.type_pub,
+						DatabaseConstants.building_edit, 
+						DatabaseConstants.floor_ground);
+				mydao.insertIntoTable5("Kajsabaren", R.drawable.e);
 				/***************************************************************
 				 ******************* END OF EDIT BUILDING
 				 * INSERTIONS*******************************
