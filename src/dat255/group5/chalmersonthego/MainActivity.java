@@ -389,7 +389,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 			customMaps.removeAllMarkerFromMap();
 			break;
 		case R.id.action_direction:
-		
+			customMaps.printNavigationPopup(customMaps.getCurrentLocation(), "My Position");
 			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
