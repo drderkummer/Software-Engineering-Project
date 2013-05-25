@@ -222,7 +222,7 @@ public class CustomGoogleMaps {
 
 				LatLng _latlng = latlng;
 				
-				if(!arrivedFrom.equals("Target Position") && !arrivedFrom.equals("My Position"))
+				if(!wantToGo.equals("Target Position") && !wantToGo.equals("My Position"))
 					_latlng = dao.getRoomCoordinates(start);			
 
 
