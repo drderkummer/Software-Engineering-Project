@@ -432,7 +432,7 @@ public class DAO {
 			return null;
 		} else {
 			while (c.moveToNext()) {
-				result.add(c.getString(1));
+				result.add(c.getString(0));
 			}
 			c.close();
 			return result;

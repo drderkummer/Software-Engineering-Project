@@ -84,17 +84,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		// Get the instance of GoogleMap
 		GoogleMap googleMap = ((MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map)).getMap();
-		customMaps = new CustomGoogleMaps(this, googleMap, dao);
+				.findFragmentById(R.id.map)).getMap();		
 		configureUI();
 
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
-
-		// iCal = new ICalReader(this);
-
+		customMaps = new CustomGoogleMaps(this, googleMap, dao);
 		startStepcounter();
 
 	}
