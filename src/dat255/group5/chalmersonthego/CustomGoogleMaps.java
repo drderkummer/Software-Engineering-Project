@@ -41,7 +41,7 @@ public class CustomGoogleMaps {
 	// Constants
 	final GoogleMap googleMap;
 	final Activity owningActivity;
-	DAO dao;
+	private DAO dao;
 	final LatLng northWest = new LatLng(57.697497, 11.985397);
 	final LatLng southEast = new LatLng(57.678687, 11.969347);
 
@@ -148,7 +148,7 @@ public class CustomGoogleMaps {
 		// When user click info window on marker. Show navigation options
 		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			public void onInfoWindowClick(Marker marker) {
-				printNavigationPopup(marker.getPosition());
+				printNavigationPopup(marker.getPosition(), "Target Position");
 			}
 		});
 	}
@@ -172,16 +172,15 @@ public class CustomGoogleMaps {
 	 * Om man är på campus (Min Pos, tomt) annars (tomt, tomt) Anropad från
 	 * markör - (Markör, tomt) KLICK OK: - Printa vägen + duration + distance
 	 */
-	private void printNavigationPopup(LatLng latlng) {
+	private void printNavigationPopup(LatLng latlng, String arrivedFrom) {
 		final Dialog myDialog = new Dialog(owningActivity);
-		myDialog.setContentView(R.layout.navigation_dialog);
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(owningActivity,
-				android.R.layout.simple_dropdown_item_1line,
-				Navigation.COUNTRIES);
-		MultiAutoCompleteTextView navStart = (MultiAutoCompleteTextView) myDialog
+		myDialog.setContentView(R.layout.navigation_dialog);		
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(owningActivity,	android.R.layout.simple_dropdown_item_1line,dao.getAllRooms());
+
+		final MultiAutoCompleteTextView navStart = (MultiAutoCompleteTextView) myDialog
 				.findViewById(R.id.nav_search_start);
-		MultiAutoCompleteTextView navDest = (MultiAutoCompleteTextView) myDialog
+		final MultiAutoCompleteTextView navDest = (MultiAutoCompleteTextView) myDialog
 				.findViewById(R.id.nav_search_dest);
 		Button navOk = (Button) myDialog.findViewById(R.id.navOk);
 		Button navCancel = (Button) myDialog.findViewById(R.id.navCancel);
@@ -189,7 +188,16 @@ public class CustomGoogleMaps {
 		navOk.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				String start = navStart.getText().toString().replaceAll("\\s","");
+				String dest = navDest.getText().toString().replaceAll("\\s","");
+				LatLng t = dao.getRoomCoordinates(start);
 				
+				Log.i("START",t.latitude + " " + t.longitude);
+				if(navManager.drawPathOnMap(dao.getRoomCoordinates(start), dao.getRoomCoordinates(dest)))
+					Toast.makeText(owningActivity, "Success",	Toast.LENGTH_SHORT).show();
+				else
+					Toast.makeText(owningActivity, "FAILURE",	Toast.LENGTH_SHORT).show();		
+				myDialog.dismiss();
 			}
 		});
 
@@ -228,74 +236,74 @@ public class CustomGoogleMaps {
 			MarkerOptions markerOptions;
 			if (type.equalsIgnoreCase("computer room")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("computerroom.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("computerroom.png"));
 			} else if (type.equalsIgnoreCase("lecture hall")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("lecturehall.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("lecturehall.png"));
 			} else if (type.equalsIgnoreCase("group room")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("grouproom.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("grouproom.png"));
 			} else if (type.equalsIgnoreCase("sauna")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("sauna.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("sauna.png"));
 			} else if (type.equalsIgnoreCase("restaurant")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("restaurant.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("restaurant.png"));
 			} else if (type.equalsIgnoreCase("pub")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("pub.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("pub.png"));
 			} else if (type.equalsIgnoreCase("gym")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("gym.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("gym.png"));
 			} else if (type.equalsIgnoreCase("cinema")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("cinema.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("cinema.png"));
 			} else if (type.equalsIgnoreCase("billiard room")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("billiard.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("billiard.png"));
 			} else if (type.equalsIgnoreCase("atm")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("atm.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("atm.png"));
 			} else {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor + type);
@@ -357,10 +365,10 @@ public class CustomGoogleMaps {
 					hereAmI.remove();
 
 				MarkerOptions markeroptions = new MarkerOptions()
-						.position(latlng)
-						.title("My Location")
-						.icon(BitmapDescriptorFactory
-								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+				.position(latlng)
+				.title("My Location")
+				.icon(BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 						.snippet("I am here");
 				hereAmI = CustomGoogleMaps.this.googleMap
 						.addMarker(markeroptions);
@@ -404,44 +412,44 @@ public class CustomGoogleMaps {
 
 			// When user change the map view
 			googleMap
-					.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-						@Override
-						public void onCameraChange(CameraPosition position) {
-							// Set minimum zoom level
-							if (position.zoom < 14) {
-								googleMap.animateCamera(CameraUpdateFactory
-										.zoomTo(14));
-								Toast.makeText(owningActivity, "Minimum zoom",
-										Toast.LENGTH_LONG).show();
-							}
+			.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				@Override
+				public void onCameraChange(CameraPosition position) {
+					// Set minimum zoom level
+					if (position.zoom < 14) {
+						googleMap.animateCamera(CameraUpdateFactory
+								.zoomTo(14));
+						Toast.makeText(owningActivity, "Minimum zoom",
+								Toast.LENGTH_LONG).show();
+					}
 
-							// If position is within, do nothing.
-							if (isLocationInBound(googleMap.getCameraPosition().target))
-								return;
+					// If position is within, do nothing.
+					if (isLocationInBound(googleMap.getCameraPosition().target))
+						return;
 
-							Toast.makeText(owningActivity,
-									"Outside restricted area",
-									Toast.LENGTH_LONG).show();
+					Toast.makeText(owningActivity,
+							"Outside restricted area",
+							Toast.LENGTH_LONG).show();
 
-							// Seems that we are out of bound
-							double x = googleMap.getCameraPosition().target.latitude;
-							double y = googleMap.getCameraPosition().target.longitude;
+					// Seems that we are out of bound
+					double x = googleMap.getCameraPosition().target.latitude;
+					double y = googleMap.getCameraPosition().target.longitude;
 
-							if (x < southEast.latitude)
-								x = southEast.latitude;
-							if (x > northWest.latitude)
-								x = northWest.latitude;
-							if (y < southEast.longitude)
-								y = southEast.longitude;
-							if (y > northWest.longitude)
-								y = northWest.longitude;
+					if (x < southEast.latitude)
+						x = southEast.latitude;
+					if (x > northWest.latitude)
+						x = northWest.latitude;
+					if (y < southEast.longitude)
+						y = southEast.longitude;
+					if (y > northWest.longitude)
+						y = northWest.longitude;
 
-							// Set new center
-							LatLng center = new LatLng(x, y);
-							googleMap.moveCamera(CameraUpdateFactory
-									.newLatLng(center));
-						}
-					});
+					// Set new center
+					LatLng center = new LatLng(x, y);
+					googleMap.moveCamera(CameraUpdateFactory
+							.newLatLng(center));
+				}
+			});
 		}
 
 	}
