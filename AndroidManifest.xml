@@ -27,9 +27,9 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo"
-        android:uiOptions="splitActionBarWhenNarrow" 
-        android:label="@string/app_name">
+        android:uiOptions="splitActionBarWhenNarrow" >
         <activity
             android:name="dat255.group5.chalmersonthego.MainActivity"
             android:label="@string/app_name"
@@ -57,6 +57,11 @@
             android:authorities="group5.database.SuggestionsContentProvider"
             android:exported="false" >
         </provider>
+
+        <activity
+            android:name="dat255.group5.chalmersonthego.Navigation"
+            android:label="@string/title_activity_navigation" >
+        </activity>
     </application>
 
 </manifest>

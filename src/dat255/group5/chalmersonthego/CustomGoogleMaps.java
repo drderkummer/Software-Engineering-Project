@@ -3,29 +3,29 @@ package dat255.group5.chalmersonthego;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.SystemClock;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,11 +34,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
+import dat255.group5.database.DAO;
+
 public class CustomGoogleMaps {
 
 	// Constants
 	final GoogleMap googleMap;
 	final Activity owningActivity;
+	DAO dao;
 	final LatLng northWest = new LatLng(57.697497, 11.985397);
 	final LatLng southEast = new LatLng(57.678687, 11.969347);
 
@@ -72,9 +75,11 @@ public class CustomGoogleMaps {
 	 * @param googleMap
 	 *            , in instance of GoogleMap
 	 */
-	public CustomGoogleMaps(final Activity owningActivity, GoogleMap googleMap) {
+	public CustomGoogleMaps(final Activity owningActivity, GoogleMap googleMap,
+			DAO dao) {
 		this.owningActivity = owningActivity;
 		this.googleMap = googleMap;
+		this.dao = dao;
 
 		navManager = new NavigationManager(googleMap, owningActivity);
 
@@ -162,37 +167,48 @@ public class CustomGoogleMaps {
 		return (strictBounds.contains(latlng));
 	}
 
-	// NOT FINISHED
-	private void printNavigationPopup(LatLng point) {
-		final LatLng _point = point;
+	/*
+	 * Vad jag vill göra:(text1, text2) Anropad från navigation-knapp i menyn -
+	 * Om man är på campus (Min Pos, tomt) annars (tomt, tomt) Anropad från
+	 * markör - (Markör, tomt) KLICK OK: - Printa vägen + duration + distance
+	 */
+	private void printNavigationPopup(LatLng latlng) {
+		final Dialog myDialog = new Dialog(owningActivity);
+		myDialog.setContentView(R.layout.navigation_dialog);
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(owningActivity,
+				android.R.layout.simple_dropdown_item_1line,
+				Navigation.COUNTRIES);
+		MultiAutoCompleteTextView navStart = (MultiAutoCompleteTextView) myDialog
+				.findViewById(R.id.nav_search_start);
+		MultiAutoCompleteTextView navDest = (MultiAutoCompleteTextView) myDialog
+				.findViewById(R.id.nav_search_dest);
+		Button navOk = (Button) myDialog.findViewById(R.id.navOk);
+		Button navCancel = (Button) myDialog.findViewById(R.id.navCancel);
 
-		// Where to display it, set context
-		AlertDialog.Builder builder = new AlertDialog.Builder(owningActivity);
-		// Get the layout inflater
-		LayoutInflater inflater = owningActivity.getLayoutInflater();
+		navOk.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				
+			}
+		});
 
-		// Inflate and set the layout for the dialog
-		// Pass null as the parent view because its going in the dialog layout
-		builder.setView(inflater.inflate(R.layout.navigation_dialog, null))
-				// Add action buttons
-				.setTitle("Navigation")
-				.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								LatLng latLng = getCurrentLocation();
-								reDrawMarkers();
+		navCancel.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				myDialog.cancel();
+			}
+		});
 
-								navManager.drawPathOnMap(latLng, _point);							
-							}
-						})
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-		builder.create();
-		builder.show();
+		navStart.setAdapter(adapter);
+		navDest.setAdapter(adapter);
+
+		navStart.setTokenizer(new SpaceTokenizer());
+		navDest.setTokenizer(new SpaceTokenizer());
+
+		myDialog.setTitle("Show route");
+		myDialog.show();
+
 	}
 
 	/**
@@ -231,6 +247,55 @@ public class CustomGoogleMaps {
 						.snippet("floor: " + floor)
 						.icon(BitmapDescriptorFactory
 								.fromAsset("grouproom.png"));
+			} else if (type.equalsIgnoreCase("sauna")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("sauna.png"));
+			} else if (type.equalsIgnoreCase("restaurant")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("restaurant.png"));
+			} else if (type.equalsIgnoreCase("pub")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("pub.png"));
+			} else if (type.equalsIgnoreCase("gym")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("gym.png"));
+			} else if (type.equalsIgnoreCase("cinema")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("cinema.png"));
+			} else if (type.equalsIgnoreCase("billiard room")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("billiard.png"));
+			} else if (type.equalsIgnoreCase("atm")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("atm.png"));
 			} else {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor + type);

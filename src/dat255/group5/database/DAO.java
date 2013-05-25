@@ -423,4 +423,19 @@ public class DAO {
 			return result;
 		}
 	}
+	public ArrayList<String> getAllRooms(){
+		String query = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM "
+				+ DBHelper.TABLE_3_NAME;
+		Cursor c = database.rawQuery(query, null);
+		ArrayList<String> result = new ArrayList<String>();
+		if (c.getCount() == 0) {
+			return null;
+		} else {
+			while (c.moveToNext()) {
+				result.add(c.getString(1));
+			}
+			c.close();
+			return result;
+		}
+	}
 }

@@ -25,13 +25,11 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.Toast;
 import android.view.ActionMode;
-
 import com.example.chalmersonthego.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import dat255.group5.database.DAO;
 import dat255.group5.database.DatabaseConstants;
 import dat255.group5.database.InsertionsOfData;
@@ -87,7 +85,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// Get the instance of GoogleMap
 		GoogleMap googleMap = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
-		customMaps = new CustomGoogleMaps(this, googleMap);
+		customMaps = new CustomGoogleMaps(this, googleMap, dao);
 		configureUI();
 
 		// Open connection to the Database
@@ -292,7 +290,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		LatLng latLng = dao.getRoomCoordinates(searchString);
 		ArrayList<String> list = dao.getAllRoomsWithType(searchString);
 		// Your current coordinates should be put in the following line
-		LatLng currentCoordinates = new LatLng(0.0, 0.0);
+		LatLng currentCoordinates = customMaps.getCurrentLocation();
 		LatLng closestEntry = dao.getClosestEntry(searchString,
 				currentCoordinates);
 		if (latLng != null) {
@@ -306,8 +304,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 						dao.getType(name));
 			}
 		} else if (closestEntry != null) {
-			customMaps.showMarkerOnMap(closestEntry, "Put description here",
-					null, null);
+			customMaps.showMarkerOnMap(closestEntry, searchString,
+					"", "");
 		} else {
 			Toast.makeText(this, searchString + " is not in the database",
 					Toast.LENGTH_LONG).show();
@@ -522,8 +520,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	/**
-	 * 
-	 * @author Niklas Handles selections on layers menu
+	 * Handles selections on layers menu
+	 * @author Niklas 
 	 */
 	public class LayerDialogSelectionClickHandler implements
 	DialogInterface.OnMultiChoiceClickListener {
@@ -622,8 +620,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
