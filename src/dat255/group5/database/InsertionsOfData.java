@@ -25,12 +25,12 @@ public class InsertionsOfData {
 				mydao.insertIntoTable2(DatabaseConstants.type_groupRoom);
 				mydao.insertIntoTable2(DatabaseConstants.type_computerRoom);
 				mydao.insertIntoTable2(DatabaseConstants.type_pub);
-				mydao.insertIntoTable2("microwave");
-				mydao.insertIntoTable2("cinema");
+				mydao.insertIntoTable2(DatabaseConstants.type_cinema);
 				mydao.insertIntoTable2(DatabaseConstants.type_gym);
-				mydao.insertIntoTable2("billiard room");
+				mydao.insertIntoTable2(DatabaseConstants.type_billiard);
 				mydao.insertIntoTable2(DatabaseConstants.type_sauna);
 				mydao.insertIntoTable2(DatabaseConstants.type_restaurant);
+				mydao.insertIntoTable2(DatabaseConstants.type_atm);
 
 				/***************************************************************
 				 ********************* INSERTION OF
@@ -40,21 +40,27 @@ public class InsertionsOfData {
 				mydao.insertIntoTable3("Pripps", 57.688945, 11.974169,
 						DatabaseConstants.type_pub,
 						DatabaseConstants.building_studentUnion,
-						DatabaseConstants.floor_ground);
+						DatabaseConstants.floor_ground);	
 				mydao.insertIntoTable3("Kyrkan", 57.68911, 11.974352,
-						"billiard room",
+						DatabaseConstants.type_billiard,
 						DatabaseConstants.building_studentUnion,
-						DatabaseConstants.floor_ground);
+						DatabaseConstants.floor_1);
 				mydao.insertIntoTable3("Restaurant Student Union", 57.68918, 11.974059,
 						DatabaseConstants.type_restaurant,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_ground);
-				mydao.insertIntoTable3("cinema", 57.689125, 11.973869, "", "",
-						"");
+				mydao.insertIntoTable3("Cinema", 57.689125, 11.973869,
+						DatabaseConstants.type_cinema,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_1);
 				mydao.insertIntoTable3("Gym", 57.688925, 11.974099,
 						DatabaseConstants.type_gym,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_1);
+				mydao.insertIntoTable3("ATM Student Union", 57.688969, 11.974094,
+						DatabaseConstants.type_atm,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_ground);
 
 				// insert into 'buildings' table:
 				mydao.insertIntoTable4(DatabaseConstants.building_edit);
