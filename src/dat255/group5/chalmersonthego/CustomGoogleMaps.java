@@ -408,13 +408,32 @@ public class CustomGoogleMaps {
 	 * 
 	 * @return user's current location
 	 */
+	// GPSTracker class
+	GPSTracker gps;
+	
 	public LatLng getCurrentLocation() {
-		LocationManager locationManager = (LocationManager) owningActivity
-				.getSystemService(Context.LOCATION_SERVICE);
-		String provider = locationManager.getBestProvider(new Criteria(), true);
-		Location location = locationManager.getLastKnownLocation(provider);
+		 gps = new GPSTracker(owningActivity);
+		 double latitude = 0;
+         double longitude = 0;
 
-		return new LatLng(location.getLatitude(), location.getLongitude());
+         // check if GPS enabled     
+         if(gps.canGetLocation()){
+
+            latitude = gps.getLatitude();
+             longitude = gps.getLongitude();
+
+             // \n is for new line
+             Toast.makeText(owningActivity.getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();    
+         }else{
+             // can't get location
+             // GPS or Network is not enabled
+             // Ask user to enable GPS/network in settings
+             gps.showSettingsAlert();
+         }
+
+		
+
+		return new LatLng(latitude, longitude);
 	}
 
 	private void setUpMapIfNeeded() {
