@@ -36,5 +36,11 @@
     <string name="ok">OK</string>
     <string name="title_activity_navigation">Navigation</string>
     <string name="hello_world">Hello world!</string>
+    <string name="floor">Select Floor</string>
+    <string name="deactivate_step">Deactivate stepcounter</string>
+    <string name="myPosition">My Position</string>
+    <string name="startStep">Start StepCounter First</string>
+    <string name="stepDisable">Stepcounter disabled</string>
+    <string name="actStep">Stepcounter Activated</string>
 
 </resources>
