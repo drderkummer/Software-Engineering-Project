@@ -74,6 +74,7 @@ public class InsertionsOfData {
 				 * BUILDING:*****************************
 				 **************************************************************/
 				// insert into 'entries' table:
+				//edit:
 				mydao.insertIntoTable1(57.687815, 11.979233,
 						DatabaseConstants.building_edit);
 				mydao.insertIntoTable1(57.688196, 11.978493,
@@ -82,6 +83,27 @@ public class InsertionsOfData {
 						DatabaseConstants.building_edit);
 				mydao.insertIntoTable1(57.687507, 11.978482,
 						DatabaseConstants.building_edit);
+				//student union:
+				mydao.insertIntoTable1(57.689363, 11.973791,
+						DatabaseConstants.building_studentUnion);
+				mydao.insertIntoTable1(57.689176, 11.974408,
+						DatabaseConstants.building_studentUnion);
+				mydao.insertIntoTable1(57.688705, 11.975167,
+						DatabaseConstants.building_studentUnion);
+				//architecture:
+				mydao.insertIntoTable1(57.6875, 11.976328,
+						DatabaseConstants.building_architecture);
+				mydao.insertIntoTable1(57.6875, 11.976328,
+						DatabaseConstants.building_architecture);
+				//vasa:
+				mydao.insertIntoTable1(57.693036,11.975301,
+						DatabaseConstants.building_vasa);
+				mydao.insertIntoTable1(57.693099,11.975744,
+						DatabaseConstants.building_vasa);
+				mydao.insertIntoTable1(57.692942,11.975191,
+						DatabaseConstants.building_vasa);
+				mydao.insertIntoTable1(57.693448,11.975422,
+						DatabaseConstants.building_vasa);
 
 				// insert into 'rooms' table:
 				// lecture halls
