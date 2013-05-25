@@ -244,9 +244,15 @@ public class NavigationManager {
                 lineOptions.addAll(points);
                 lineOptions.width(LINE_WIDTH);
                 lineOptions.color(LINE_COLOR);
+<<<<<<< HEAD
+            }            
+            
+//            CustomGoogleMaps.this.owningActivity.toString();
+=======
             }           
             tvDistanceDuration.setText("Distance: " + distance + " Duration: " + duration);
             tvDistanceDuration.setVisibility(TextView.VISIBLE);
+>>>>>>> a2b368b51800c8c8a55d3bc30fd95ccda8214c35
  
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);

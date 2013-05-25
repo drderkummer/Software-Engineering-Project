@@ -247,6 +247,55 @@ public class CustomGoogleMaps {
 						.snippet("floor: " + floor)
 						.icon(BitmapDescriptorFactory
 								.fromAsset("grouproom.png"));
+			} else if (type.equalsIgnoreCase("sauna")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("sauna.png"));
+			} else if (type.equalsIgnoreCase("restaurant")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("restaurant.png"));
+			} else if (type.equalsIgnoreCase("pub")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("pub.png"));
+			} else if (type.equalsIgnoreCase("gym")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("gym.png"));
+			} else if (type.equalsIgnoreCase("cinema")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("cinema.png"));
+			} else if (type.equalsIgnoreCase("billiard room")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("billiard.png"));
+			} else if (type.equalsIgnoreCase("atm")) {
+				markerOptions = new MarkerOptions()
+						.position(latLng)
+						.title(title)
+						.snippet("floor: " + floor)
+						.icon(BitmapDescriptorFactory
+								.fromAsset("atm.png"));
 			} else {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor + type);
@@ -311,7 +360,7 @@ public class CustomGoogleMaps {
 						.position(latlng)
 						.title("My Location")
 						.icon(BitmapDescriptorFactory
-								.fromAsset("map_blue_dot.png"))
+								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 						.snippet("I am here");
 				hereAmI = CustomGoogleMaps.this.googleMap
 						.addMarker(markeroptions);

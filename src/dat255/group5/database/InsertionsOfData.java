@@ -25,12 +25,12 @@ public class InsertionsOfData {
 				mydao.insertIntoTable2(DatabaseConstants.type_groupRoom);
 				mydao.insertIntoTable2(DatabaseConstants.type_computerRoom);
 				mydao.insertIntoTable2(DatabaseConstants.type_pub);
-				mydao.insertIntoTable2("microwave");
-				mydao.insertIntoTable2("cinema");
-				mydao.insertIntoTable2("gym");
-				mydao.insertIntoTable2("billiard room");
-				mydao.insertIntoTable2("sauna");
-				mydao.insertIntoTable2("cafeteria");
+				mydao.insertIntoTable2(DatabaseConstants.type_cinema);
+				mydao.insertIntoTable2(DatabaseConstants.type_gym);
+				mydao.insertIntoTable2(DatabaseConstants.type_billiard);
+				mydao.insertIntoTable2(DatabaseConstants.type_sauna);
+				mydao.insertIntoTable2(DatabaseConstants.type_restaurant);
+				mydao.insertIntoTable2(DatabaseConstants.type_atm);
 
 				/***************************************************************
 				 ********************* INSERTION OF
@@ -40,19 +40,27 @@ public class InsertionsOfData {
 				mydao.insertIntoTable3("Pripps", 57.688945, 11.974169,
 						DatabaseConstants.type_pub,
 						DatabaseConstants.building_studentUnion,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);	
 				mydao.insertIntoTable3("Kyrkan", 57.68911, 11.974352,
-						"billiard room",
-						DatabaseConstants.building_studentUnion,
-						DatabaseConstants.floor_minus1);
-				mydao.insertIntoTable3("cafeteria foyer", 57.68918, 11.974059,
-						"cafeteria", DatabaseConstants.building_studentUnion,
-						DatabaseConstants.floor_minus1);
-				mydao.insertIntoTable3("cinema", 57.689125, 11.973869, "", "",
-						"");
-				mydao.insertIntoTable3("Gym", 57.688925, 11.974099, "gym",
+						DatabaseConstants.type_billiard,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_1);
+				mydao.insertIntoTable3("Restaurant Student Union", 57.68918, 11.974059,
+						DatabaseConstants.type_restaurant,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_ground);
+				mydao.insertIntoTable3("Cinema", 57.689125, 11.973869,
+						DatabaseConstants.type_cinema,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_1);
+				mydao.insertIntoTable3("Gym", 57.688925, 11.974099,
+						DatabaseConstants.type_gym,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_1);
+				mydao.insertIntoTable3("ATM Student Union", 57.688969, 11.974094,
+						DatabaseConstants.type_atm,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_ground);
 
 				// insert into 'buildings' table:
 				mydao.insertIntoTable4(DatabaseConstants.building_edit);
@@ -295,27 +303,27 @@ public class InsertionsOfData {
 				mydao.insertIntoTable3("VR", 57.687381, 11.976328,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("VK", 57.687219, 11.976505,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("VG", 57.687243, 11.977039,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("VF", 57.687359, 11.977302,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("VB", 57.687523, 11.977270,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("VA", 57.687630, 11.977184,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("VÖ1", 57.687404, 11.977256,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_architecture,
@@ -424,45 +432,47 @@ public class InsertionsOfData {
 				mydao.insertIntoTable3("Vasa A", 57.693233, 11.975172,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa B", 57.693138, 11.974909,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa C", 57.693382, 11.975411,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa 1", 57.693079, 11.974974,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa 2", 57.692986, 11.975060,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa 3", 57.693293, 11.975510,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa 4", 57.693215, 11.975567,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa 5", 57.693141, 11.975639,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Vasa 6", 57.693038, 11.975642,
 						DatabaseConstants.type_lectureHall,
 						DatabaseConstants.building_vasa,
-						DatabaseConstants.floor_minus1);
+						DatabaseConstants.floor_ground);
 				mydao.insertIntoTable3("Datasal A", 57.693038, 11.975642,
 						DatabaseConstants.type_computerRoom,
-						DatabaseConstants.building_vasa, "basement");
+						DatabaseConstants.building_vasa,
+						DatabaseConstants.floor_minus1);
 				mydao.insertIntoTable3("Datasal B", 57.693115, 11.975601,
 						DatabaseConstants.type_computerRoom,
-						DatabaseConstants.building_vasa, "basement");
+						DatabaseConstants.building_vasa,
+						DatabaseConstants.floor_minus1);
 				/***************************************************************
 				 ************************* END OF VASA BUILDING INSERTIONS******
 				 **************************************************************/
