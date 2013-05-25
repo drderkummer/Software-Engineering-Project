@@ -12,8 +12,7 @@
     <string name="tv_distance_time">Distance</string>
 
     <!-- Menu items -->
-    <string name="action_nightmode">Nightmode</string>
-    <string name="action_daymode">Daymode</string>
+    <string name="action_direction">Get Directions</string>
     <string name="action_selectMode">Select Mode</string>
     <string name="exit_app">Exit</string>
     <string name="action_search">Search</string>
