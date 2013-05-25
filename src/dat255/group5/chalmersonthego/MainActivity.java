@@ -380,6 +380,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.action_emptyMap:
 			customMaps.removeAllMarkerFromMap();
 			break;
+		case R.id.action_direction:
+		
+			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
 					.show();
