@@ -101,9 +101,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
+		
 		// Called when the action mode is created; startActionMode() was called
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			mode.setTitle("Select Floor");
 			// Inflate a menu resource providing context menu items
 			MenuInflater inflater = mode.getMenuInflater();
 			// .inflate(R.layout.contextual_layout, null)
