@@ -26,6 +26,9 @@ public class DatabaseConstants {
 	public static final String type_lectureHall = "Lecture Hall";
 	public static final String type_groupRoom = "Group Room";
 	public static final String type_pub = "Pub";
+	public static final String type_restaurant = "Restaurant";
+	public static final String type_gym = "Gym";
+	public static final String type_sauna = "Sauna";
 	public static final String[] layerOptions = { type_computerRoom,
 			type_lectureHall, type_groupRoom, type_pub };
 
