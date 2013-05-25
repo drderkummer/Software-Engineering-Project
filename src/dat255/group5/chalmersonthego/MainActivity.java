@@ -36,6 +36,11 @@ import dat255.group5.database.DatabaseConstants;
 import dat255.group5.database.InsertionsOfData;
 
 @SuppressLint("NewApi")
+/**
+ * Main of the project. Holds a Googlemap
+ * @author Fredrik
+ *
+ */
 public class MainActivity extends Activity implements SensorEventListener {
 
 	// Constant strings to use with save and restore instance state
@@ -61,7 +66,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	SensorManager mSensorManager;
 	private Sensor mSensor;
 	// End of treadmill
-	
+
 	private SearchView searchView;
 	private MenuItem menuItem;
 
@@ -77,6 +82,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	// Used to store what layers the user has choosen to show
 	protected boolean[] layerSelections = new boolean[DatabaseConstants.layerOptions.length];
 
+	/**
+	 * Creates the acitivity and gets the google maps instance and database
+	 */
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,27 +96,25 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		// Get the instance of GoogleMap
 		GoogleMap googleMap = ((MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map)).getMap();		
+				.findFragmentById(R.id.map)).getMap();
 		configureUI();
 
 		// Open connection to the Database
 		dao = new DAO(this);
 		dao.open();
 		insertDataForTheFirstTime();
+		// Supply the extended google map with instances
 		customMaps = new CustomGoogleMaps(this, googleMap, dao);
+		// start stepCounter
 		startStepcounter();
 	}
-	@Override
-	public void onResume(){
-
-		super.onResume();
-	}
-
+	/**
+	 * Automatic callback for actionMode
+	 */
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-		
 		// Called when the action mode is created; startActionMode() was called
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			mode.setTitle("Select Floor");
+			mode.setTitle(R.string.floor);
 			// Inflate a menu resource providing context menu items
 			MenuInflater inflater = mode.getMenuInflater();
 			// .inflate(R.layout.contextual_layout, null)
@@ -118,41 +124,45 @@ public class MainActivity extends Activity implements SensorEventListener {
 			return true;
 		}
 
-		// Called each time the action mode is shown. Always called after
-		// onCreateActionMode, but
-		// may be called multiple times if the mode is invalidated.
+		/**
+		 * Called each time the action mode is shown. Always called after
+		 * onCreateActionMode, butmay be called multiple times if the mode is
+		 * invalidated.
+		 */
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 			return false; // Return false if nothing is done
 		}
 
-		// Called when the user selects a contextual menu item
+		/**
+		 *  Called when the user selects a contextual menu item
+		 */
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			customMaps.removeAllMarkerFromMap();
 			switch (item.getItemId()) {
 			case R.id.basement:
 				// mode.finish(); // Action picked, so close the CAB
-				showRoomsOnFloor("basement");
+				showRoomsOnFloor(DatabaseConstants.floor_minus1);
 				return true;
 			case R.id.ground:
-				showRoomsOnFloor("ground");
+				showRoomsOnFloor(DatabaseConstants.floor_ground);
 				return true;
 			case R.id.first:
-				showRoomsOnFloor("1");
+				showRoomsOnFloor(DatabaseConstants.floor_1);
 				return true;
 			case R.id.second:
-				showRoomsOnFloor("2");
+				showRoomsOnFloor(DatabaseConstants.floor_2);
 				return true;
 			case R.id.third:
-				showRoomsOnFloor("3");
+				showRoomsOnFloor(DatabaseConstants.floor_3);
 				return true;
 			case R.id.fourth:
-				showRoomsOnFloor("4");
+				showRoomsOnFloor(DatabaseConstants.floor_4);
 				return true;
 			case R.id.fifth:
-				showRoomsOnFloor("5");
+				showRoomsOnFloor(DatabaseConstants.floor_5);
 				return true;
 			case R.id.sixth:
-				showRoomsOnFloor("6");
+				showRoomsOnFloor(DatabaseConstants.floor_6);
 				return true;
 			case R.id.all:
 				showRooms();
@@ -163,12 +173,17 @@ public class MainActivity extends Activity implements SensorEventListener {
 			}
 		}
 
-		// Called when the user exits the action mode
+		/**
+		 *  Called when the user exits the action mode
+		 */
 		public void onDestroyActionMode(ActionMode mode) {
 			mActionMode = null;
 		}
 	};
-
+	/**
+	 * Show the rooms on a given floor on the map
+	 * @param floor
+	 */
 	private void showRoomsOnFloor(String floor) {
 		layerIsChosen = false;
 		if (layerSelections[0]) {
@@ -272,7 +287,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		}
 	}
 
-	// Only executed when installing the app for the first time
+	/**
+	 *  Only executed when installing the app for the first time
+	 */
 	public void insertDataForTheFirstTime() {
 		String firstTime = "firstTime";
 		boolean isFirstTime = true;
@@ -305,9 +322,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param searchString
 	 */
 	private void doMySearch(String searchString) {
-		//minimize the view
+		// minimize the view
 		menuItem.collapseActionView();
-		
+
 		LatLng latLng = dao.getRoomCoordinates(searchString);
 		ArrayList<String> list = dao.getAllRoomsWithType(searchString);
 		// Your current coordinates should be put in the following line
@@ -364,12 +381,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 			stepCounterActivated = !stepCounterActivated;
 			if (stepCounterActivated) {
 				getActionBar().setTitle("You have taken " + steps + " steps.");
-				Toast.makeText(this, "Stepcounter Activated",
+				Toast.makeText(this, R.string.actStep,
 						Toast.LENGTH_SHORT).show();
-				item.setTitle("Deactivate stepcounter");
+				item.setTitle(R.string.deactivate_step);
 			} else {
 				getActionBar().setTitle(R.string.app_name);
-				Toast.makeText(this, "Stepcounter disabled", Toast.LENGTH_SHORT)
+				Toast.makeText(this, R.string.stepDisable, Toast.LENGTH_SHORT)
 						.show();
 				item.setTitle(R.string.action_stepcounter);
 
@@ -385,7 +402,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				calorieDialog.show();
 				calorieDialog.updateCalorieWindow();
 			} else {
-				Toast.makeText(this, "Start StepCounter First",
+				Toast.makeText(this, R.string.startStep,
 						Toast.LENGTH_SHORT).show();
 
 			}
@@ -393,7 +410,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 			customMaps.removeAllMarkerFromMap();
 			break;
 		case R.id.action_direction:
-			customMaps.printNavigationPopup(customMaps.getCurrentLocation(), "My Position");
+			customMaps.printNavigationPopup(customMaps.getCurrentLocation(),
+					"My Position");
 			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
@@ -429,8 +447,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// Get the SearchView and set the searchable configuration
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		menuItem = menu.findItem(R.id.action_search);
-		searchView = (SearchView) menuItem
-				.getActionView();
+		searchView = (SearchView) menuItem.getActionView();
 		searchView.setQueryRefinementEnabled(true);
 		// Assumes current activity is the searchable activity
 		searchView.setSearchableInfo(searchManager
@@ -438,10 +455,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// Do not iconify the widget; expand it by default
 		searchView.setIconifiedByDefault(false);
 		if (stepCounterActivated) {
-			Toast.makeText(this, "IM INSIDE", Toast.LENGTH_LONG).show();
 			getActionBar().setTitle("You have taken " + steps + " steps.");
-			MenuItem item =menu.findItem(R.id.action_stepcounter);
-			item.setTitle("Deactivate stepcounter");
+			MenuItem item = menu.findItem(R.id.action_stepcounter);
+			item.setTitle(R.string.deactivate_step);
 		}
 		return true;
 	}
@@ -652,7 +668,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 	}
-
+	/**
+	 * Saves state
+	 */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		savedInstanceState.putBoolean(stepCounterActivatedString,
@@ -669,7 +687,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// Always call the superclass so it can save the view hierarchy state
 		super.onSaveInstanceState(savedInstanceState);
 	}
-
+	/**
+	 * Restore state and reprints if needed
+	 */
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Always call the superclass so it can restore the view hierarchy
 		super.onRestoreInstanceState(savedInstanceState);
@@ -686,7 +706,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		customMaps.setMarkerOptionsArray(markerOptionsArray);
 		customMaps.reDrawMarkers();
 		showRooms();
-		//Repaint menu
+		// Repaint menu
 		invalidateOptionsMenu();
 	}
 }
