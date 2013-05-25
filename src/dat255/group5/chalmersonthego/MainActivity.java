@@ -105,9 +105,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
+		
 		// Called when the action mode is created; startActionMode() was called
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			mode.setTitle("Select Floor");
 			// Inflate a menu resource providing context menu items
 			MenuInflater inflater = mode.getMenuInflater();
 			// .inflate(R.layout.contextual_layout, null)
@@ -390,6 +391,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 			}
 		case R.id.action_emptyMap:
 			customMaps.removeAllMarkerFromMap();
+			break;
+		case R.id.action_direction:
+			customMaps.printNavigationPopup(customMaps.getCurrentLocation(), "My Position");
 			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
