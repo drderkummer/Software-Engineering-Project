@@ -39,9 +39,6 @@ import dat255.group5.database.InsertionsOfData;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements SensorEventListener {
 
-	// Calendar synch related variables
-	//private ICalReader iCal;
-
 	// Constant strings to use with save and restore instance state
 	private static final String stepCounterActivatedString = "stepCounterActivated";
 	private static final String stepsString = "steps";
@@ -51,6 +48,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	// Treadmill related variables
 	private boolean stepCounterActivated;
+	private CalorieDialog calorieDialog;
 	private int steps = 0;
 	private float mLimit = 10;
 	private float mLastValues[] = new float[3 * 2];
@@ -344,13 +342,38 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.exit:
 			finish();
 			break;
-		case R.id.action_treadmill:
+		case R.id.action_stepcounter:
 			stepCounterActivated = !stepCounterActivated;
+			if(stepCounterActivated){
+				getActionBar().setTitle(
+						"You have taken " + steps + " steps.");
+				Toast.makeText(this, "Stepcounter Activated",
+						Toast.LENGTH_SHORT).show();
+				item.setTitle("Deactivate stepcounter");
+			}else{
+				getActionBar().setTitle(R.string.app_name);
+				Toast.makeText(this, "Stepcounter disabled",
+						Toast.LENGTH_SHORT).show();
+				item.setTitle(R.string.action_stepcounter);
+				
+			}
 			break;
+			
+		case R.id.action_calories:
+			if (stepCounterActivated) {
+				// Calorie beer wine and shot progress window
+				if (calorieDialog == null) {
+					calorieDialog = new CalorieDialog(this, steps);
+				}
+				calorieDialog.show();
+				calorieDialog.updateCalorieWindow();
+			} else {
+				Toast.makeText(this, "Start StepCounter First",
+						Toast.LENGTH_SHORT).show();
+
+			}
 		case R.id.action_emptyMap:
 			customMaps.removeAllMarkerFromMap();
-			break;
-		case R.id.action_calories:
 			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
@@ -579,6 +602,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 								steps++;
 								getActionBar().setTitle(
 										"You have taken " + steps + " steps.");
+								if (calorieDialog != null) {
+									calorieDialog.updateCalorieWindow();
+									calorieDialog.setSteps(steps);
+								}
 								mLastMatch = extType;
 							} else {
 								mLastMatch = -1;
