@@ -423,6 +423,10 @@ public class DAO {
 			return result;
 		}
 	}
+	/**
+	 * Gets all room as Arraylist of strings
+	 * @return ArrayList<String>
+	 */
 	public ArrayList<String> getAllRooms(){
 		String query = " SELECT " + DBHelper.TABLE_3_COLUMN_1 + " FROM "
 				+ DBHelper.TABLE_3_NAME;
