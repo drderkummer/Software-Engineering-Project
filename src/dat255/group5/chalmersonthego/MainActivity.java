@@ -97,7 +97,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 		insertDataForTheFirstTime();
 		customMaps = new CustomGoogleMaps(this, googleMap, dao);
 		startStepcounter();
+	}
+	@Override
+	public void onResume(){
 
+		super.onResume();
 	}
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -418,7 +422,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 		inflater.inflate(R.menu.main_menu, menu);
 		ActionBar ab = getActionBar();
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
 		// Get the SearchView and set the searchable configuration
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		menuItem = menu.findItem(R.id.action_search);
@@ -430,6 +433,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 				.getSearchableInfo(getComponentName()));
 		// Do not iconify the widget; expand it by default
 		searchView.setIconifiedByDefault(false);
+		if (stepCounterActivated) {
+			Toast.makeText(this, "IM INSIDE", Toast.LENGTH_LONG).show();
+			getActionBar().setTitle("You have taken " + steps + " steps.");
+			MenuItem item =menu.findItem(R.id.action_stepcounter);
+			item.setTitle("Deactivate stepcounter");
+		}
 		return true;
 	}
 
@@ -673,5 +682,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		customMaps.setMarkerOptionsArray(markerOptionsArray);
 		customMaps.reDrawMarkers();
 		showRooms();
+		//Repaint menu
+		invalidateOptionsMenu();
 	}
 }
