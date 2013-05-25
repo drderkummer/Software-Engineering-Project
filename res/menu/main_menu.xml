@@ -30,10 +30,10 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_my_location"/>
     <item
-        android:id="@+id/action_treadmill"
+        android:id="@+id/action_stepcounter"
         android:orderInCategory="103"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_treadmill"/>
+        android:title="@string/action_stepcounter"/>
     <item
         android:id="@+id/action_calories"
         android:orderInCategory="104"
