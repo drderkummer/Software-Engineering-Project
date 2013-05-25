@@ -166,8 +166,8 @@ public class CustomGoogleMaps {
 
 	/*
 	 * 
-	 * Om man är på campus (Min Pos, tomt) annars (tomt, tomt) Anropad från
-	 * markör - (Markör, tomt) KLICK OK: - Printa vägen + duration + distance
+	 * Om man ï¿½r pï¿½ campus (Min Pos, tomt) annars (tomt, tomt) Anropad frï¿½n
+	 * markï¿½r - (Markï¿½r, tomt) KLICK OK: - Printa vï¿½gen + duration + distance
 	 */
 	public void printNavigationPopup(final LatLng latlng,
 			final String wantToGo) {
@@ -380,16 +380,14 @@ public class CustomGoogleMaps {
 			if (isLocationInBound(latlng)) {
 				if (hereAmI != null)
 					hereAmI.remove();
-
 				MarkerOptions markeroptions = new MarkerOptions()
 						.position(latlng)
 						.title("My Location")
 						.icon(BitmapDescriptorFactory
-								.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+								.fromAsset("map_blue_dot.png"))
 						.snippet("I am here");
 				hereAmI = CustomGoogleMaps.this.googleMap
 						.addMarker(markeroptions);
-				hereAmI.showInfoWindow();
 				markerOptionsArray.add(markeroptions);
 
 				googleMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
