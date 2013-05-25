@@ -9,14 +9,14 @@ package dat255.group5.database;
 public class DatabaseConstants {
 
 	// A String[] with all the floors
-	public static final String floor_minus1 = "-1 Floor";
-	public static final String floor_ground = "Ground floor";
-	public static final String floor_1 = "1th Floor";
-	public static final String floor_2 = "2th Floor";
-	public static final String floor_3 = "3th Floor";
-	public static final String floor_4 = "4th Floor";
-	public static final String floor_5 = "5th Floor";
-	public static final String floor_6 = "6th Floor";
+	public static final String floor_minus1 = "basement";
+	public static final String floor_ground = "ground";
+	public static final String floor_1 = "1";
+	public static final String floor_2 = "2";
+	public static final String floor_3 = "3";
+	public static final String floor_4 = "4";
+	public static final String floor_5 = "5";
+	public static final String floor_6 = "6";
 	public static final String[] floorOptions = { floor_minus1, floor_ground,
 			floor_1, floor_2, floor_3, floor_4, floor_5, floor_6 };
 
@@ -26,6 +26,9 @@ public class DatabaseConstants {
 	public static final String type_lectureHall = "Lecture Hall";
 	public static final String type_groupRoom = "Group Room";
 	public static final String type_pub = "Pub";
+	public static final String type_restaurant = "Restaurant";
+	public static final String type_gym = "Gym";
+	public static final String type_sauna = "Sauna";
 	public static final String[] layerOptions = { type_computerRoom,
 			type_lectureHall, type_groupRoom, type_pub };
 

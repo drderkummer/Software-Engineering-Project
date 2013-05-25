@@ -23,7 +23,7 @@
     <item 
         android:id="@+id/third"
         android:title="on level 3"
-    	android:showAsAction="ifRoom|collapseActionView"/>
+    	android:showAsAction="ifRoom|collapseActionView"
     	android:icon="@drawable/third"/>
     <item
         android:id="@+id/fourth"

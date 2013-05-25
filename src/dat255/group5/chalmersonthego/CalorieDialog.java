@@ -4,9 +4,7 @@ import com.example.chalmersonthego.R;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -136,7 +134,7 @@ public class CalorieDialog extends Dialog {
 			public void onClick(View v) {
 				if (steps < STEPSINWATER * amountOfWater + STEPSINWATER) {
 					Toast.makeText(getContext(),
-							"You will get fat if you continue like this",
+							"You will have to pee if you continue like this",
 							Toast.LENGTH_SHORT).show();
 				}
 				// Set progress bar to next level of steps
@@ -170,7 +168,7 @@ public class CalorieDialog extends Dialog {
 			public void onClick(View v) {
 				if (steps < STEPSINWINE * amountOfWine + STEPSINWINE) {
 					Toast.makeText(getContext(),
-							"You will get fat if you continue like this",
+							"You will get fat, and feel bad tomorrow, if you continue like this",
 							Toast.LENGTH_SHORT).show();
 				}
 				// Set progress bar to next level of steps
@@ -186,7 +184,7 @@ public class CalorieDialog extends Dialog {
 			public void onClick(View v) {
 				if (steps < STEPSINSHOT * amountOfShots + STEPSINSHOT) {
 					Toast.makeText(getContext(),
-							"You will get fat if you continue like this",
+							"You will get fat, and drunk, if you continue like this",
 							Toast.LENGTH_SHORT).show();
 				}
 				// Set progress bar to next level of steps
