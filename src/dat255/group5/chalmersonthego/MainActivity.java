@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 import android.view.ActionMode;
@@ -60,6 +61,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	SensorManager mSensorManager;
 	private Sensor mSensor;
 	// End of treadmill
+	
+	private SearchView searchView;
+	private MenuItem menuItem;
 
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
@@ -97,9 +101,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
+		
 		// Called when the action mode is created; startActionMode() was called
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			mode.setTitle("Select Floor");
 			// Inflate a menu resource providing context menu items
 			MenuInflater inflater = mode.getMenuInflater();
 			// .inflate(R.layout.contextual_layout, null)
@@ -296,6 +301,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * @param searchString
 	 */
 	private void doMySearch(String searchString) {
+		//minimize the view
+		menuItem.collapseActionView();
+		
 		LatLng latLng = dao.getRoomCoordinates(searchString);
 		ArrayList<String> list = dao.getAllRoomsWithType(searchString);
 		// Your current coordinates should be put in the following line
@@ -417,7 +425,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		// Get the SearchView and set the searchable configuration
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
+		menuItem = menu.findItem(R.id.action_search);
+		searchView = (SearchView) menuItem
 				.getActionView();
 		searchView.setQueryRefinementEnabled(true);
 		// Assumes current activity is the searchable activity

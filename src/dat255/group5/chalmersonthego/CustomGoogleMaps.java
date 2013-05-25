@@ -172,28 +172,44 @@ public class CustomGoogleMaps {
 	 * Om man är på campus (Min Pos, tomt) annars (tomt, tomt) Anropad från
 	 * markör - (Markör, tomt) KLICK OK: - Printa vägen + duration + distance
 	 */
-	private void printNavigationPopup(LatLng latlng, String arrivedFrom) {
+	public void printNavigationPopup(final LatLng latlng, final String arrivedFrom){		
+		
+		// Create Dialog
 		final Dialog myDialog = new Dialog(owningActivity);
-		myDialog.setContentView(R.layout.navigation_dialog);		
-
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(owningActivity,	android.R.layout.simple_dropdown_item_1line,dao.getAllRooms());
-
+		myDialog.setContentView(R.layout.navigation_dialog);
+		
+		// Init view
 		final MultiAutoCompleteTextView navStart = (MultiAutoCompleteTextView) myDialog
 				.findViewById(R.id.nav_search_start);
 		final MultiAutoCompleteTextView navDest = (MultiAutoCompleteTextView) myDialog
 				.findViewById(R.id.nav_search_dest);
 		Button navOk = (Button) myDialog.findViewById(R.id.navOk);
 		Button navCancel = (Button) myDialog.findViewById(R.id.navCancel);
+		navStart.setText(arrivedFrom);	
+		myDialog.setTitle("Show route");
+
+		// Init with alla searchable strings
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(owningActivity,	android.R.layout.simple_dropdown_item_1line,dao.getAllRooms());
+		navStart.setAdapter(adapter);
+		navDest.setAdapter(adapter);
+		
+		// Set ending char
+		navStart.setTokenizer(new SpaceTokenizer());
+		navDest.setTokenizer(new SpaceTokenizer());
 
 		navOk.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				// Get final search string
 				String start = navStart.getText().toString().replaceAll("\\s","");
 				String dest = navDest.getText().toString().replaceAll("\\s","");
-				LatLng t = dao.getRoomCoordinates(start);
 				
-				Log.i("START",t.latitude + " " + t.longitude);
-				if(navManager.drawPathOnMap(dao.getRoomCoordinates(start), dao.getRoomCoordinates(dest)))
+				LatLng _latlng = latlng;
+				
+				if(!arrivedFrom.equals("Target Position") || !arrivedFrom.equals("My Position"))
+					_latlng = dao.getRoomCoordinates(start);			
+
+				if(navManager.drawPathOnMap(_latlng, dao.getRoomCoordinates(dest)))
 					Toast.makeText(owningActivity, "Success",	Toast.LENGTH_SHORT).show();
 				else
 					Toast.makeText(owningActivity, "FAILURE",	Toast.LENGTH_SHORT).show();		
@@ -208,15 +224,7 @@ public class CustomGoogleMaps {
 			}
 		});
 
-		navStart.setAdapter(adapter);
-		navDest.setAdapter(adapter);
-
-		navStart.setTokenizer(new SpaceTokenizer());
-		navDest.setTokenizer(new SpaceTokenizer());
-
-		myDialog.setTitle("Show route");
 		myDialog.show();
-
 	}
 
 	/**
