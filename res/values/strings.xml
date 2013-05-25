@@ -33,6 +33,9 @@
     <string name="alert_negative">No</string>
     <string name="info_layers">Show layers on map</string>
     <string name="question_gps">"Do you want to enable either GPS or any other location service to find current location?</string>
-	<string name="question_exit">Are you sure you want to exit?</string>
-	<string name="ok">OK</string>
+    <string name="question_exit">Are you sure you want to exit?</string>
+    <string name="ok">OK</string>
+    <string name="title_activity_navigation">Navigation</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
