@@ -93,9 +93,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		dao.open();
 		insertDataForTheFirstTime();
 
-		//iCal = new ICalReader(this);
+		// iCal = new ICalReader(this);
 
-		startTreadmill();
+		startStepcounter();
 
 	}
 
@@ -148,66 +148,78 @@ public class MainActivity extends Activity implements SensorEventListener {
 			case R.id.sixth:
 				showRoomsOnFloor("6");
 				return true;
+			case R.id.all:
+				showRooms();
+				return true;
+
 			default:
 				return false;
 			}
 		}
+
 		// Called when the user exits the action mode
 		public void onDestroyActionMode(ActionMode mode) {
 			mActionMode = null;
 		}
 	};
-	
+
 	private void showRoomsOnFloor(String floor) {
 		layerIsChosen = false;
 		if (layerSelections[0]) {
-			ArrayList<String> r1 = dao
-					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_computerRoom, floor);
-			if(r1!=null){
+			ArrayList<String> r1 = dao.getAllRoomsWithTypeOnFloor(
+					DatabaseConstants.type_computerRoom, floor);
+			if (r1 != null) {
 				for (int i = 0; i < r1.size(); i++) {
 					LatLng coords = dao.getRoomCoordinates(r1.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+					String name = dao
+							.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name,
+							dao.getFloor(name),
 							DatabaseConstants.type_computerRoom);
 				}
 			}
 			layerIsChosen = true;
 		}
 		if (layerSelections[1]) {
-			ArrayList<String> r3 = dao
-					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_lectureHall, floor);
-			if(r3!=null){
+			ArrayList<String> r3 = dao.getAllRoomsWithTypeOnFloor(
+					DatabaseConstants.type_lectureHall, floor);
+			if (r3 != null) {
 				for (int i = 0; i < r3.size(); i++) {
 					LatLng coords = dao.getRoomCoordinates(r3.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+					String name = dao
+							.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name,
+							dao.getFloor(name),
 							DatabaseConstants.type_lectureHall);
 				}
 			}
 			layerIsChosen = true;
 		}
 		if (layerSelections[2]) {
-			ArrayList<String> r2 = dao
-					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_groupRoom, floor);
-			if(r2!=null){
+			ArrayList<String> r2 = dao.getAllRoomsWithTypeOnFloor(
+					DatabaseConstants.type_groupRoom, floor);
+			if (r2 != null) {
 				for (int i = 0; i < r2.size(); i++) {
 					LatLng coords = dao.getRoomCoordinates(r2.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
+					String name = dao
+							.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name,
+							dao.getFloor(name),
 							DatabaseConstants.type_groupRoom);
 				}
 			}
 			layerIsChosen = true;
 		}
 		if (layerSelections[3]) {
-			ArrayList<String> r4 = dao
-					.getAllRoomsWithTypeOnFloor(DatabaseConstants.type_pub, floor);
-			if(r4!=null){
+			ArrayList<String> r4 = dao.getAllRoomsWithTypeOnFloor(
+					DatabaseConstants.type_pub, floor);
+			if (r4 != null) {
 				for (int i = 0; i < r4.size(); i++) {
 					LatLng coords = dao.getRoomCoordinates(r4.get(i));
-					String name = dao.getName(coords.latitude, coords.longitude);
-					customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
-							DatabaseConstants.type_pub);
+					String name = dao
+							.getName(coords.latitude, coords.longitude);
+					customMaps.showMarkerOnMap(coords, name,
+							dao.getFloor(name), DatabaseConstants.type_pub);
 				}
 			}
 			customMaps.drawBuildings();
@@ -236,20 +248,20 @@ public class MainActivity extends Activity implements SensorEventListener {
 		if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(R.string.question_gps)
-			.setPositiveButton(R.string.alert_positive,
-					new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface d, int id) {
-					startActivity(new Intent(
-							Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-					d.dismiss();
-				}
-			})
-			.setNegativeButton(R.string.alert_negative,
-					new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface d, int id) {
-					d.cancel();
-				}
-			});
+					.setPositiveButton(R.string.alert_positive,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface d, int id) {
+									startActivity(new Intent(
+											Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+									d.dismiss();
+								}
+							})
+					.setNegativeButton(R.string.alert_negative,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface d, int id) {
+									d.cancel();
+								}
+							});
 			builder.create().show();
 		}
 	}
@@ -304,8 +316,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 						dao.getType(name));
 			}
 		} else if (closestEntry != null) {
-			customMaps.showMarkerOnMap(closestEntry, searchString,
-					"", "");
+			customMaps.showMarkerOnMap(closestEntry, searchString, "", "");
 		} else {
 			Toast.makeText(this, searchString + " is not in the database",
 					Toast.LENGTH_LONG).show();
@@ -342,21 +353,20 @@ public class MainActivity extends Activity implements SensorEventListener {
 			break;
 		case R.id.action_stepcounter:
 			stepCounterActivated = !stepCounterActivated;
-			if(stepCounterActivated){
-				getActionBar().setTitle(
-						"You have taken " + steps + " steps.");
+			if (stepCounterActivated) {
+				getActionBar().setTitle("You have taken " + steps + " steps.");
 				Toast.makeText(this, "Stepcounter Activated",
 						Toast.LENGTH_SHORT).show();
 				item.setTitle("Deactivate stepcounter");
-			}else{
+			} else {
 				getActionBar().setTitle(R.string.app_name);
-				Toast.makeText(this, "Stepcounter disabled",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Stepcounter disabled", Toast.LENGTH_SHORT)
+						.show();
 				item.setTitle(R.string.action_stepcounter);
-				
+
 			}
 			break;
-			
+
 		case R.id.action_calories:
 			if (stepCounterActivated) {
 				// Calorie beer wine and shot progress window
@@ -375,16 +385,16 @@ public class MainActivity extends Activity implements SensorEventListener {
 			break;
 		default:
 			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
-			.show();
+					.show();
 			break;
 		}
 		return true;
 	}
 
 	/**
-	 * Called when the user wants to start the treadmill function
+	 * Called when the user wants to start the stepcounter function
 	 */
-	private void startTreadmill() {
+	private void startStepcounter() {
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mSensorManager.registerListener(this, mSensor,
@@ -433,9 +443,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.question_exit)
-		.setPositiveButton(R.string.alert_positive, dialogClickListener)
-		.setNegativeButton(R.string.alert_negative, dialogClickListener)
-		.show();
+				.setPositiveButton(R.string.alert_positive, dialogClickListener)
+				.setNegativeButton(R.string.alert_negative, dialogClickListener)
+				.show();
 	}
 
 	/**
@@ -502,17 +512,17 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 *            of the popupmenu to be created
 	 * 
 	 *            Creates a popup dialog
-	 *            
+	 * 
 	 *            TODO: CHECK THIS FUNCTION AGAIN!!!
 	 **/
 	protected Dialog onCreateDialog(int id) {
 
 		if (id == 0) {
 			return new AlertDialog.Builder(this)
-			.setTitle(R.string.info_layers)
-			.setMultiChoiceItems(DatabaseConstants.layerOptions,
-					layerSelections,
-					new LayerDialogSelectionClickHandler())
+					.setTitle(R.string.info_layers)
+					.setMultiChoiceItems(DatabaseConstants.layerOptions,
+							layerSelections,
+							new LayerDialogSelectionClickHandler())
 					.setPositiveButton(R.string.ok,
 							new LayerDialogButtonClickHandler()).create();
 		}
@@ -521,10 +531,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	/**
 	 * Handles selections on layers menu
-	 * @author Niklas 
+	 * 
+	 * @author Niklas
 	 */
 	public class LayerDialogSelectionClickHandler implements
-	DialogInterface.OnMultiChoiceClickListener {
+			DialogInterface.OnMultiChoiceClickListener {
 
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
@@ -537,16 +548,18 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	/**
 	 * Handles click on layers menu
-	 * @author Niklas        
+	 * 
+	 * @author Niklas
 	 */
 	public class LayerDialogButtonClickHandler implements
-	DialogInterface.OnClickListener {
+			DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int clicked) {
 			switch (clicked) {
 			case DialogInterface.BUTTON_POSITIVE:
 				customMaps.removeAllMarkerFromMap();
 				if (showRooms() == true) {
-					// Start the CAB using the ActionMode.Callback defined above
+					// Start the Contextual Action bar using the
+					// ActionMode.Callback defined above
 					mActionMode = MainActivity.this
 							.startActionMode(mActionModeCallback);
 					;

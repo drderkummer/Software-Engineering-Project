@@ -10,7 +10,7 @@
         android:title="on level 0"
         android:icon="@drawable/ground"
     	android:showAsAction="always"/>
-    <item
+    <items
         android:id="@+id/first"
         android:title="on level 1"
         android:icon="@drawable/first"
@@ -39,4 +39,8 @@
         android:title="on level 6"
     	android:showAsAction="ifRoom|collapseActionView"/>
     	<!--android:icon="@drawable/fifth"/ -->
+     <item
+        android:id="@+id/all"
+        android:title="All levels"
+    	android:showAsAction="ifRoom|collapseActionView"/>
 </menu> 
