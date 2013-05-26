@@ -49,6 +49,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private static final String layerSelectionString = "layerSelection";
 	private static final String sharedPrefsString = "shared";
 	private static final String markerOptionsArrayString = "markerOptionsArray";
+	private static final String actionMenuActivatedString = "actionMenuActivated";
+	private static final String selectedFloorString = "selectedFloors";
 
 	// Treadmill related variables
 	private boolean stepCounterActivated;
@@ -77,6 +79,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private boolean layerIsChosen = false;
 
 	protected Object mActionMode;
+	private boolean actionMenuActivated;
+	private String selectedFloor;
 	// A car array with all the different types of rooms, avaliable to be
 	// selected in the show all menu
 	// Used to store what layers the user has choosen to show
@@ -142,32 +146,39 @@ public class MainActivity extends Activity implements SensorEventListener {
 			case R.id.basement:
 				// mode.finish(); // Action picked, so close the CAB
 				showRoomsOnFloor(DatabaseConstants.floor_minus1);
+				selectedFloor = DatabaseConstants.floor_minus1;
 				return true;
 			case R.id.ground:
 				showRoomsOnFloor(DatabaseConstants.floor_ground);
+				selectedFloor = DatabaseConstants.floor_ground;
 				return true;
 			case R.id.first:
 				showRoomsOnFloor(DatabaseConstants.floor_1);
+				selectedFloor = DatabaseConstants.floor_1;
 				return true;
 			case R.id.second:
 				showRoomsOnFloor(DatabaseConstants.floor_2);
+				selectedFloor = DatabaseConstants.floor_2;
 				return true;
 			case R.id.third:
 				showRoomsOnFloor(DatabaseConstants.floor_3);
+				selectedFloor = DatabaseConstants.floor_3;
 				return true;
 			case R.id.fourth:
 				showRoomsOnFloor(DatabaseConstants.floor_4);
+				selectedFloor = DatabaseConstants.floor_4;
 				return true;
 			case R.id.fifth:
 				showRoomsOnFloor(DatabaseConstants.floor_5);
+				selectedFloor = DatabaseConstants.floor_5;
 				return true;
 			case R.id.sixth:
 				showRoomsOnFloor(DatabaseConstants.floor_6);
+				selectedFloor = DatabaseConstants.floor_6;
 				return true;
 			case R.id.all:
 				showRooms();
 				return true;
-
 			default:
 				return false;
 			}
@@ -177,6 +188,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		 *  Called when the user exits the action mode
 		 */
 		public void onDestroyActionMode(ActionMode mode) {
+			actionMenuActivated = false;
 			mActionMode = null;
 		}
 	};
@@ -596,6 +608,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					// ActionMode.Callback defined above
 					mActionMode = MainActivity.this
 							.startActionMode(mActionModeCallback);
+					actionMenuActivated = true;
 					;
 				}
 				invalidateOptionsMenu();
@@ -675,6 +688,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		savedInstanceState.putBoolean(stepCounterActivatedString,
 				stepCounterActivated);
+		//save ActionLayerActivation
+		savedInstanceState.putBoolean(actionMenuActivatedString, 
+				actionMenuActivated);
+		//save selectedFloor
+		savedInstanceState.putString(selectedFloorString,
+				selectedFloor);
 
 		savedInstanceState.putInt(stepsString, steps);
 		// Save the layerSelecations
@@ -697,6 +716,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// Restore state members from saved instance
 		stepCounterActivated = savedInstanceState.getBoolean(
 				stepCounterActivatedString, stepCounterActivated);
+		actionMenuActivated = savedInstanceState.getBoolean(
+				actionMenuActivatedString, MainActivity.this.actionMenuActivated);
+		selectedFloor = savedInstanceState.getString(selectedFloorString, selectedFloor);
 		steps = savedInstanceState.getInt(stepsString);
 		layerSelections = savedInstanceState
 				.getBooleanArray(layerSelectionString);
@@ -705,8 +727,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 				.getParcelableArrayList(markerOptionsArrayString);
 		customMaps.setMarkerOptionsArray(markerOptionsArray);
 		customMaps.reDrawMarkers();
-		showRooms();
+
 		// Repaint menu
 		invalidateOptionsMenu();
+		if(actionMenuActivated){
+			MainActivity.this.startActionMode(mActionModeCallback);
+			showRoomsOnFloor(selectedFloor);
+		}else{
+			showRooms();
+		}
 	}
 }
