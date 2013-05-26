@@ -342,7 +342,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 						dao.getType(name));
 			}
 		} else if (closestEntry != null) {
-			customMaps.showMarkerOnMap(closestEntry, searchString, "", "");
+			customMaps.showMarkerOnMap(closestEntry, searchString, "0", "entrance");
 		} else {
 			Toast.makeText(this, searchString + " is not in the database",
 					Toast.LENGTH_LONG).show();

@@ -319,7 +319,11 @@ public class CustomGoogleMaps {
 			} else if (type.equalsIgnoreCase("atm")) {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("atm.png"));
+						.icon(BitmapDescriptorFactory.fromAsset("atm.png"));	
+			} else if (type.equalsIgnoreCase("entrance")) {
+				markerOptions = new MarkerOptions().position(latLng)
+						.title(title).snippet("")
+						.icon(BitmapDescriptorFactory.fromAsset("entrance.png"));
 			} else {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor + type);
