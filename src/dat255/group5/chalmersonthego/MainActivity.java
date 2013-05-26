@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 import android.view.ActionMode;
@@ -108,6 +107,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// start stepCounter
 		startStepcounter();
 	}
+
 	/**
 	 * Automatic callback for actionMode
 	 */
@@ -134,7 +134,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		}
 
 		/**
-		 *  Called when the user selects a contextual menu item
+		 * Called when the user selects a contextual menu item
 		 */
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			customMaps.removeAllMarkerFromMap();
@@ -174,14 +174,16 @@ public class MainActivity extends Activity implements SensorEventListener {
 		}
 
 		/**
-		 *  Called when the user exits the action mode
+		 * Called when the user exits the action mode
 		 */
 		public void onDestroyActionMode(ActionMode mode) {
 			mActionMode = null;
 		}
 	};
+
 	/**
 	 * Show the rooms on a given floor on the map
+	 * 
 	 * @param floor
 	 */
 	private void showRoomsOnFloor(String floor) {
@@ -288,7 +290,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	/**
-	 *  Only executed when installing the app for the first time
+	 * Only executed when installing the app for the first time
 	 */
 	public void insertDataForTheFirstTime() {
 		String firstTime = "firstTime";
@@ -381,8 +383,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 			stepCounterActivated = !stepCounterActivated;
 			if (stepCounterActivated) {
 				getActionBar().setTitle("You have taken " + steps + " steps.");
-				Toast.makeText(this, R.string.actStep,
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, R.string.actStep, Toast.LENGTH_SHORT)
+						.show();
 				item.setTitle(R.string.deactivate_step);
 			} else {
 				getActionBar().setTitle(R.string.app_name);
@@ -402,8 +404,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 				calorieDialog.show();
 				calorieDialog.updateCalorieWindow();
 			} else {
-				Toast.makeText(this, R.string.startStep,
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, R.string.startStep, Toast.LENGTH_SHORT)
+						.show();
 
 			}
 		case R.id.action_emptyMap:
@@ -463,6 +465,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 	@Override
+	/**
+	 * When back button is pressed, show dialog: really wanna go back?
+	 */
 	public void onBackPressed() {
 		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 			@Override
@@ -668,6 +673,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 	}
+
 	/**
 	 * Saves state
 	 */
@@ -687,6 +693,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		// Always call the superclass so it can save the view hierarchy state
 		super.onSaveInstanceState(savedInstanceState);
 	}
+
 	/**
 	 * Restore state and reprints if needed
 	 */

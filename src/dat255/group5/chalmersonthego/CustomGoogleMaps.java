@@ -23,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,35 +33,26 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import dat255.group5.database.DAO;
 
+/**
+ * Mainly responsible to manipulate the map.
+ * @author Anders Nordin
+ */
 public class CustomGoogleMaps {
 
 	// Constants
 	final GoogleMap googleMap;
 	final Activity owningActivity;
 	private DAO dao;
-	final LatLng northWest = new LatLng(57.697497, 11.985397);
-	final LatLng southEast = new LatLng(57.678687, 11.969347);
-
+	final LatLng northEast = new LatLng(57.693648,11.980124);
+	final LatLng southWest = new LatLng(57.681467,11.976304);
+	
 	private ArrayList<MarkerOptions> markerOptionsArray = new ArrayList<MarkerOptions>();
 	public Marker highlighted, hereAmI;
-
 	private NavigationManager navManager;
 
 	// Used for showing the custom view button in the map
-	private OnInfoWindowElemTouchListener infoButtonListener;
 	private ViewGroup infoWindow;
 	private TextView infoTitle, infoSnippet;
-	private Button infoButton;
-
-	/**
-	 * Redraw all markers on the map.
-	 */
-	public void reDrawMarkers() {
-		googleMap.clear();
-
-		for (MarkerOptions m : markerOptionsArray)
-			googleMap.addMarker(m);
-	}
 
 	/**
 	 * Constructor.
@@ -82,34 +72,11 @@ public class CustomGoogleMaps {
 
 		setUpMapIfNeeded();
 
-		// Get fragment to the custom veiws code
-		final MapFragment mapFragment = (MapFragment) owningActivity
-				.getFragmentManager().findFragmentById(R.id.map);
-		// TODO Fix this so that the parse goes through to get the button to
-		// work
-		// final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout)
-		// findViewById(R.layout.activity_main);
 		this.infoWindow = (ViewGroup) owningActivity.getLayoutInflater()
 				.inflate(R.layout.info_window, null);
 		this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
 		this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
-		this.infoButton = (Button) infoWindow.findViewById(R.id.button);
-		this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
-				owningActivity.getResources().getDrawable(
-						R.drawable.icon_daymode), owningActivity.getResources()
-						.getDrawable(R.drawable.icon_nightmode)) {
-			@Override
-			protected void onClickConfirmed(View v, Marker marker) {
-				// Here we can perform some action triggered after clicking the
-				// button
-				Toast.makeText(owningActivity,
-						marker.getTitle() + "'s button clicked!",
-						Toast.LENGTH_SHORT).show();
-			}
-		};
 
-		// Further setting up the customizeable infowindows on the map
-		this.infoButton.setOnTouchListener(infoButtonListener);
 		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
 			@Override
 			public View getInfoWindow(Marker marker) {
@@ -120,7 +87,6 @@ public class CustomGoogleMaps {
 			public View getInfoContents(Marker marker) {
 				infoTitle.setText(marker.getTitle());
 				infoSnippet.setText(marker.getSnippet());
-				infoButtonListener.setMarker(marker);
 
 				return infoWindow;
 			}
@@ -136,8 +102,8 @@ public class CustomGoogleMaps {
 				highlighted = CustomGoogleMaps.this.googleMap
 						.addMarker(new MarkerOptions().position(point)
 								.title("Targeted position").draggable(true)
-								.snippet("You've marked this location"));
-
+								.snippet("You've marked this location"));		
+				
 				highlighted.showInfoWindow();
 			}
 		});
@@ -145,9 +111,19 @@ public class CustomGoogleMaps {
 		// When user click info window on marker. Show navigation options
 		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			public void onInfoWindowClick(Marker marker) {
-				printNavigationPopup(marker.getPosition(), "Target Position");
+				printNavigationPopup(marker.getPosition(), marker.getTitle());
 			}
 		});
+	}
+	
+	/**
+	 * Redraw all markers on the map.
+	 */
+	public void reDrawMarkers() {
+		googleMap.clear();
+
+		for (MarkerOptions m : markerOptionsArray)
+			googleMap.addMarker(m);
 	}
 
 	/**
@@ -159,15 +135,15 @@ public class CustomGoogleMaps {
 	 */
 	public boolean isLocationInBound(LatLng latlng) {
 		// Bounds the map to a given area
-		LatLngBounds strictBounds = new LatLngBounds(southEast, northWest);
+		LatLngBounds strictBounds = new LatLngBounds(southWest, northEast);
 
 		return (strictBounds.contains(latlng));
 	}
 
-	/*
-	 * 
-	 * Om man �r p� campus (Min Pos, tomt) annars (tomt, tomt) Anropad fr�n
-	 * mark�r - (Mark�r, tomt) KLICK OK: - Printa v�gen + duration + distance
+	/**
+	 * Shows the navigation dialog
+	 * @param latlng with triggered marker
+	 * @param wantToGo where the user wants to go
 	 */
 	public void printNavigationPopup(final LatLng latlng,
 			final String wantToGo) {
@@ -183,26 +159,23 @@ public class CustomGoogleMaps {
 				.findViewById(R.id.nav_search_dest);
 		Button navOk = (Button) myDialog.findViewById(R.id.navOk);
 		Button navCancel = (Button) myDialog.findViewById(R.id.navCancel);
-		
+
 		myDialog.setTitle("Show route");
 
 		ArrayList<String> allSearchStrings = dao.getAllRooms();
-		
+
+		// Add suggestions depending on where the user clicked.
 		if(isLocationInBound(getCurrentLocation())){		
 			navStart.setText("My Position");
 			allSearchStrings.add("My Position");
-		}
-		
-		if(wantToGo.equals("Target Position")){
+		}		
+		if(!wantToGo.equals("My Position")){
 			navDest.setText(wantToGo);			
-			allSearchStrings.add("Target Position");
 		}
-		
+
 		// Init with alla searchable strings
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(owningActivity,
-				android.R.layout.simple_dropdown_item_1line, allSearchStrings);
-		
-		
+				android.R.layout.simple_dropdown_item_1line, allSearchStrings);	
 
 		navStart.setAdapter(adapter);
 		navDest.setAdapter(adapter);
@@ -215,28 +188,55 @@ public class CustomGoogleMaps {
 			@Override
 			public void onClick(View arg0) {
 				// Get final search string
-				String start = navStart.getText().toString()
-						.replaceAll("\\s", "");
-				String dest = navDest.getText().toString()
-						.replaceAll("\\s", "");
-
-				LatLng _latlng = latlng;
+				String start = navStart.getText().toString();
+				start = SpaceTokenizer.removeLastCharIfSpace(start);
 				
-				if(!wantToGo.equals("Target Position") && !wantToGo.equals("My Position"))
-					_latlng = dao.getRoomCoordinates(start);			
+				String dest = navDest.getText().toString();
+				dest = SpaceTokenizer.removeLastCharIfSpace(dest);
+				
+				Log.i("START", start);
+				Log.i("DEST", dest);
 
+				LatLng startCoord;
+				LatLng destCoord;
 
-				if (!wantToGo.equals("Target Position")
-						&& !wantToGo.equals("My Position"))
-					_latlng = dao.getRoomCoordinates(start);
-
-				if (navManager.drawPathOnMap(_latlng,
-						dao.getRoomCoordinates(dest)))
-					Toast.makeText(owningActivity, "Success",
-							Toast.LENGTH_SHORT).show();
+				if(start.equals("My Position") || start.equals("Targeted position"))
+					startCoord = latlng;	
 				else
-					Toast.makeText(owningActivity, "FAILURE",
+					startCoord = dao.getRoomCoordinates(start);	
+				
+				if(dest.equals("My Position") || dest.equals("Targeted position"))
+					destCoord = latlng;
+				else
+					destCoord = dao.getRoomCoordinates(dest);	
+				
+				if(start.equals("My Position") && dest.equals("Targeted position"))
+					startCoord = getCurrentLocation();
+				
+				if (navManager.drawPathOnMap(startCoord,destCoord)){
+					removeAllMarkerFromMap();
+					navManager.drawPathOnMap(startCoord,destCoord);
+
+					Marker startMarker = CustomGoogleMaps.this.googleMap
+							.addMarker(new MarkerOptions().position(startCoord)
+									.title("Start").draggable(true)
+									.snippet("Start Location"));					
+					startMarker.showInfoWindow();
+					
+					Marker destMarker = CustomGoogleMaps.this.googleMap
+							.addMarker(new MarkerOptions().position(destCoord)
+									.title("Destination").draggable(true)
+									.snippet("Destination Location"));					
+					destMarker.showInfoWindow();
+					
+					
+				}
+				else{
+					Toast.makeText(owningActivity, "Could not display navigation",
 							Toast.LENGTH_SHORT).show();
+					
+					Log.i("DEST", destCoord.latitude +", " + destCoord.longitude);
+				}				
 				myDialog.dismiss();
 			}
 		});
@@ -247,7 +247,6 @@ public class CustomGoogleMaps {
 				myDialog.cancel();
 			}
 		});
-
 		myDialog.show();
 	}
 
@@ -268,36 +267,36 @@ public class CustomGoogleMaps {
 			MarkerOptions markerOptions;
 			if (type.equalsIgnoreCase("computer room")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("computerroom.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("computerroom.png"));
 			} else if (type.equalsIgnoreCase("lecture hall")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("lecturehall.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("lecturehall.png"));
 			} else if (type.equalsIgnoreCase("group room")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("grouproom.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("grouproom.png"));
 			} else if (type.equalsIgnoreCase("sauna")) {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor)
 						.icon(BitmapDescriptorFactory.fromAsset("sauna.png"));
 			} else if (type.equalsIgnoreCase("restaurant")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory
-								.fromAsset("restaurant.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("restaurant.png"));
 			} else if (type.equalsIgnoreCase("pub")) {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor)
@@ -312,10 +311,10 @@ public class CustomGoogleMaps {
 						.icon(BitmapDescriptorFactory.fromAsset("cinema.png"));
 			} else if (type.equalsIgnoreCase("billiard room")) {
 				markerOptions = new MarkerOptions()
-						.position(latLng)
-						.title(title)
-						.snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("billiard.png"));
+				.position(latLng)
+				.title(title)
+				.snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory.fromAsset("billiard.png"));
 			} else if (type.equalsIgnoreCase("atm")) {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor)
@@ -370,6 +369,8 @@ public class CustomGoogleMaps {
 	 */
 	public boolean drawMyPosition() {
 		LatLng latlng = getCurrentLocation();
+		
+		Log.i("POS",latlng.latitude + ", " + latlng.longitude);
 
 		if (latlng != null) {
 			Location location = new Location("Current Position");
@@ -381,10 +382,10 @@ public class CustomGoogleMaps {
 				if (hereAmI != null)
 					hereAmI.remove();
 				MarkerOptions markeroptions = new MarkerOptions()
-						.position(latlng)
-						.title("My Location")
-						.icon(BitmapDescriptorFactory
-								.fromAsset("map_blue_dot.png"))
+				.position(latlng)
+				.title("My Location")
+				.icon(BitmapDescriptorFactory
+						.fromAsset("map_blue_dot.png"))
 						.snippet("I am here");
 				hereAmI = CustomGoogleMaps.this.googleMap
 						.addMarker(markeroptions);
@@ -406,34 +407,17 @@ public class CustomGoogleMaps {
 	 * 
 	 * @return user's current location
 	 */
-	// GPSTracker class
-	GPSTracker gps;
-	
 	public LatLng getCurrentLocation() {
-		 gps = new GPSTracker(owningActivity);
-		 double latitude = 0;
-         double longitude = 0;
-
-         // check if GPS enabled     
-         if(gps.canGetLocation()){
-
-            latitude = gps.getLatitude();
-             longitude = gps.getLongitude();
-
-             // \n is for new line
-             Toast.makeText(owningActivity.getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();    
-         }else{
-             // can't get location
-             // GPS or Network is not enabled
-             // Ask user to enable GPS/network in settings
-             gps.showSettingsAlert();
-         }
-
-		
-
-		return new LatLng(latitude, longitude);
+		LocationManager service = (LocationManager) owningActivity.getSystemService(Context.LOCATION_SERVICE);
+		Criteria criteria = new Criteria();
+		String provider = service.getBestProvider(criteria, false);
+		Location location = service.getLastKnownLocation(provider);
+		return(new LatLng(location.getLatitude(),location.getLongitude()));
 	}
 
+	/**
+	 * If needed initiate the map
+	 */
 	private void setUpMapIfNeeded() {
 		// Check if map has been instantiated, if not. Set up!
 		if (owningActivity != null && googleMap != null) {
@@ -441,49 +425,45 @@ public class CustomGoogleMaps {
 				// Initialize map center
 				googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 				googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(
-						57.68806, 11.977978)));
+						57.688326,11.978064)));
 			}
 
 			// When user change the map view
 			googleMap
-					.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-						@Override
-						public void onCameraChange(CameraPosition position) {
-							// Set minimum zoom level
-							if (position.zoom < 14) {
-								googleMap.animateCamera(CameraUpdateFactory
-										.zoomTo(14));
-								Toast.makeText(owningActivity, "Minimum zoom",
-										Toast.LENGTH_LONG).show();
-							}
+			.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				@Override
+				public void onCameraChange(CameraPosition position) {
+					// Set minimum zoom level
+					if (position.zoom < 15) {
+						googleMap.animateCamera(CameraUpdateFactory
+								.zoomTo(15));
+						Toast.makeText(owningActivity, "Minimum zoom",
+								Toast.LENGTH_LONG).show();
+					}
 
-							// If position is within, do nothing.
-							if (isLocationInBound(googleMap.getCameraPosition().target))
-								return;
+					// If position is within, do nothing.
+					if (isLocationInBound(googleMap.getCameraPosition().target))
+						return;
 
-							Toast.makeText(owningActivity,
-									"Outside restricted area",
-									Toast.LENGTH_LONG).show();
+					// Seems that we are out of bound
+					double x = googleMap.getCameraPosition().target.latitude;
+					double y = googleMap.getCameraPosition().target.longitude;
 
-							// Seems that we are out of bound
-							double x = googleMap.getCameraPosition().target.latitude;
-							double y = googleMap.getCameraPosition().target.longitude;
+					if (x < southWest.latitude)
+						x = southWest.latitude;
+					if (x > northEast.latitude)
+						x = northEast.latitude;
+					if (y < southWest.longitude)
+						y = southWest.longitude;
+					if (y > northEast.longitude)
+						y = northEast.longitude;
 
-							if (x < southEast.latitude)
-								x = southEast.latitude;
-							if (x > northWest.latitude)
-								x = northWest.latitude;
-							if (y < southEast.longitude)
-								y = southEast.longitude;
-							if (y > northWest.longitude)
-								y = northWest.longitude;
-
-							// Set new center
-							LatLng center = new LatLng(x, y);
-							googleMap.moveCamera(CameraUpdateFactory
-									.newLatLng(center));
-						}
-					});
+					// Set new center
+					LatLng center = new LatLng(x, y);
+					googleMap.moveCamera(CameraUpdateFactory
+							.newLatLng(center));
+				}
+			});
 		}
 	}
 
