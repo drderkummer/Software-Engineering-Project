@@ -48,13 +48,6 @@
         android:title="@string/action_calories"
         android:visible="true"/>
     <item
-        android:id="@+id/action_floors"
-        android:icon="@drawable/action_floors"
-        android:orderInCategory="105"
-        android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_floors"
-        android:visible="true"/>
-    <item
         android:id="@+id/action_emptyMap"
         android:orderInCategory="106"
         android:showAsAction="ifRoom|collapseActionView"
