@@ -1,7 +1,6 @@
 package dat255.group5.database;
 
 import com.example.chalmersonthego.R;
-import com.example.chalmersonthego.R.drawable;
 
 /**
  * This class is used to insert all data
@@ -31,13 +30,14 @@ public class InsertionsOfData {
 				mydao.insertIntoTable2(DatabaseConstants.type_sauna);
 				mydao.insertIntoTable2(DatabaseConstants.type_restaurant);
 				mydao.insertIntoTable2(DatabaseConstants.type_atm);
+				mydao.insertIntoTable2(DatabaseConstants.type_microwave);
 
 				/***************************************************************
 				 ********************* INSERTION OF
 				 * DatabaseConstants.building_studentUnion:*********
 				 * ********************
 				 **************************************************************/
-				mydao.insertIntoTable3("Pripps", 57.688945, 11.974169,
+				mydao.insertIntoTable3("Pripps", 57.688873, 11.974357,
 						DatabaseConstants.type_pub,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_ground);
@@ -50,24 +50,37 @@ public class InsertionsOfData {
 						DatabaseConstants.type_restaurant,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_ground);
-				mydao.insertIntoTable3("Cinema", 57.689125, 11.973869,
+				mydao.insertIntoTable3("RunAn Salen/Cinema", 57.689125, 11.973869,
 						DatabaseConstants.type_cinema,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_1);
-				mydao.insertIntoTable3("Gym", 57.688925, 11.974099,
+				mydao.insertIntoTable3("Palmstedt Salen", 57.689355, 11.973992,
+						DatabaseConstants.type_lectureHall,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_ground);
+				mydao.insertIntoTable3("Motionshall/Gym", 57.688925, 11.974099,
 						DatabaseConstants.type_gym,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_1);
-				mydao.insertIntoTable3("ATM Student Union", 57.688969, 11.974094,
+				mydao.insertIntoTable3("ATM Student Union", 57.688968, 11.974121,
 						DatabaseConstants.type_atm,
 						DatabaseConstants.building_studentUnion,
 						DatabaseConstants.floor_ground);
+				mydao.insertIntoTable3("ATM Library", 57.690046, 11.978702,
+						DatabaseConstants.type_atm,
+						DatabaseConstants.building_library,
+						DatabaseConstants.floor_ground);
+				mydao.insertIntoTable3("Microwave Student Union", 57.689064, 11.974244, 
+						DatabaseConstants.type_microwave,
+						DatabaseConstants.building_studentUnion,
+						DatabaseConstants.floor_minus1);
 
 				// insert into 'buildings' table:
 				mydao.insertIntoTable4(DatabaseConstants.building_edit);
 				mydao.insertIntoTable4(DatabaseConstants.building_architecture);
 				mydao.insertIntoTable4(DatabaseConstants.building_vasa);
 				mydao.insertIntoTable4(DatabaseConstants.building_studentUnion);
+				mydao.insertIntoTable4(DatabaseConstants.building_library);
 
 				/***************************************************************
 				 ****************** INSERTION OF DatabaseConstants.building_edit
@@ -104,6 +117,9 @@ public class InsertionsOfData {
 						DatabaseConstants.building_vasa);
 				mydao.insertIntoTable1(57.693448,11.975422,
 						DatabaseConstants.building_vasa);
+				//library:
+				mydao.insertIntoTable1(57.690304, 11.978686, 
+						DatabaseConstants.building_library);
 
 				// insert into 'rooms' table:
 				// lecture halls

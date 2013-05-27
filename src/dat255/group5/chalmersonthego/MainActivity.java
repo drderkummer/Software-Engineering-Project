@@ -257,7 +257,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 							dao.getFloor(name), DatabaseConstants.type_pub);
 				}
 			}
-			customMaps.drawBuildings();
 			layerIsChosen = true;
 		}
 	}
@@ -547,7 +546,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 				customMaps.showMarkerOnMap(coords, name, dao.getFloor(name),
 						DatabaseConstants.type_pub);
 			}
-			customMaps.drawBuildings();
 			layerIsChosen = true;
 		}
 		if (layerIsChosen) {
