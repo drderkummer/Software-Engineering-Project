@@ -400,8 +400,7 @@ public class CustomGoogleMaps {
 		Criteria criteria = new Criteria();
 		String provider = service.getBestProvider(criteria, false);
 		Location location = service.getLastKnownLocation(provider);
-		// return(new LatLng(location.getLatitude(),location.getLongitude()));
-		return(new LatLng(57.687679,11.979036));
+		return(new LatLng(location.getLatitude(),location.getLongitude()));
 	}
 
 	/**
