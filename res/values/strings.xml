@@ -7,9 +7,14 @@
     <string name="action_layers">Layers</string>
     <string name="search_hint">Search lecture halls, buildings, grouprooms</string>
     <string name="drink_button">Drink!</string>
+    
     <!-- distance and duration -->
     <string name="tv_distance_time_init">Tap two locations in the map</string>
     <string name="tv_distance_time">Distance</string>
+    
+    <!-- navigation -->
+    <string name="start">Start</string>
+    <string name="destination">Destination</string>
 
     <!-- Menu items -->
     <string name="action_direction">Get Directions</string>

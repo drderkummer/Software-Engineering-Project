@@ -193,15 +193,12 @@ public class CustomGoogleMaps {
 				
 				String dest = navDest.getText().toString();
 				dest = SpaceTokenizer.removeLastCharIfSpace(dest);
-				
-				Log.i("START", start);
-				Log.i("DEST", dest);
 
 				LatLng startCoord;
 				LatLng destCoord;
 
-				if(start.equals("My Position") || start.equals("Targeted position"))
-					startCoord = latlng;	
+				if(start.equals("My Position"))
+					startCoord = getCurrentLocation();	
 				else
 					startCoord = dao.getRoomCoordinates(start);	
 				
@@ -227,16 +224,12 @@ public class CustomGoogleMaps {
 							.addMarker(new MarkerOptions().position(destCoord)
 									.title("Destination").draggable(true)
 									.snippet("Destination Location"));					
-					destMarker.showInfoWindow();
-					
-					
+					destMarker.showInfoWindow();					
 				}
-				else{
+				else
 					Toast.makeText(owningActivity, "Could not display navigation",
 							Toast.LENGTH_SHORT).show();
-					
-					Log.i("DEST", destCoord.latitude +", " + destCoord.longitude);
-				}				
+				
 				myDialog.dismiss();
 			}
 		});
@@ -372,9 +365,7 @@ public class CustomGoogleMaps {
 	 * @return true if position was set, false if otherwise
 	 */
 	public boolean drawMyPosition() {
-		LatLng latlng = getCurrentLocation();
-		
-		Log.i("POS",latlng.latitude + ", " + latlng.longitude);
+		LatLng latlng = getCurrentLocation();		
 
 		if (latlng != null) {
 			Location location = new Location("Current Position");
@@ -416,7 +407,8 @@ public class CustomGoogleMaps {
 		Criteria criteria = new Criteria();
 		String provider = service.getBestProvider(criteria, false);
 		Location location = service.getLastKnownLocation(provider);
-		return(new LatLng(location.getLatitude(),location.getLongitude()));
+		// return(new LatLng(location.getLatitude(),location.getLongitude()));
+		return(new LatLng(57.687679,11.979036));
 	}
 
 	/**
