@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -29,7 +28,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
 
 import dat255.group5.database.DAO;
 
@@ -287,9 +285,11 @@ public class CustomGoogleMaps {
 				.icon(BitmapDescriptorFactory
 						.fromAsset("grouproom.png"));
 			} else if (type.equalsIgnoreCase("sauna")) {
-				markerOptions = new MarkerOptions().position(latLng)
-						.title(title).snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("sauna.png"));
+				markerOptions = new MarkerOptions()
+				 .position(latLng)
+				 .title(title).snippet("floor: " + floor)
+				 .icon(BitmapDescriptorFactory
+						.fromAsset("sauna.png"));
 			} else if (type.equalsIgnoreCase("restaurant")) {
 				markerOptions = new MarkerOptions()
 				.position(latLng)
@@ -298,31 +298,48 @@ public class CustomGoogleMaps {
 				.icon(BitmapDescriptorFactory
 						.fromAsset("restaurant.png"));
 			} else if (type.equalsIgnoreCase("pub")) {
-				markerOptions = new MarkerOptions().position(latLng)
-						.title(title).snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("pub.png"));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title).snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("pub.png"));
 			} else if (type.equalsIgnoreCase("gym")) {
-				markerOptions = new MarkerOptions().position(latLng)
-						.title(title).snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("gym.png"));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title).snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("gym.png"));
 			} else if (type.equalsIgnoreCase("cinema")) {
-				markerOptions = new MarkerOptions().position(latLng)
-						.title(title).snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("cinema.png"));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title).snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("cinema.png"));
 			} else if (type.equalsIgnoreCase("billiard room")) {
 				markerOptions = new MarkerOptions()
 				.position(latLng)
 				.title(title)
 				.snippet("floor: " + floor)
-				.icon(BitmapDescriptorFactory.fromAsset("billiard.png"));
+				.icon(BitmapDescriptorFactory
+						.fromAsset("billiard.png"));
 			} else if (type.equalsIgnoreCase("atm")) {
-				markerOptions = new MarkerOptions().position(latLng)
-						.title(title).snippet("floor: " + floor)
-						.icon(BitmapDescriptorFactory.fromAsset("atm.png"));	
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title).snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+						.fromAsset("atm.png"));	
 			} else if (type.equalsIgnoreCase("entrance")) {
-				markerOptions = new MarkerOptions().position(latLng)
-						.title(title).snippet("")
-						.icon(BitmapDescriptorFactory.fromAsset("entrance.png"));
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title).snippet("")
+				.icon(BitmapDescriptorFactory
+						.fromAsset("entrance.png"));
+			} else if (type.equalsIgnoreCase("microwave")){
+				markerOptions = new MarkerOptions()
+				.position(latLng)
+				.title(title).snippet("floor: " + floor)
+				.icon(BitmapDescriptorFactory
+					.fromAsset("microwave.png"));
 			} else {
 				markerOptions = new MarkerOptions().position(latLng)
 						.title(title).snippet("floor: " + floor + type);
@@ -339,31 +356,6 @@ public class CustomGoogleMaps {
 		markerOptionsArray.clear();
 		navManager.tvDistanceDuration.setVisibility(TextView.GONE);
 		googleMap.clear();
-	}
-
-	/**
-	 * Instantiates a new Polygon object and adds points to define a rectangle
-	 */
-	public void drawBuildings() {
-		// Draw NC
-		PolygonOptions nc = new PolygonOptions();
-		nc.add(new LatLng(57.687141, 11.978657));
-		nc.add(new LatLng(57.687376, 11.978448));
-		nc.add(new LatLng(57.687438, 11.978673));
-		nc.add(new LatLng(57.687199, 11.97889));
-		nc.strokeColor(Color.rgb(170, 69, 0));
-		nc.fillColor(Color.rgb(170, 69, 0));
-		googleMap.addPolygon(nc);
-
-		// Draw Golden I
-		PolygonOptions gi = new PolygonOptions();
-		gi.add(new LatLng(57.692787, 11.975036));
-		gi.add(new LatLng(57.692847, 11.975272));
-		gi.add(new LatLng(57.693002, 11.975139));
-		gi.add(new LatLng(57.692960, 11.974888));
-		gi.fillColor(Color.rgb(138, 43, 226));
-		gi.strokeColor(Color.rgb(138, 43, 226));
-		googleMap.addPolygon(gi);
 	}
 
 	/**

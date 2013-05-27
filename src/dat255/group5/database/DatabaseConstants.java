@@ -32,6 +32,7 @@ public class DatabaseConstants {
 	public static final String type_billiard = "Billiard Room";
 	public static final String type_cinema = "Cinema";
 	public static final String type_atm = "ATM";
+	public static final String type_microwave = "Microwave";
 	public static final String[] layerOptions = { type_computerRoom,
 			type_lectureHall, type_groupRoom, type_pub };
 
@@ -40,5 +41,6 @@ public class DatabaseConstants {
 	public static final String building_architecture = "Architecture";
 	public static final String building_vasa = "Vasa";
 	public static final String building_studentUnion = "Student Union";
+	public static final String building_library = "Library";
 
 }
