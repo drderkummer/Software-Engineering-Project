@@ -70,6 +70,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	private SearchView searchView;
 	private MenuItem menuItem;
+	Dialog layerDialog;
 
 	private DAO dao;
 	private CustomGoogleMaps customMaps;
@@ -380,7 +381,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_layers:
-			Dialog layerDialog = onCreateDialog(0);
+			layerDialog = onCreateDialog(0);
 			layerDialog.show();
 			break;
 		case R.id.action_my_location:
@@ -428,8 +429,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 					"My Position");
 			break;
 		default:
-			Toast.makeText(this, "Nothing to display", Toast.LENGTH_SHORT)
-					.show();
 			break;
 		}
 		return true;
