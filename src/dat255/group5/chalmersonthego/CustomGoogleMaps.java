@@ -233,7 +233,6 @@ public class CustomGoogleMaps {
 					Toast.makeText(owningActivity, "Could not display navigation",
 							Toast.LENGTH_SHORT).show();
 					
-					Log.i("DEST", destCoord.latitude +", " + destCoord.longitude);
 				}				
 				myDialog.dismiss();
 			}
